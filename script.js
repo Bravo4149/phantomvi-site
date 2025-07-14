@@ -26,13 +26,16 @@ function addToCart(type) {
     return;
   }
 
-  // Check if item already exists in cart
+  // Find if this exact product (type + variant) already in cart
   const existingIndex = cartItems.findIndex(
     item => item.type === type && item.variant === productType
   );
+
   if (existingIndex >= 0) {
-    cartItems[existingIndex].qty += qty; // Add qty to existing item
+    // Add qty to existing cart item
+    cartItems[existingIndex].qty += qty;
   } else {
+    // Add new item to cart
     cartItems.push({ type, variant: productType, qty });
   }
 
@@ -70,12 +73,20 @@ function updateCartUI() {
     totalQty += item.qty;
 
     const li = document.createElement('li');
-    li.textContent = `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each) - R${itemTotal}`;
-    
+    li.textContent = `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each) - R${itemTotal} `;
+
     // Remove button
     const removeBtn = document.createElement('button');
     removeBtn.textContent = '×'; // cross symbol
     removeBtn.title = 'Remove item';
+    removeBtn.style.marginLeft = '10px';
+    removeBtn.style.background = '#b03060';
+    removeBtn.style.color = 'white';
+    removeBtn.style.border = 'none';
+    removeBtn.style.borderRadius = '50%';
+    removeBtn.style.width = '22px';
+    removeBtn.style.height = '22px';
+    removeBtn.style.cursor = 'pointer';
     removeBtn.onclick = () => removeFromCart(index);
 
     li.appendChild(removeBtn);
@@ -107,7 +118,6 @@ function updateCartUI() {
     whatsappBtn.style.opacity = '1';
     whatsappBtn.title = "Send order details via WhatsApp";
 
-    // Compose message text with line breaks encoded for WhatsApp
     let message = 'Hello, I have placed an order with Phantom VI:%0A%0A';
     cartItems.forEach(item => {
       message += `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each) - R${prices[item.type] * item.qty}%0A`;
@@ -115,8 +125,7 @@ function updateCartUI() {
     message += `%0ACourier Fee: R${courierFee}%0ATotal: R${totalCost}%0A%0A`;
     message += 'Please find my sticker labels and delivery address below:';
 
-    // WhatsApp link — using your wa.link short link
-    const phoneNumber = '27814458910'; // SA number without +
+    const phoneNumber = '27814458910';
     whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
   }
 }
