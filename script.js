@@ -1,131 +1,83 @@
-const cartItems = [];
+let cart = [];
 const prices = { Wine: 75, Gin: 165, Vodka: 165 };
 
 function addToCart(type) {
-  let productType, qty, sel;
-  if (type === 'Wine') {
-    sel = document.getElementById('wineType');
-    productType = sel.value;
-    qty = parseInt(document.getElementById('wineQty').value);
-  } else if (type === 'Gin') {
-    sel = document.getElementById('ginType');
-    productType = sel.value;
-    qty = parseInt(document.getElementById('ginQty').value);
-  } else if (type === 'Vodka') {
-    sel = document.getElementById('vodkaType');
-    productType = sel.value;
-    qty = parseInt(document.getElementById('vodkaQty').value);
-  }
+  const typeSelect = document.getElementById(type.toLowerCase() + "Type");
+  const qtyInput = document.getElementById(type.toLowerCase() + "Qty");
+  const variant = typeSelect.value;
+  const qty = parseInt(qtyInput.value);
 
-  if (!productType) {
-    alert('Please select a ' + type + ' type.');
-    return;
-  }
-  if (!qty || qty <= 0) {
-    alert('Please enter a valid quantity.');
+  if (!variant || qty <= 0 || isNaN(qty)) {
+    alert("Please select a type and enter a valid quantity.");
     return;
   }
 
-  // Find if this exact product (type + variant) already in cart
-  const existingIndex = cartItems.findIndex(
-    item => item.type === type && item.variant === productType
+  // Check if item already in cart
+  const existingIndex = cart.findIndex(
+    (item) => item.type === type && item.variant === variant
   );
 
   if (existingIndex >= 0) {
-    // Add qty to existing cart item
-    cartItems[existingIndex].qty += qty;
+    cart[existingIndex].qty += qty;
   } else {
-    // Add new item to cart
-    cartItems.push({ type, variant: productType, qty });
+    cart.push({ type, variant, qty });
   }
 
-  updateCartUI();
-  clearInputs(type);
-}
-
-function clearInputs(type) {
-  if(type === 'Wine'){
-    document.getElementById('wineQty').value = '';
-    document.getElementById('wineType').value = '';
-  } else if(type === 'Gin'){
-    document.getElementById('ginQty').value = '';
-    document.getElementById('ginType').value = '';
-  } else if(type === 'Vodka'){
-    document.getElementById('vodkaQty').value = '';
-    document.getElementById('vodkaType').value = '';
-  }
+  typeSelect.value = "";
+  qtyInput.value = "";
+  updateCart();
 }
 
 function removeFromCart(index) {
-  cartItems.splice(index, 1);
-  updateCartUI();
+  cart.splice(index, 1);
+  updateCart();
 }
 
-function updateCartUI() {
-  const ul = document.getElementById('cartItems');
-  ul.innerHTML = '';
+function updateCart() {
+  const cartList = document.getElementById("cartItems");
+  const courierFeeElement = document.getElementById("courierFee");
+  const totalCostElement = document.getElementById("totalCost");
+
+  cartList.innerHTML = "";
+
   let total = 0;
   let totalQty = 0;
 
-  cartItems.forEach((item, index) => {
-    const itemTotal = prices[item.type] * item.qty;
-    total += itemTotal;
+  cart.forEach((item, index) => {
+    const itemPrice = prices[item.type] * item.qty;
+    total += itemPrice;
     totalQty += item.qty;
 
-    const li = document.createElement('li');
-    li.textContent = `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each) - R${itemTotal} `;
-
-    // Remove button
-    const removeBtn = document.createElement('button');
-    removeBtn.textContent = '×'; // cross symbol
-    removeBtn.title = 'Remove item';
-    removeBtn.style.marginLeft = '10px';
-    removeBtn.style.background = '#b03060';
-    removeBtn.style.color = 'white';
-    removeBtn.style.border = 'none';
-    removeBtn.style.borderRadius = '50%';
-    removeBtn.style.width = '22px';
-    removeBtn.style.height = '22px';
-    removeBtn.style.cursor = 'pointer';
-    removeBtn.onclick = () => removeFromCart(index);
-
-    li.appendChild(removeBtn);
-    ul.appendChild(li);
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${item.qty} x ${item.variant} ${item.type} - R${itemPrice}
+      <button onclick="removeFromCart(${index})" style="margin-left:10px;color:red;border:none;background:none;cursor:pointer;">🗑️</button>
+    `;
+    cartList.appendChild(li);
   });
 
-  // Calculate courier fee: R180 for first 2 bottles, + R12 per extra bottle
-  let courierFee = 0;
-  if(totalQty > 0) {
-    courierFee = 180;
-    if(totalQty > 2) {
-      courierFee += (totalQty - 2) * 12;
-    }
-  }
+  const courierFee =
+    totalQty === 0
+      ? 0
+      : totalQty <= 2
+      ? 180
+      : 180 + (totalQty - 2) * 12;
 
-  document.getElementById('courierFee').textContent = `R${courierFee}`;
-  const totalCost = total + courierFee;
-  document.getElementById('totalCost').textContent = `R${totalCost}`;
+  const grandTotal = total + courierFee;
 
-  // Update WhatsApp button
-  const whatsappBtn = document.getElementById('whatsappBtn');
-  if(totalCost === 0){
-    whatsappBtn.href = '#';
-    whatsappBtn.style.pointerEvents = 'none';
-    whatsappBtn.style.opacity = '0.5';
-    whatsappBtn.title = "Add items to cart first";
-  } else {
-    whatsappBtn.style.pointerEvents = 'auto';
-    whatsappBtn.style.opacity = '1';
-    whatsappBtn.title = "Send order details via WhatsApp";
+  courierFeeElement.textContent = `R${courierFee}`;
+  totalCostElement.textContent = `R${grandTotal}`;
 
-    let message = 'Hello, I have placed an order with Phantom VI:%0A%0A';
-    cartItems.forEach(item => {
-      message += `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each) - R${prices[item.type] * item.qty}%0A`;
-    });
-    message += `%0ACourier Fee: R${courierFee}%0ATotal: R${totalCost}%0A%0A`;
-    message += 'Please find my sticker labels and delivery address below:';
+  // Build WhatsApp message
+  let message = "Hello PHANTOM VI,%0AI'd like to place an order:%0A";
+  cart.forEach((item) => {
+    message += `${item.qty} x ${item.variant} ${item.type} - R${
+      item.qty * prices[item.type]
+    }%0A`;
+  });
+  message += `Courier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0AHere is my label and address info:`;
 
-    const phoneNumber = '27814458910';
-    whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
-  }
+  // Final WhatsApp link using wa.link
+  const whatsappBtn = document.getElementById("whatsappBtn");
+  whatsappBtn.href = `https://wa.link/py9pq9?text=${message}`;
 }
