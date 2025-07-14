@@ -10,19 +10,6 @@ body {
   color: #b03060;
   line-height: 1.6;
   scroll-behavior: smooth;
-  position: relative;
-}
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('images/bg.jpg') no-repeat center center/cover;
-  filter: blur(8px);
-  opacity: 0.7;
-  z-index: -1;
 }
 a {
   color: #b03060;
@@ -34,7 +21,7 @@ a:hover {
 
 /* HEADER */
 header {
-  background: rgba(255, 240, 245, 0.9);
+  background: #fff0f5;
   padding: 40px 20px;
   text-align: center;
   border-bottom: 2px solid #f3cbd5;
@@ -43,10 +30,8 @@ header {
   z-index: 100;
 }
 header h1 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 60px;
+  font-size: 42px;
   color: #b03060;
-  letter-spacing: 2px;
   margin-bottom: 10px;
 }
 header p {
@@ -79,7 +64,7 @@ main {
 
 /* PRODUCT CARD */
 .product {
-  background: rgba(255, 250, 252, 0.95);
+  background: #fffafc;
   border: 1px solid #f3cbd5;
   border-radius: 12px;
   width: 300px;
@@ -104,7 +89,7 @@ main {
   border: none;
   border-radius: 0;
 }
-/* FIXED Wine Image */
+/* Smaller, properly scaled wine image */
 .product img[alt="Wine Bottle"] {
   max-height: 100px;
   max-width: 40%;
@@ -146,7 +131,7 @@ main {
 .cart {
   max-width: 600px;
   margin: 50px auto;
-  background: rgba(255, 250, 252, 0.95);
+  background: #fffafc;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -163,6 +148,29 @@ main {
   margin-bottom: 15px;
   color: #b03060;
   font-weight: 600;
+}
+.cart ul li {
+  margin-bottom: 10px;
+}
+.cart ul li button {
+  margin-left: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 3px 7px;
+  background: #f28ca3;
+  color: white;
+  transition: background 0.3s;
+}
+.cart ul li button:hover {
+  background: #e36c88;
+}
+.cart ul li button.remove-btn {
+  background: #d9534f;
+}
+.cart ul li button.remove-btn:hover {
+  background: #c9302c;
 }
 .cart p,
 .cart span {
@@ -188,56 +196,12 @@ main {
 footer {
   text-align: center;
   padding: 30px;
-  background: rgba(255, 240, 245, 0.9);
+  background: #fff0f5;
   border-top: 2px solid #f3cbd5;
   color: #b76e79;
 }
 
-/* ABOUT US SECTION */
-.about-section {
-  max-width: 900px;
-  margin: 60px auto;
-  padding: 40px 20px;
-  text-align: center;
-  background: rgba(255, 250, 252, 0.95);
-  border-radius: 12px;
-}
-.about-section h2 {
-  color: #b03060;
-  margin-bottom: 20px;
-  font-size: 32px;
-}
-.about-section p {
-  color: #3f3f3f;
-  font-size: 16px;
-  margin-bottom: 20px;
-}
-.about-section img {
-  max-width: 300px;
-  height: auto;
-  margin-bottom: 20px;
-  border-radius: 0 !important;
-  border: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-/* SMOOTH SCROLL BUTTON (if used) */
-.scroll-button {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  background: #b03060;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  font-size: 22px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-/* RESPONSIVE */
+/* MOBILE RESPONSIVE */
 @media (max-width: 768px) {
   .products {
     flex-direction: column;
@@ -255,8 +219,4 @@ footer {
   header p {
     font-size: 16px;
   }
-  .about-section img {
-    width: 90%;
-  }
 }
-
