@@ -10,6 +10,7 @@ body {
   color: #b03060;
   line-height: 1.6;
   scroll-behavior: smooth;
+  padding: 20px;
 }
 a {
   color: #b03060;
@@ -18,7 +19,6 @@ a {
 a:hover {
   text-decoration: underline;
 }
-
 /* HEADER */
 header {
   background: #fff0f5;
@@ -48,7 +48,6 @@ nav a {
   text-transform: uppercase;
   letter-spacing: 1px;
 }
-
 /* MAIN LAYOUT */
 main {
   max-width: 1200px;
@@ -61,7 +60,6 @@ main {
   justify-content: center;
   gap: 30px;
 }
-
 /* PRODUCT CARD */
 .product {
   background: #fffafc;
@@ -95,7 +93,6 @@ main {
   max-width: 40%;
   padding: 6px;
 }
-
 /* PRODUCT FORM */
 .product-form {
   padding: 0 20px;
@@ -126,7 +123,6 @@ main {
 .product-form button:hover {
   background: #e36c88;
 }
-
 /* CART */
 .cart {
   max-width: 600px;
@@ -149,29 +145,6 @@ main {
   color: #b03060;
   font-weight: 600;
 }
-.cart ul li {
-  margin-bottom: 10px;
-}
-.cart ul li button {
-  margin-left: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  padding: 3px 7px;
-  background: #f28ca3;
-  color: white;
-  transition: background 0.3s;
-}
-.cart ul li button:hover {
-  background: #e36c88;
-}
-.cart ul li button.remove-btn {
-  background: #d9534f;
-}
-.cart ul li button.remove-btn:hover {
-  background: #c9302c;
-}
 .cart p,
 .cart span {
   color: #9b4c62;
@@ -191,7 +164,6 @@ main {
 .cart .btn:hover {
   background: #90284d;
 }
-
 /* FOOTER */
 footer {
   text-align: center;
@@ -200,8 +172,7 @@ footer {
   border-top: 2px solid #f3cbd5;
   color: #b76e79;
 }
-
-/* MOBILE RESPONSIVE */
+/* RESPONSIVE */
 @media (max-width: 768px) {
   .products {
     flex-direction: column;
