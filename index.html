@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -17,9 +17,6 @@
       color: #b03060;
       line-height: 1.6;
       scroll-behavior: smooth;
-      min-height: 100vh;
-      position: relative;
-      z-index: 0;
     }
     a {
       color: #b03060;
@@ -42,9 +39,6 @@
       font-size: 42px;
       color: #b03060;
       margin-bottom: 10px;
-      font-weight: 900;
-      letter-spacing: 2px;
-      /* You can replace with custom font-family if you add one */
     }
     header p {
       color: #cc7087;
@@ -65,8 +59,6 @@
       max-width: 1200px;
       margin: auto;
       padding: 40px 20px;
-      position: relative;
-      z-index: 10;
     }
     .products {
       display: flex;
@@ -101,7 +93,7 @@
       border: none;
       border-radius: 0;
     }
-    /* Smaller wine image */
+    /* Smaller, properly scaled wine image */
     .product img[alt="Wine Bottle"] {
       max-height: 100px;
       max-width: 40%;
@@ -147,8 +139,6 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       border: 1px solid #f3cbd5;
       text-align: center;
-      position: relative;
-      z-index: 10;
     }
     .cart h3 {
       margin-bottom: 15px;
@@ -160,8 +150,26 @@
       margin-bottom: 15px;
       color: #b03060;
       font-weight: 600;
-      max-height: 200px;
-      overflow-y: auto;
+    }
+    .cart ul li button {
+      margin-left: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      padding: 3px 7px;
+      background: #f28ca3;
+      color: white;
+      transition: background 0.3s;
+    }
+    .cart ul li button:hover {
+      background: #e36c88;
+    }
+    .cart ul li button.remove-btn {
+      background: #d9534f;
+    }
+    .cart ul li button.remove-btn:hover {
+      background: #c9302c;
     }
     .cart p,
     .cart span {
@@ -189,8 +197,6 @@
       background: #fff0f5;
       border-top: 2px solid #f3cbd5;
       color: #b76e79;
-      position: relative;
-      z-index: 10;
     }
     /* MOBILE RESPONSIVE */
     @media (max-width: 768px) {
@@ -210,20 +216,6 @@
       header p {
         font-size: 16px;
       }
-    }
-
-    /* BACKGROUND BLUR IMAGE */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: url('images/bg.jpg') no-repeat center center/cover;
-      filter: blur(8px);
-      z-index: -1;
-      opacity: 0.3;
     }
   </style>
 </head>
@@ -258,7 +250,7 @@
             <option>Merlot</option>
             <option>Coffee Pinotage</option>
           </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="1" />
+          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
           <button onclick="addToCart('Wine')">Add to Cart</button>
         </div>
       </div>
@@ -275,7 +267,7 @@
             <option>Orange & Lime</option>
             <option>Lavender Infused</option>
           </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="1" />
+          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
           <button onclick="addToCart('Gin')">Add to Cart</button>
         </div>
       </div>
@@ -288,7 +280,7 @@
             <option>Vanilla</option>
             <option>Triple Distilled</option>
           </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="1" />
+          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
           <button onclick="addToCart('Vodka')">Add to Cart</button>
         </div>
       </div>
@@ -299,14 +291,12 @@
       <ul id="cartItems"></ul>
       <p>Courier Fee: <span id="courierFee">R0</span></p>
       <h3>Total: <span id="totalCost">R0</span></h3>
-
       <!-- Yoco Payment Button -->
       <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">
         Pay with Yoco
       </a>
-
       <!-- WhatsApp Order Button -->
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left:15px; pointer-events: none; opacity: 0.6;">
+      <a href="#" id="whatsappBtn" class="btn" style="margin-left:15px;">
         Send Label & Address via WhatsApp
       </a>
     </section>
@@ -321,40 +311,55 @@
     const prices = { Wine: 75, Gin: 165, Vodka: 165 };
 
     function addToCart(type) {
-      let productType, qty;
+      let productType, qty, sel;
       if (type === 'Wine') {
-        productType = document.getElementById('wineType').value;
+        sel = document.getElementById('wineType');
+        productType = sel.value;
         qty = parseInt(document.getElementById('wineQty').value);
       } else if (type === 'Gin') {
-        productType = document.getElementById('ginType').value;
+        sel = document.getElementById('ginType');
+        productType = sel.value;
         qty = parseInt(document.getElementById('ginQty').value);
       } else if (type === 'Vodka') {
-        productType = document.getElementById('vodkaType').value;
+        sel = document.getElementById('vodkaType');
+        productType = sel.value;
         qty = parseInt(document.getElementById('vodkaQty').value);
       }
 
-      if (!productType || qty <= 0 || isNaN(qty)) {
-        alert('Please select a type and enter a valid quantity.');
+      if (!productType) {
+        alert('Please select a ' + type + ' type.');
+        return;
+      }
+      if (!qty || qty <= 0) {
+        alert('Please enter a valid quantity.');
         return;
       }
 
-      // Add to cart or update quantity
-      const existing = cartItems.find(
+      const existingIndex = cartItems.findIndex(
         item => item.type === type && item.variant === productType
       );
-      if (existing) {
-        existing.qty += qty;
+
+      if (existingIndex >= 0) {
+        cartItems[existingIndex].qty += qty;
       } else {
         cartItems.push({ type, variant: productType, qty });
       }
 
-      clearInputs(type);
       updateCartUI();
+      clearInputs(type);
     }
 
     function clearInputs(type) {
-      document.getElementById(type.toLowerCase() + 'Type').value = '';
-      document.getElementById(type.toLowerCase() + 'Qty').value = '';
+      if (type === 'Wine') {
+        document.getElementById('wineQty').value = '';
+        document.getElementById('wineType').value = '';
+      } else if (type === 'Gin') {
+        document.getElementById('ginQty').value = '';
+        document.getElementById('ginType').value = '';
+      } else if (type === 'Vodka') {
+        document.getElementById('vodkaQty').value = '';
+        document.getElementById('vodkaType').value = '';
+      }
     }
 
     function updateCartUI() {
@@ -363,44 +368,74 @@
       let total = 0;
       let totalQty = 0;
 
-      cartItems.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each)`;
-        ul.appendChild(li);
-        total += prices[item.type] * item.qty;
+      cartItems.forEach((item, index) => {
+        const itemTotal = prices[item.type] * item.qty;
+        total += itemTotal;
         totalQty += item.qty;
+
+        const li = document.createElement('li');
+        li.style.marginBottom = '10px';
+
+        li.innerHTML = `
+          <strong>${item.qty}</strong> x ${item.variant} ${item.type} (R${prices[item.type]} each) = R${itemTotal}
+          <button onclick="changeQuantity(${index}, -1)">-</button>
+          <button onclick="changeQuantity(${index}, 1)">+</button>
+          <button onclick="removeItem(${index})" class="remove-btn">Remove</button>
+        `;
+
+        ul.appendChild(li);
       });
 
-      // Courier fee calculation:
-      // R180 for 2 bottles or less, plus R12 for each bottle over 2
+      // Courier fee: R180 for 2 bottles + R12 for each extra bottle
       let courierFee = 0;
       if (totalQty > 0) {
-        if (totalQty <= 2) courierFee = 180;
-        else courierFee = 180 + (totalQty - 2) * 12;
+        courierFee = 180;
+        if (totalQty > 2) {
+          courierFee += (totalQty - 2) * 12;
+        }
       }
-
-      const totalCost = total + courierFee;
 
       document.getElementById('courierFee').textContent = `R${courierFee}`;
+      const totalCost = total + courierFee;
       document.getElementById('totalCost').textContent = `R${totalCost}`;
 
-      // WhatsApp order message
       const whatsappBtn = document.getElementById('whatsappBtn');
-      if (totalQty === 0) {
-        whatsappBtn.href = "#";
-        whatsappBtn.style.pointerEvents = "none";
-        whatsappBtn.style.opacity = "0.6";
+      if (totalCost === 0) {
+        whatsappBtn.href = '#';
+        whatsappBtn.style.pointerEvents = 'none';
+        whatsappBtn.style.opacity = '0.5';
+        whatsappBtn.title = 'Add items to cart first';
       } else {
-        let message = "Hi PHANTOM VI,%0AI'd like to order:%0A";
-        cartItems.forEach(item => {
-          message += `${item.qty} x ${item.variant} ${item.type} - R${item.qty * prices[item.type]}%0A`;
-        });
-        message += `%0ACourier Fee: R${courierFee}%0ATotal: R${totalCost}%0A%0AMy label and delivery address:%0A[Paste here]`;
+        whatsappBtn.style.pointerEvents = 'auto';
+        whatsappBtn.style.opacity = '1';
+        whatsappBtn.title = 'Send order details via WhatsApp';
 
-        whatsappBtn.href = `https://wa.me/27814458910?text=${message}`;
-        whatsappBtn.style.pointerEvents = "auto";
-        whatsappBtn.style.opacity = "1";
+        let message = 'Hello, I would like to place an order with Phantom VI:%0A%0A';
+        cartItems.forEach(item => {
+          message += `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each)%0A`;
+        });
+        message += `%0ACourier Fee: R${courierFee}%0ATotal: R${totalCost}%0A%0A`;
+        message += 'Please find my sticker labels and delivery address below:%0A';
+
+        const phoneNumber = '27814458910'; // South Africa +27 81 445 8910
+        const encodedMsg = encodeURIComponent(message);
+        whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${encodedMsg}`;
       }
+    }
+
+    function changeQuantity(index, delta) {
+      if (!cartItems[index]) return;
+      cartItems[index].qty += delta;
+      if (cartItems[index].qty <= 0) {
+        cartItems.splice(index, 1);
+      }
+      updateCartUI();
+    }
+
+    function removeItem(index) {
+      if (!cartItems[index]) return;
+      cartItems.splice(index, 1);
+      updateCartUI();
     }
   </script>
 </body>
