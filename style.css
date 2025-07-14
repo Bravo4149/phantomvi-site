@@ -10,6 +10,19 @@ body {
   color: #b03060;
   line-height: 1.6;
   scroll-behavior: smooth;
+  position: relative;
+}
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('images/bg.jpg') no-repeat center center/cover;
+  filter: blur(8px);
+  opacity: 0.7;
+  z-index: -1;
 }
 a {
   color: #b03060;
@@ -21,7 +34,7 @@ a:hover {
 
 /* HEADER */
 header {
-  background: #fff0f5;
+  background: rgba(255, 240, 245, 0.9);
   padding: 40px 20px;
   text-align: center;
   border-bottom: 2px solid #f3cbd5;
@@ -30,8 +43,10 @@ header {
   z-index: 100;
 }
 header h1 {
-  font-size: 42px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 60px;
   color: #b03060;
+  letter-spacing: 2px;
   margin-bottom: 10px;
 }
 header p {
@@ -64,7 +79,7 @@ main {
 
 /* PRODUCT CARD */
 .product {
-  background: #fffafc;
+  background: rgba(255, 250, 252, 0.95);
   border: 1px solid #f3cbd5;
   border-radius: 12px;
   width: 300px;
@@ -89,8 +104,7 @@ main {
   border: none;
   border-radius: 0;
 }
-
-/* 🔧 FIXED: Smaller, properly scaled wine image */
+/* FIXED Wine Image */
 .product img[alt="Wine Bottle"] {
   max-height: 100px;
   max-width: 40%;
@@ -132,7 +146,7 @@ main {
 .cart {
   max-width: 600px;
   margin: 50px auto;
-  background: #fffafc;
+  background: rgba(255, 250, 252, 0.95);
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -174,7 +188,7 @@ main {
 footer {
   text-align: center;
   padding: 30px;
-  background: #fff0f5;
+  background: rgba(255, 240, 245, 0.9);
   border-top: 2px solid #f3cbd5;
   color: #b76e79;
 }
@@ -185,6 +199,8 @@ footer {
   margin: 60px auto;
   padding: 40px 20px;
   text-align: center;
+  background: rgba(255, 250, 252, 0.95);
+  border-radius: 12px;
 }
 .about-section h2 {
   color: #b03060;
@@ -200,7 +216,7 @@ footer {
   max-width: 300px;
   height: auto;
   margin-bottom: 20px;
-  border-radius: 0 !important;  /* ⛔ No rounded corners */
+  border-radius: 0 !important;
   border: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -243,3 +259,4 @@ footer {
     width: 90%;
   }
 }
+
