@@ -1,330 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PHANTOM VI - Custom Bottles</title>
   <style>
-    /* RESET & GLOBAL */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    /* Basic styling */
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #ffffff;
+      background: #fff;
       color: #b03060;
       line-height: 1.6;
       scroll-behavior: smooth;
+      margin: 0;
+      padding: 20px;
     }
-    a {
-      color: #b03060;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    /* HEADER */
-    header {
-      background: #fff0f5;
-      padding: 40px 20px;
-      text-align: center;
-      border-bottom: 2px solid #f3cbd5;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    header h1 {
-      font-size: 42px;
-      color: #b03060;
-      margin-bottom: 10px;
-    }
-    header p {
-      color: #cc7087;
-      font-size: 18px;
-    }
-    nav {
-      margin-top: 10px;
-    }
-    nav a {
-      margin: 0 12px;
-      font-weight: 600;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    /* MAIN LAYOUT */
-    main {
-      max-width: 1200px;
-      margin: auto;
-      padding: 40px 20px;
-    }
-    .products {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-    }
-    /* PRODUCT CARD */
-    .product {
-      background: #fffafc;
-      border: 1px solid #f3cbd5;
-      border-radius: 12px;
-      width: 300px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      transition: transform 0.2s;
-      padding-bottom: 20px;
-    }
-    .product:hover {
-      transform: translateY(-5px);
-    }
-    .product img {
-      width: auto;
-      max-width: 100%;
-      height: auto;
-      max-height: 200px;
-      object-fit: contain;
-      display: block;
-      margin: 0 auto 10px auto;
-      background: #fff;
-      padding: 10px;
-      border: none;
-      border-radius: 0;
-    }
-    /* Smaller, properly scaled wine image */
-    .product img[alt="Wine Bottle"] {
-      max-height: 100px;
-      max-width: 40%;
-      padding: 6px;
-    }
-    /* PRODUCT FORM */
-    .product-form {
-      padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .product-form select,
-    .product-form input {
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #f0b4c4;
-      font-size: 14px;
-    }
-    .product-form input::placeholder {
-      color: #b76e79;
-    }
-    .product-form button {
-      padding: 10px;
-      background: #f28ca3;
-      color: white;
-      font-weight: bold;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .product-form button:hover {
-      background: #e36c88;
-    }
-    /* CART */
-    .cart {
-      max-width: 600px;
-      margin: 50px auto;
-      background: #fffafc;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid #f3cbd5;
-      text-align: center;
-    }
-    .cart h3 {
-      margin-bottom: 15px;
+    h1, h2 {
       color: #b03060;
     }
-    .cart ul {
-      list-style: none;
-      padding: 0;
-      margin-bottom: 15px;
-      color: #b03060;
-      font-weight: 600;
-    }
-    .cart ul li button {
-      margin-left: 5px;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      padding: 3px 7px;
-      background: #f28ca3;
-      color: white;
-      transition: background 0.3s;
-    }
-    .cart ul li button:hover {
-      background: #e36c88;
-    }
-    .cart ul li button.remove-btn {
-      background: #d9534f;
-    }
-    .cart ul li button.remove-btn:hover {
-      background: #c9302c;
-    }
-    .cart p,
-    .cart span {
-      color: #9b4c62;
-      font-size: 16px;
-    }
-    .cart .btn {
-      display: inline-block;
-      margin-top: 15px;
+    .btn {
       background: #b03060;
       color: white;
       padding: 12px 20px;
-      text-decoration: none;
       border-radius: 30px;
       font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 15px;
+      cursor: pointer;
       transition: background 0.3s;
     }
-    .cart .btn:hover {
+    .btn:hover {
       background: #90284d;
     }
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 30px;
-      background: #fff0f5;
-      border-top: 2px solid #f3cbd5;
-      color: #b76e79;
-    }
-    /* MOBILE RESPONSIVE */
-    @media (max-width: 768px) {
-      .products {
-        flex-direction: column;
-        align-items: center;
-      }
-      .product {
-        width: 90%;
-      }
-      .cart {
-        width: 90%;
-      }
-      header h1 {
-        font-size: 32px;
-      }
-      header p {
-        font-size: 16px;
-      }
+    .product-form {
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>PHANTOM VI</h1>
-    <p>Custom Wine, Gin & Vodka Made in Colesberg</p>
-    <nav>
-      <a href="#products">Products</a>
-      <a href="#cart">Order & Payment</a>
-      <a href="about.html">About Us</a>
-    </nav>
-  </header>
 
-  <main>
-    <section id="products" class="products">
-      <div class="product">
-        <img src="images/wine.jpg" alt="Wine Bottle" />
-        <h2>Wines (R75)</h2>
-        <div class="product-form">
-          <select id="wineType">
-            <option value="">Select Wine Type</option>
-            <option>Sweet Rosé</option>
-            <option>Shiraz</option>
-            <option>Sauvignon Blanc</option>
-            <option>Pinotage</option>
-            <option>Sweet White</option>
-            <option>Sweet Red</option>
-            <option>Chenin Blanc</option>
-            <option>Chardonnay</option>
-            <option>Cabernet Sauvignon</option>
-            <option>Merlot</option>
-            <option>Coffee Pinotage</option>
-          </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Wine')">Add to Cart</button>
-        </div>
-      </div>
-      <div class="product">
-        <img src="images/gin.jpg" alt="Gin Bottle" />
-        <h2>Gins (R165)</h2>
-        <div class="product-form">
-          <select id="ginType">
-            <option value="">Select Gin Type</option>
-            <option>London Dry</option>
-            <option>Strawberry</option>
-            <option>Apple & Cinnamon</option>
-            <option>Blueberry</option>
-            <option>Orange & Lime</option>
-            <option>Lavender Infused</option>
-          </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Gin')">Add to Cart</button>
-        </div>
-      </div>
-      <div class="product">
-        <img src="images/vodka.jpg" alt="Vodka Bottle" />
-        <h2>Vodkas (R165)</h2>
-        <div class="product-form">
-          <select id="vodkaType">
-            <option value="">Select Vodka Type</option>
-            <option>Vanilla</option>
-            <option>Triple Distilled</option>
-          </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Vodka')">Add to Cart</button>
-        </div>
-      </div>
-    </section>
+  <h1>PHANTOM VI</h1>
+  <p>Custom Wine, Gin & Vodka Made in Colesberg</p>
 
-    <section id="cart" class="cart">
-      <h3>Cart Summary:</h3>
-      <ul id="cartItems"></ul>
-      <p>Courier Fee: <span id="courierFee">R0</span></p>
-      <h3>Total: <span id="totalCost">R0</span></h3>
-      <!-- Yoco Payment Button -->
-      <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">
-        Pay with Yoco
-      </a>
-      <!-- WhatsApp Order Button -->
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left:15px;">
-        Send Label & Address via WhatsApp
-      </a>
-    </section>
-  </main>
+  <section class="product">
+    <h2>Wines (R75)</h2>
+    <div class="product-form">
+      <select id="wineType">
+        <option value="">Select Wine Type</option>
+        <option>Sweet Rosé</option>
+        <option>Shiraz</option>
+        <option>Sauvignon Blanc</option>
+      </select>
+      <input type="number" id="wineQty" placeholder="Quantity" min="0" />
+      <button onclick="addToCart('Wine')">Add to Cart</button>
+    </div>
+  </section>
 
-  <footer>
-    <p>Contact us on WhatsApp: <a href="tel:0814458910">081 445 8910</a></p>
-  </footer>
+  <section id="cart">
+    <h2>Cart Summary:</h2>
+    <ul id="cartItems"></ul>
+    <p>Courier Fee: <span id="courierFee">R0</span></p>
+    <h3>Total: <span id="totalCost">R0</span></h3>
+
+    <!-- Yoco Payment link -->
+    <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">
+      Pay with Yoco
+    </a>
+
+    <!-- WhatsApp button with your short link -->
+    <a href="https://wa.link/py9pq9" id="whatsappBtn" class="btn" target="_blank" rel="noopener noreferrer" style="margin-left: 15px;">
+      Send Label & Address via WhatsApp
+    </a>
+  </section>
 
   <script>
     const cartItems = [];
-    const prices = { Wine: 75, Gin: 165, Vodka: 165 };
+    const prices = { Wine: 75 };
 
     function addToCart(type) {
-      let productType, qty, sel;
-      if (type === 'Wine') {
-        sel = document.getElementById('wineType');
-        productType = sel.value;
-        qty = parseInt(document.getElementById('wineQty').value);
-      } else if (type === 'Gin') {
-        sel = document.getElementById('ginType');
-        productType = sel.value;
-        qty = parseInt(document.getElementById('ginQty').value);
-      } else if (type === 'Vodka') {
-        sel = document.getElementById('vodkaType');
-        productType = sel.value;
-        qty = parseInt(document.getElementById('vodkaQty').value);
-      }
+      let productType = document.getElementById(type.toLowerCase() + 'Type').value;
+      let qty = parseInt(document.getElementById(type.toLowerCase() + 'Qty').value);
 
       if (!productType) {
         alert('Please select a ' + type + ' type.');
@@ -335,12 +91,10 @@
         return;
       }
 
-      const existingIndex = cartItems.findIndex(
-        item => item.type === type && item.variant === productType
-      );
-
-      if (existingIndex >= 0) {
-        cartItems[existingIndex].qty += qty;
+      // Add to cart or update quantity if exists
+      let found = cartItems.find(item => item.type === type && item.variant === productType);
+      if (found) {
+        found.qty += qty;
       } else {
         cartItems.push({ type, variant: productType, qty });
       }
@@ -350,93 +104,37 @@
     }
 
     function clearInputs(type) {
-      if (type === 'Wine') {
-        document.getElementById('wineQty').value = '';
-        document.getElementById('wineType').value = '';
-      } else if (type === 'Gin') {
-        document.getElementById('ginQty').value = '';
-        document.getElementById('ginType').value = '';
-      } else if (type === 'Vodka') {
-        document.getElementById('vodkaQty').value = '';
-        document.getElementById('vodkaType').value = '';
-      }
+      document.getElementById(type.toLowerCase() + 'Type').value = '';
+      document.getElementById(type.toLowerCase() + 'Qty').value = '';
     }
 
     function updateCartUI() {
       const ul = document.getElementById('cartItems');
       ul.innerHTML = '';
+
       let total = 0;
       let totalQty = 0;
-
-      cartItems.forEach((item, index) => {
-        const itemTotal = prices[item.type] * item.qty;
-        total += itemTotal;
-        totalQty += item.qty;
-
+      cartItems.forEach(item => {
         const li = document.createElement('li');
-        li.style.marginBottom = '10px';
-
-        li.innerHTML = `
-          <strong>${item.qty}</strong> x ${item.variant} ${item.type} (R${prices[item.type]} each) = R${itemTotal}
-          <button onclick="changeQuantity(${index}, -1)">-</button>
-          <button onclick="changeQuantity(${index}, 1)">+</button>
-          <button onclick="removeItem(${index})" class="remove-btn">Remove</button>
-        `;
-
+        li.textContent = `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each)`;
         ul.appendChild(li);
+        total += prices[item.type] * item.qty;
+        totalQty += item.qty;
       });
 
-      // Courier fee: R180 for 2 bottles + R12 for each extra bottle
+      // Calculate courier fee: R180 for 2 bottles + R12 for each extra bottle
       let courierFee = 0;
       if (totalQty > 0) {
         courierFee = 180;
         if (totalQty > 2) {
-          courierFee += (totalQty - 2) * 12;
+          courierFee += (totalQty - 2) * 17;
         }
       }
 
       document.getElementById('courierFee').textContent = `R${courierFee}`;
-      const totalCost = total + courierFee;
-      document.getElementById('totalCost').textContent = `R${totalCost}`;
-
-      const whatsappBtn = document.getElementById('whatsappBtn');
-      if (totalCost === 0) {
-        whatsappBtn.href = '#';
-        whatsappBtn.style.pointerEvents = 'none';
-        whatsappBtn.style.opacity = '0.5';
-        whatsappBtn.title = 'Add items to cart first';
-      } else {
-        whatsappBtn.style.pointerEvents = 'auto';
-        whatsappBtn.style.opacity = '1';
-        whatsappBtn.title = 'Send order details via WhatsApp';
-
-        let message = 'Hello, I would like to place an order with Phantom VI:%0A%0A';
-        cartItems.forEach(item => {
-          message += `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each)%0A`;
-        });
-        message += `%0ACourier Fee: R${courierFee}%0ATotal: R${totalCost}%0A%0A`;
-        message += 'Please find my sticker labels and delivery address below:%0A';
-
-        const phoneNumber = '27814458910'; // South Africa +27 81 445 8910
-        const encodedMsg = encodeURIComponent(message);
-        whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${encodedMsg}`;
-      }
-    }
-
-    function changeQuantity(index, delta) {
-      if (!cartItems[index]) return;
-      cartItems[index].qty += delta;
-      if (cartItems[index].qty <= 0) {
-        cartItems.splice(index, 1);
-      }
-      updateCartUI();
-    }
-
-    function removeItem(index) {
-      if (!cartItems[index]) return;
-      cartItems.splice(index, 1);
-      updateCartUI();
+      document.getElementById('totalCost').textContent = `R${total + courierFee}`;
     }
   </script>
+
 </body>
 </html>
