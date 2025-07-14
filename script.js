@@ -54,8 +54,8 @@ function updateCartUI() {
 
   document.getElementById('courierFee').textContent = `R${courierFee}`;
   document.getElementById('totalCost').textContent = `R${total + courierFee}`;
-
-  // WhatsApp button uses your wa.link short URL (fixed)
+  
+  // WhatsApp button disabled if no items
   const whatsappBtn = document.getElementById('whatsappBtn');
   if (total === 0) {
     whatsappBtn.style.pointerEvents = 'none';
