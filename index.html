@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PHANTOM VI - Custom Bottles</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -19,7 +19,7 @@
 
   <main>
     <section id="products" class="products">
-      <!-- WINE -->
+      <!-- Wine -->
       <div class="product">
         <img src="images/wine.jpg" alt="Wine Bottle" />
         <h2>Wines (R75)</h2>
@@ -38,12 +38,12 @@
             <option>Merlot</option>
             <option>Coffee Pinotage</option>
           </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="1" />
-          <button onclick="addToCart('Wine')">Add Wine</button>
+          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
+          <button onclick="addToCart('Wine')">Add to Cart</button>
         </div>
       </div>
 
-      <!-- GIN -->
+      <!-- Gin -->
       <div class="product">
         <img src="images/gin.jpg" alt="Gin Bottle" />
         <h2>Gins (R165)</h2>
@@ -57,12 +57,12 @@
             <option>Orange & Lime</option>
             <option>Lavender Infused</option>
           </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="1" />
-          <button onclick="addToCart('Gin')">Add Gin</button>
+          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
+          <button onclick="addToCart('Gin')">Add to Cart</button>
         </div>
       </div>
 
-      <!-- VODKA -->
+      <!-- Vodka -->
       <div class="product">
         <img src="images/vodka.jpg" alt="Vodka Bottle" />
         <h2>Vodkas (R165)</h2>
@@ -72,19 +72,24 @@
             <option>Vanilla</option>
             <option>Triple Distilled</option>
           </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="1" />
-          <button onclick="addToCart('Vodka')">Add Vodka</button>
+          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
+          <button onclick="addToCart('Vodka')">Add to Cart</button>
         </div>
       </div>
     </section>
 
-    <!-- CART SECTION -->
+    <!-- Cart Section -->
     <section id="cart" class="cart">
       <h3>Cart Summary:</h3>
       <ul id="cartItems"></ul>
       <p>Courier Fee: <span id="courierFee">R0</span></p>
       <h3>Total: <span id="totalCost">R0</span></h3>
-      <a href="#" id="whatsappBtn" class="btn">Send Label & Address via WhatsApp</a>
+
+      <!-- Yoco Payment -->
+      <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">Pay with Yoco</a>
+
+      <!-- WhatsApp Button -->
+      <a href="https://wa.link/py9pq9" id="whatsappBtn" class="btn" style="margin-left: 10px;">Send Label & Address via WhatsApp</a>
     </section>
   </main>
 
