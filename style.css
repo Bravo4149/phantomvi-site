@@ -1,0 +1,245 @@
+/* RESET & GLOBAL */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #ffffff;
+  color: #b03060;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+a {
+  color: #b03060;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* HEADER */
+header {
+  background: #fff0f5;
+  padding: 40px 20px;
+  text-align: center;
+  border-bottom: 2px solid #f3cbd5;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+header h1 {
+  font-size: 42px;
+  color: #b03060;
+  margin-bottom: 10px;
+}
+header p {
+  color: #cc7087;
+  font-size: 18px;
+}
+nav {
+  margin-top: 10px;
+}
+nav a {
+  margin: 0 12px;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* MAIN LAYOUT */
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+}
+.products {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+/* PRODUCT CARD */
+.product {
+  background: #fffafc;
+  border: 1px solid #f3cbd5;
+  border-radius: 12px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+  padding-bottom: 20px;
+}
+.product:hover {
+  transform: translateY(-5px);
+}
+.product img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 10px auto;
+  background: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 0;
+}
+
+/* 🔧 FIXED: Smaller, properly scaled wine image */
+.product img[alt="Wine Bottle"] {
+  max-height: 100px;
+  max-width: 40%;
+  padding: 6px;
+}
+
+/* PRODUCT FORM */
+.product-form {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.product-form select,
+.product-form input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #f0b4c4;
+  font-size: 14px;
+}
+.product-form input::placeholder {
+  color: #b76e79;
+}
+.product-form button {
+  padding: 10px;
+  background: #f28ca3;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.product-form button:hover {
+  background: #e36c88;
+}
+
+/* CART */
+.cart {
+  max-width: 600px;
+  margin: 50px auto;
+  background: #fffafc;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3cbd5;
+  text-align: center;
+}
+.cart h3 {
+  margin-bottom: 15px;
+  color: #b03060;
+}
+.cart ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 15px;
+  color: #b03060;
+  font-weight: 600;
+}
+.cart p,
+.cart span {
+  color: #9b4c62;
+  font-size: 16px;
+}
+.cart .btn {
+  display: inline-block;
+  margin-top: 15px;
+  background: #b03060;
+  color: white;
+  padding: 12px 20px;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+.cart .btn:hover {
+  background: #90284d;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 30px;
+  background: #fff0f5;
+  border-top: 2px solid #f3cbd5;
+  color: #b76e79;
+}
+
+/* ABOUT US SECTION */
+.about-section {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 40px 20px;
+  text-align: center;
+}
+.about-section h2 {
+  color: #b03060;
+  margin-bottom: 20px;
+  font-size: 32px;
+}
+.about-section p {
+  color: #3f3f3f;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+.about-section img {
+  max-width: 300px;
+  height: auto;
+  margin-bottom: 20px;
+  border-radius: 0 !important;  /* ⛔ No rounded corners */
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* SMOOTH SCROLL BUTTON (if used) */
+.scroll-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: #b03060;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .products {
+    flex-direction: column;
+    align-items: center;
+  }
+  .product {
+    width: 90%;
+  }
+  .cart {
+    width: 90%;
+  }
+  header h1 {
+    font-size: 32px;
+  }
+  header p {
+    font-size: 16px;
+  }
+  .about-section img {
+    width: 90%;
+  }
+}
