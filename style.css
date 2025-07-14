@@ -191,3 +191,28 @@ footer {
     font-size: 16px;
   }
 }
+/* Cart item animation */
+.cart ul li.animate-add {
+  animation: fadeInSlide 0.4s ease-out;
+  background-color: #fff0f5;
+  border-radius: 8px;
+  padding: 5px;
+  margin-bottom: 6px;
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Cart highlight effect */
+.cart.highlight {
+  box-shadow: 0 0 15px #f28ca3;
+  transition: box-shadow 0.3s ease-in-out;
+}
