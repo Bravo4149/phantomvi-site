@@ -1,119 +1,99 @@
-let cartItems = [];
+let cart = [];
 const prices = { Wine: 75, Gin: 165, Vodka: 165 };
 
+// Add product to cart with loading effect
 function addToCart(type) {
-  let productType, qty, sel, qtyInput, button;
+  const qtyInput = document.getElementById(type.toLowerCase() + 'Qty');
+  const typeSelect = document.getElementById(type.toLowerCase() + 'Type');
+  const qty = parseInt(qtyInput.value);
+  const selectedType = typeSelect.value;
 
-  if (type === 'Wine') {
-    sel = document.getElementById('wineType');
-    qtyInput = document.getElementById('wineQty');
-  } else if (type === 'Gin') {
-    sel = document.getElementById('ginType');
-    qtyInput = document.getElementById('ginQty');
-  } else if (type === 'Vodka') {
-    sel = document.getElementById('vodkaType');
-    qtyInput = document.getElementById('vodkaQty');
-  }
-
-  productType = sel.value;
-  qty = parseInt(qtyInput.value);
-  button = qtyInput.nextElementSibling;
-
-  if (!productType) {
-    alert('Please select a ' + type + ' type.');
+  if (!selectedType) {
+    alert(`Please select a ${type} type.`);
     return;
   }
   if (!qty || qty <= 0) {
-    alert('Please enter a valid quantity.');
+    alert('Enter a valid quantity.');
     return;
   }
 
-  // Add loading effect
-  button.classList.add('button-loading');
+  // Add loading spinner to button
+  const button = qtyInput.parentElement.querySelector('button');
+  button.classList.add('loading');
   button.disabled = true;
 
   setTimeout(() => {
-    // Check if already exists
-    const existingIndex = cartItems.findIndex(
-      item => item.type === type && item.variant === productType
+    const existingIndex = cart.findIndex(
+      item => item.category === type && item.name === selectedType
     );
+
     if (existingIndex >= 0) {
-      cartItems[existingIndex].qty += qty;
+      cart[existingIndex].qty += qty;
     } else {
-      cartItems.push({ type, variant: productType, qty });
+      cart.push({ category: type, name: selectedType, qty });
     }
 
-    updateCartUI();
-    clearInputs(type);
+    updateCart();
+    qtyInput.value = '';
+    typeSelect.value = '';
 
-    // Remove loading effect
-    button.classList.remove('button-loading');
+    // Remove loading
+    button.classList.remove('loading');
     button.disabled = false;
-  }, 500); // Short delay to show loader
+  }, 500); // Half second loading effect
 }
 
-function clearInputs(type) {
-  if(type === 'Wine'){
-    document.getElementById('wineQty').value = '';
-    document.getElementById('wineType').value = '';
-  } else if(type === 'Gin'){
-    document.getElementById('ginQty').value = '';
-    document.getElementById('ginType').value = '';
-  } else if(type === 'Vodka'){
-    document.getElementById('vodkaQty').value = '';
-    document.getElementById('vodkaType').value = '';
-  }
-}
+// Update cart display
+function updateCart() {
+  const cartItems = document.getElementById('cartItems');
+  cartItems.innerHTML = '';
 
-function updateCartUI() {
-  const ul = document.getElementById('cartItems');
-  ul.innerHTML = '';
-  let total = 0;
   let totalQty = 0;
+  let total = 0;
 
-  cartItems.forEach((item, index) => {
-    const li = document.createElement('li');
-    li.innerHTML = `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each)
-      <button onclick="removeFromCart(${index})" style="margin-left: 10px; background: #ccc; border: none; padding: 2px 6px; cursor: pointer;">-</button>`;
-    ul.appendChild(li);
-    total += prices[item.type] * item.qty;
+  cart.forEach((item, index) => {
+    const itemTotal = item.qty * prices[item.category];
     totalQty += item.qty;
+    total += itemTotal;
+
+    const li = document.createElement('li');
+    li.innerHTML = `
+      ${item.qty} x ${item.category} (${item.name}) - R${itemTotal}
+      <button class="remove-btn" onclick="removeFromCart(${index})">x</button>
+    `;
+    cartItems.appendChild(li);
   });
 
-  const courierFee = totalQty <= 2 && totalQty > 0 ? 180 : totalQty > 2 ? 180 + (totalQty - 2) * 12 : 0;
-  document.getElementById('courierFee').textContent = `R${courierFee}`;
+  const courierFee = totalQty > 0 ? (totalQty <= 2 ? 180 : 180 + (totalQty - 2) * 12) : 0;
+  const totalWithCourier = total + courierFee;
 
-  const totalCost = total + courierFee;
-  document.getElementById('totalCost').textContent = `R${totalCost}`;
+  document.getElementById('courierFee').innerText = `R${courierFee}`;
+  document.getElementById('totalCost').innerText = `R${totalWithCourier}`;
 
-  const whatsappBtn = document.getElementById('whatsappBtn');
-  if (totalCost === 0) {
-    whatsappBtn.href = '#';
-    whatsappBtn.style.pointerEvents = 'none';
-    whatsappBtn.style.opacity = '0.5';
-    whatsappBtn.title = "Add items to cart first";
-  } else {
-    whatsappBtn.style.pointerEvents = 'auto';
-    whatsappBtn.style.opacity = '1';
-    whatsappBtn.title = "Send order details via WhatsApp";
-
-    let message = 'Hello, I have placed an order with Phantom VI:%0A%0A';
-    cartItems.forEach(item => {
-      message += `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]} each)%0A`;
-    });
-    message += `%0ACourier Fee: R${courierFee}%0ATotal: R${totalCost}%0A%0A`;
-    message += 'Please find my sticker labels and delivery address below:';
-
-    const encodedMsg = encodeURIComponent(message);
-    whatsappBtn.href = `https://wa.link/py9pq9?text=${encodedMsg}`;
-  }
+  updateWhatsAppLink(courierFee, totalWithCourier);
 }
 
+// Remove item from cart
 function removeFromCart(index) {
-  if (cartItems[index].qty > 1) {
-    cartItems[index].qty--;
-  } else {
-    cartItems.splice(index, 1);
+  cart.splice(index, 1);
+  updateCart();
+}
+
+// Generate WhatsApp link using wa.link
+function updateWhatsAppLink(courier, total) {
+  if (cart.length === 0) {
+    document.getElementById('whatsappBtn').href = "#";
+    return;
   }
-  updateCartUI();
+
+  let message = "Hi PHANTOM VI, I'd like to order:\n";
+  cart.forEach(item => {
+    const line = `${item.qty} x ${item.category} (${item.name}) - R${item.qty * prices[item.category]}\n`;
+    message += line;
+  });
+
+  message += `Courier Fee: R${courier}\nTotal: R${total}\n\nHere is my delivery address & label:`;
+
+  const fullLink = `https://wa.link/py9pq9?text=${encodeURIComponent(message)}`;
+  document.getElementById('whatsappBtn').href = fullLink;
 }
