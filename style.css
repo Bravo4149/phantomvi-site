@@ -233,3 +233,34 @@ footer {
     font-size: 16px;
   }
 }
+.team-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.team-member {
+  width: 200px;
+  text-align: center;
+}
+
+.team-member img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.team-member h4 {
+  margin-top: 10px;
+  color: #b03060;
+  font-size: 18px;
+}
+
+.team-member p {
+  color: #555;
+  font-size: 14px;
+}
