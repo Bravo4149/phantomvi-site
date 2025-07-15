@@ -3,32 +3,142 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>About PHANTOM VI</title>
+  <title>About Us - PHANTOM VI</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      background: url('images/bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      scroll-behavior: smooth;
+      margin: 0;
+    }
+
+    .bg-overlay {
+      background-color: rgba(0, 0, 0, 0.55);
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    header h1 {
+      font-size: 42px;
+      color: #f28ca3;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 18px;
+      color: #fff0f5;
+    }
+
+    nav {
+      margin-top: 10px;
+    }
+
+    nav a {
+      margin: 0 12px;
+      font-weight: 600;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #f9cbd8;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .about-section {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .about-section img {
+      max-width: 300px;
+      height: auto;
+      margin-bottom: 20px;
+      border-radius: 0;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .about-section h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #f4a4ba;
+    }
+
+    .about-section p {
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #fff;
+      line-height: 1.7;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-top: 2px solid rgba(255, 255, 255, 0.15);
+      color: #f3ccd6;
+    }
+
+    @media (max-width: 768px) {
+      .about-section img {
+        width: 90%;
+      }
+
+      header h1 {
+        font-size: 32px;
+      }
+
+      header p {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>PHANTOM VI</h1>
-    <p>Crafted Spirits from Colesberg</p>
-    <nav>
-      <a href="index.html#products">Products</a>
-      <a href="index.html#cart">Order</a>
-      <a href="about.html">About Us</a>
-    </nav>
-  </header>
+  <div class="bg-overlay">
+    <header>
+      <h1>PHANTOM VI</h1>
+      <p>From Ashes to Glory — Born in the Free State, Raised in Colesberg</p>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+      </nav>
+    </header>
 
-  <main class="about-section">
-    <h2>From Ashes to Glory: Our Story</h2>
-    <img src="images/vincent.jpg" alt="Founder Vincent Makafu" />
+    <main class="about-section">
+      <img src="images/founder.jpg" alt="Vincent Makafu - Founder of Phantom VI" />
+      <h2>About Phantom VI</h2>
+      <p>
+        PHANTOM VI was founded in 2015 by <strong>Vincent Makafu</strong> in the heart of the Free State.
+        What started as a humble vision turned into one of South Africa’s most promising independent liquor brands.
+      </p>
+      <p>
+        Now based in Colesberg, Vincent is considered one of the best in the custom wine and gin game.
+        With hard work and unmatched vision, he grew PHANTOM VI into a premium solution for individuals looking to start or elevate their own alcohol brands.
+      </p>
+      <p>
+        We offer full product development, brand consultation, and licensing guidance — even allowing new businesses to operate under our license for demos and events.
+        Your brand deserves a story. Let us help you tell it.
+      </p>
+    </main>
 
-    <p><strong>PHANTOM VI</strong> was established by <strong>Vincent Makafu</strong> in 2015, born in the heart of the Free State, South Africa. With nothing but a vision, he began crafting high-quality spirits that echoed elegance, authenticity, and local pride.</p>
-
-    <p>What started as a small operation has now grown into a respected custom alcohol brand operating proudly from <strong>Colesberg</strong>. Vincent is regarded as one of the most determined and innovative figures in the local beverage scene—proof that resilience, creativity, and vision can lead from ashes to glory.</p>
-
-    <h2>Branding & Licensing Support</h2>
-    <p>We help you brand your own bottles with label design, logo refinement, and strategy guidance. For newcomers to the industry, we allow promotional sales under the PHANTOM VI license—compliant with South African liquor laws.</p>
-
-    <h2>License When You're Ready</h2>
-    <p>We’ll walk with you when you're ready to obtain your own liquor license. Whether you're gifting, selling at events, or preparing for stores, we help make it happen.</p>
-
-    <ul style="text-align: left; margin-top: 20px; font-size: 15px;">
+    <footer>
+      <p>&copy; 2025 Phantom VI. All rights reserved. Site by Vincent Makafu.</p>
+    </footer>
+  </div>
+</body>
+</html>
