@@ -1,99 +1,73 @@
-let cart = [];
-const prices = { Wine: 75, Gin: 165, Vodka: 165 };
+<script>
+  let cartItems = [];
+  const prices = { Wine: 75, Gin: 165, Vodka: 165 };
 
-// Add product to cart with loading effect
-function addToCart(type) {
-  const qtyInput = document.getElementById(type.toLowerCase() + 'Qty');
-  const typeSelect = document.getElementById(type.toLowerCase() + 'Type');
-  const qty = parseInt(qtyInput.value);
-  const selectedType = typeSelect.value;
+  function addToCart(type) {
+    const qtyInput = document.getElementById(type.toLowerCase() + 'Qty');
+    const selectInput = document.getElementById(type.toLowerCase() + 'Type');
+    const qty = parseInt(qtyInput.value);
+    const variant = selectInput.value;
 
-  if (!selectedType) {
-    alert(`Please select a ${type} type.`);
-    return;
-  }
-  if (!qty || qty <= 0) {
-    alert('Enter a valid quantity.');
-    return;
-  }
-
-  // Add loading spinner to button
-  const button = qtyInput.parentElement.querySelector('button');
-  button.classList.add('loading');
-  button.disabled = true;
-
-  setTimeout(() => {
-    const existingIndex = cart.findIndex(
-      item => item.category === type && item.name === selectedType
-    );
-
-    if (existingIndex >= 0) {
-      cart[existingIndex].qty += qty;
-    } else {
-      cart.push({ category: type, name: selectedType, qty });
+    if (!variant || qty <= 0) {
+      alert('Please select type and quantity');
+      return;
     }
 
-    updateCart();
+    const existing = cartItems.find(item => item.type === type && item.variant === variant);
+    if (existing) {
+      existing.qty += qty;
+    } else {
+      cartItems.push({ type, variant, qty });
+    }
+
     qtyInput.value = '';
-    typeSelect.value = '';
-
-    // Remove loading
-    button.classList.remove('loading');
-    button.disabled = false;
-  }, 500); // Half second loading effect
-}
-
-// Update cart display
-function updateCart() {
-  const cartItems = document.getElementById('cartItems');
-  cartItems.innerHTML = '';
-
-  let totalQty = 0;
-  let total = 0;
-
-  cart.forEach((item, index) => {
-    const itemTotal = item.qty * prices[item.category];
-    totalQty += item.qty;
-    total += itemTotal;
-
-    const li = document.createElement('li');
-    li.innerHTML = `
-      ${item.qty} x ${item.category} (${item.name}) - R${itemTotal}
-      <button class="remove-btn" onclick="removeFromCart(${index})">x</button>
-    `;
-    cartItems.appendChild(li);
-  });
-
-  const courierFee = totalQty > 0 ? (totalQty <= 2 ? 180 : 180 + (totalQty - 2) * 12) : 0;
-  const totalWithCourier = total + courierFee;
-
-  document.getElementById('courierFee').innerText = `R${courierFee}`;
-  document.getElementById('totalCost').innerText = `R${totalWithCourier}`;
-
-  updateWhatsAppLink(courierFee, totalWithCourier);
-}
-
-// Remove item from cart
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  updateCart();
-}
-
-// Generate WhatsApp link using wa.link
-function updateWhatsAppLink(courier, total) {
-  if (cart.length === 0) {
-    document.getElementById('whatsappBtn').href = "#";
-    return;
+    selectInput.value = '';
+    updateCart();
   }
 
-  let message = "Hi PHANTOM VI, I'd like to order:\n";
-  cart.forEach(item => {
-    const line = `${item.qty} x ${item.category} (${item.name}) - R${item.qty * prices[item.category]}\n`;
-    message += line;
-  });
+  function updateCart() {
+    const cartList = document.getElementById('cartItems');
+    cartList.innerHTML = '';
 
-  message += `Courier Fee: R${courier}\nTotal: R${total}\n\nHere is my delivery address & label:`;
+    let totalQty = 0;
+    let totalCost = 0;
 
-  const fullLink = `https://wa.link/py9pq9?text=${encodeURIComponent(message)}`;
-  document.getElementById('whatsappBtn').href = fullLink;
-}
+    cartItems.forEach(item => {
+      const itemTotal = item.qty * prices[item.type];
+      const li = document.createElement('li');
+      li.textContent = `${item.qty} x ${item.variant} ${item.type} - R${itemTotal}`;
+      cartList.appendChild(li);
+      totalQty += item.qty;
+      totalCost += itemTotal;
+    });
+
+    // Calculate courier fee
+    let courier = 0;
+    if (totalQty > 0) {
+      courier = 180;
+      if (totalQty > 2) {
+        courier += (totalQty - 2) * 12;
+      }
+    }
+
+    const grandTotal = totalCost + courier;
+
+    document.getElementById('courierFee').innerText = `R${courier}`;
+    document.getElementById('totalCost').innerText = `R${grandTotal}`;
+
+    // Create WhatsApp message with order details
+    let message = `Hello PHANTOM VI,%0AI'm placing an order:%0A`;
+    cartItems.forEach(item => {
+      message += `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]})%0A`;
+    });
+    message += `Courier: R${courier}%0ATotal: R${grandTotal}%0A`;
+    message += `%0AI have completed payment via Yoco.%0AHere is my sticker label and delivery address:%0A`;
+
+    // Encode & update WhatsApp link
+    const whatsappLink = `https://wa.link/py9pq9?text=${message}`;
+    const waBtn = document.getElementById('whatsappBtn');
+    waBtn.href = whatsappLink;
+    waBtn.style.opacity = grandTotal > 0 ? '1' : '0.5';
+    waBtn.style.pointerEvents = grandTotal > 0 ? 'auto' : 'none';
+  }
+</script>
