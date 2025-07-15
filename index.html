@@ -38,7 +38,7 @@
             <option>Merlot</option>
             <option>Coffee Pinotage</option>
           </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="1" />
+          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
           <button onclick="addToCart('Wine')">Add to Cart</button>
         </div>
       </div>
@@ -57,7 +57,7 @@
             <option>Orange & Lime</option>
             <option>Lavender Infused</option>
           </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="1" />
+          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
           <button onclick="addToCart('Gin')">Add to Cart</button>
         </div>
       </div>
@@ -72,32 +72,36 @@
             <option>Vanilla</option>
             <option>Triple Distilled</option>
           </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="1" />
+          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
           <button onclick="addToCart('Vodka')">Add to Cart</button>
         </div>
       </div>
     </section>
 
+    <!-- CART SECTION -->
     <section id="cart" class="cart">
       <h3>Cart Summary:</h3>
       <ul id="cartItems"></ul>
       <p>Courier Fee: <span id="courierFee">R0</span></p>
       <h3>Total: <span id="totalCost">R0</span></h3>
 
+      <!-- Yoco Payment -->
       <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">
         Pay with Yoco
       </a>
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left: 15px;" title="Send order via WhatsApp">
+
+      <!-- WhatsApp Checkout -->
+      <a href="#" id="whatsappBtn" class="btn" style="margin-left: 15px;">
         Send Label & Address via WhatsApp
       </a>
     </section>
   </main>
 
   <footer>
-    <p>Contact us on WhatsApp: <a href="https://wa.me/27814458910">081 445 8910</a></p>
-    <p>&copy; 2025 PHANTOM VI. All rights reserved.</p>
+    <p>Contact us on WhatsApp: <a href="tel:0814458910">081 445 8910</a> | &copy; 2025 PHANTOM VI</p>
   </footer>
 
+  <!-- ✅ SCRIPT -->
   <script>
     let cartItems = [];
     const prices = { Wine: 75, Gin: 165, Vodka: 165 };
@@ -132,21 +136,23 @@
       let totalQty = 0;
       let totalCost = 0;
 
-      cartItems.forEach(item => {
+      cartItems.forEach((item, index) => {
         const itemTotal = item.qty * prices[item.type];
-        const li = document.createElement('li');
-        li.textContent = `${item.qty} x ${item.variant} ${item.type} - R${itemTotal}`;
-        cartList.appendChild(li);
         totalQty += item.qty;
         totalCost += itemTotal;
+
+        const li = document.createElement('li');
+        li.innerHTML = `
+          ${item.qty} x ${item.variant} ${item.type} - R${itemTotal}
+          <button onclick="changeQty(${index}, -1)">−</button>
+          <button onclick="changeQty(${index}, 1)">+</button>
+        `;
+        cartList.appendChild(li);
       });
 
       let courier = 0;
       if (totalQty > 0) {
-        courier = 180;
-        if (totalQty > 2) {
-          courier += (totalQty - 2) * 12;
-        }
+        courier = 180 + Math.max(0, (totalQty - 2) * 12);
       }
 
       const grandTotal = totalCost + courier;
@@ -165,6 +171,14 @@
       waBtn.href = whatsappLink;
       waBtn.style.opacity = grandTotal > 0 ? '1' : '0.5';
       waBtn.style.pointerEvents = grandTotal > 0 ? 'auto' : 'none';
+    }
+
+    function changeQty(index, delta) {
+      cartItems[index].qty += delta;
+      if (cartItems[index].qty <= 0) {
+        cartItems.splice(index, 1);
+      }
+      updateCart();
     }
   </script>
 </body>
