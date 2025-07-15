@@ -216,3 +216,29 @@ footer {
   box-shadow: 0 0 15px #f28ca3;
   transition: box-shadow 0.3s ease-in-out;
 }
+/* Spinner Loader */
+.button-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.button-loading::after {
+  content: "";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 3px solid #fff;
+  border-top: 3px solid #b03060;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
