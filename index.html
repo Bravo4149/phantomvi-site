@@ -19,7 +19,7 @@
 
   <main>
     <section id="products" class="products">
-      <!-- Wine -->
+      <!-- WINE -->
       <div class="product">
         <img src="images/wine.jpg" alt="Wine Bottle" />
         <h2>Wines (R75)</h2>
@@ -38,12 +38,12 @@
             <option>Merlot</option>
             <option>Coffee Pinotage</option>
           </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
+          <input type="number" id="wineQty" placeholder="Quantity" min="1" />
           <button onclick="addToCart('Wine')">Add to Cart</button>
         </div>
       </div>
 
-      <!-- Gin -->
+      <!-- GIN -->
       <div class="product">
         <img src="images/gin.jpg" alt="Gin Bottle" />
         <h2>Gins (R165)</h2>
@@ -57,12 +57,12 @@
             <option>Orange & Lime</option>
             <option>Lavender Infused</option>
           </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
+          <input type="number" id="ginQty" placeholder="Quantity" min="1" />
           <button onclick="addToCart('Gin')">Add to Cart</button>
         </div>
       </div>
 
-      <!-- Vodka -->
+      <!-- VODKA -->
       <div class="product">
         <img src="images/vodka.jpg" alt="Vodka Bottle" />
         <h2>Vodkas (R165)</h2>
@@ -72,29 +72,24 @@
             <option>Vanilla</option>
             <option>Triple Distilled</option>
           </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
+          <input type="number" id="vodkaQty" placeholder="Quantity" min="1" />
           <button onclick="addToCart('Vodka')">Add to Cart</button>
         </div>
       </div>
     </section>
 
-    <!-- Cart -->
     <section id="cart" class="cart">
       <h3>Cart Summary:</h3>
       <ul id="cartItems"></ul>
       <p>Courier Fee: <span id="courierFee">R0</span></p>
       <h3>Total: <span id="totalCost">R0</span></h3>
 
-      <!-- Payment and WhatsApp Buttons -->
       <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">
         Pay with Yoco
       </a>
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left:15px;" title="Please complete payment first">
+      <a href="#" id="whatsappBtn" class="btn" style="margin-left: 15px;" title="Send order via WhatsApp">
         Send Label & Address via WhatsApp
       </a>
-      <p style="font-size: 14px; color: #999; margin-top: 10px;">
-        ✅ Click after paying on Yoco to complete your order via WhatsApp.
-      </p>
     </section>
   </main>
 
@@ -103,7 +98,6 @@
     <p>&copy; 2025 PHANTOM VI. All rights reserved.</p>
   </footer>
 
-  <!-- JavaScript -->
   <script>
     let cartItems = [];
     const prices = { Wine: 75, Gin: 165, Vodka: 165 };
@@ -128,7 +122,6 @@
 
       qtyInput.value = '';
       selectInput.value = '';
-
       updateCart();
     }
 
@@ -140,8 +133,8 @@
       let totalCost = 0;
 
       cartItems.forEach(item => {
-        const li = document.createElement('li');
         const itemTotal = item.qty * prices[item.type];
+        const li = document.createElement('li');
         li.textContent = `${item.qty} x ${item.variant} ${item.type} - R${itemTotal}`;
         cartList.appendChild(li);
         totalQty += item.qty;
@@ -165,11 +158,11 @@
         message += `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]})%0A`;
       });
       message += `Courier: R${courier}%0ATotal: R${grandTotal}%0A`;
-      message += `%0AI have completed payment via Yoco.%0AHere is my sticker label and delivery address:`;
+      message += `%0AI have completed payment via Yoco.%0AHere is my sticker label and delivery address:%0A`;
 
-      const encoded = encodeURIComponent(message);
+      const whatsappLink = `https://wa.link/py9pq9?text=${message}`;
       const waBtn = document.getElementById('whatsappBtn');
-      waBtn.href = `https://wa.link/py9pq9?text=${encoded}`;
+      waBtn.href = whatsappLink;
       waBtn.style.opacity = grandTotal > 0 ? '1' : '0.5';
       waBtn.style.pointerEvents = grandTotal > 0 ? 'auto' : 'none';
     }
