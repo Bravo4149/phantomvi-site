@@ -3,95 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Us - PHANTOM VI</title>
+  <title>About - PHANTOM VI</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      background-image: url('images/bg.jpg');
-      background-size: cover;
-      background-attachment: fixed;
-      background-position: center;
-      backdrop-filter: blur(6px);
-      color: #2e2e2e;
-    }
-    .about-wrapper {
-      max-width: 1000px;
-      margin: 60px auto;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 40px 25px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    }
-    .about-wrapper img {
-      max-width: 280px;
-      height: auto;
-      margin-bottom: 20px;
-      display: block;
-      border: none;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    }
-    .about-wrapper h2 {
-      font-size: 32px;
-      color: #b03060;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .about-wrapper p {
-      font-size: 16px;
-      line-height: 1.7;
-      margin-bottom: 18px;
-      text-align: justify;
-    }
-    footer {
-      text-align: center;
-      padding: 30px;
-      background: #fff0f5;
-      border-top: 2px solid #f3cbd5;
-      color: #b76e79;
-    }
-    @media (max-width: 768px) {
-      .about-wrapper {
-        padding: 20px;
-      }
-      .about-wrapper img {
-        width: 90%;
-        margin: 0 auto 20px;
-      }
-    }
-  </style>
 </head>
 <body>
-  <div class="about-wrapper">
-    <img src="images/vincent.jpg" alt="Vincent Makafu" />
+  <header>
+    <h1>PHANTOM VI</h1>
+    <p>Custom Wine, Gin & Vodka – Made in Colesberg</p>
+    <nav>
+      <a href="index.html#products">Products</a>
+      <a href="index.html#cart">Order & Payment</a>
+      <a href="about.html">About Us</a>
+    </nav>
+  </header>
 
-    <h2>Our Story: From Ashes to Glory</h2>
-    <p>
-      PHANTOM VI was founded in 2015 by Vincent Makafu in the Free State, South Africa. With nothing more than ambition, creativity, and a deep love for premium spirits, Vincent began producing small-batch wines and gins in his hometown. Through trials, lessons, and an unshakable belief in his dream, PHANTOM VI grew from humble beginnings into a recognized brand.
-    </p>
-    <p>
-      Today, Vincent operates out of Colesberg still hands-on in the development, branding, and bottling process. Known for his unmatched eye for aesthetics and flavor, he is now considered one of the most dynamic players in the South African custom spirits market.
-    </p>
-    <p>
-      PHANTOM VI specializes in custom bottles of wine, gin, and vodka uniquely crafted for events, gifts, and new liquor brands. From design to labeling and final delivery, every bottle is made with precision and pride.
-    </p>
+  <main class="about-section">
+    <h2>Our Story</h2>
+    <img src="images/founder.jpg" alt="Vincent Makafu">
+    <p><strong>PHANTOM VI</strong> was founded in 2015 by <strong>Vincent Makafu</strong> in the Free State. With grit, creativity, and passion, he built the business from humble beginnings, eventually expanding operations to Colesberg.</p>
+    <p>Today, Phantom VI is a respected name in custom alcohol bottling, label printing, and private-brand support, known for transforming dreams into real, tangible products. From ashes to glory — Vincent’s journey is a true tale of resilience and excellence in the industry.</p>
 
-    <h2>Licensing & Compliance</h2>
-    <p>
-      PHANTOM VI operates under strict compliance with South African laws regarding the production and distribution of alcohol.
-    </p>
-    <p>
-      All production is done via licensed manufacturing partners. Our team provides assistance to individuals and businesses who wish to enter the alcohol industry without the initial hurdle of licensing.
-    </p>
-    <p>
-      <strong>Need Licensing Help?</strong> We help you sell under our license temporarily and guide you when you’re ready to apply for your own. The licensing process in South Africa may cost between R5,000 – R50,000 and takes 6–24 months.
-    </p>
-    <p>
-      Products sold through PHANTOM VI must always adhere to South African liquor regulations and are primarily for demonstration, corporate gifting, and promotional purposes until licensed independently.
-    </p>
-  </div>
+    <h2>Our Team</h2>
+    <div class="team-grid">
+      <div class="team-member">
+        <img src="images/vincent.jpg" alt="Vincent Makafu">
+        <h4>Vincent Makafu</h4>
+        <p>Founder & Branding Lead</p>
+      </div>
+      <div class="team-member">
+        <img src="images/partner1.jpg" alt="Partner 1">
+        <h4>Johan Smit</h4>
+        <p>Production Manager</p>
+      </div>
+      <div class="team-member">
+        <img src="images/partner2.jpg" alt="Partner 2">
+        <h4>Lebo Ndlovu</h4>
+        <p>Operations Coordinator</p>
+      </div>
+      <div class="team-member">
+        <img src="images/partner3.jpg" alt="Partner 3">
+        <h4>Noluthando Dlamini</h4>
+        <p>Design & Label Expert</p>
+      </div>
+    </div>
+
+    <h2>Licensing & Legal in South Africa</h2>
+    <p>Licensing in SA can be complex — Phantom VI is here to help. You can sell under our existing license for promotions, events, and demos.</p>
+    <p><strong>Note:</strong> All sales must comply with South African liquor laws.</p>
+
+    <ul class="licensing-details">
+      <li><strong>Main Bodies:</strong> Provincial liquor boards</li>
+      <li><strong>Costs:</strong> R5,000 – R50,000+ depending on type and province</li>
+      <li><strong>Process:</strong> Application → Inspections → Hearing</li>
+      <li><strong>Timeline:</strong> 3 to 12 months</li>
+    </ul>
+
+    <p>When you’re ready for your own license, we’ll guide you every step of the way.</p>
+  </main>
 
   <footer>
-    <p>© 2015–2025 PHANTOM VI. All Rights Reserved. | WhatsApp: <a href="https://wa.me/27814458910">081 445 8910</a></p>
+    <p>&copy; 2015–2025 PHANTOM VI. All rights reserved.</p>
+    <p>Contact us on WhatsApp: <a href="https://wa.me/27814458910">081 445 8910</a></p>
   </footer>
 </body>
 </html>
