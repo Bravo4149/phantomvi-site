@@ -2,309 +2,96 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About Us - PHANTOM VI</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      color: #fff;
-      background: url('images/bg.jpg') no-repeat center center fixed;
+      background-image: url('images/bg.jpg');
       background-size: cover;
-      scroll-behavior: smooth;
-      margin: 0;
+      background-attachment: fixed;
+      background-position: center;
+      backdrop-filter: blur(6px);
+      color: #2e2e2e;
     }
-
-    .bg-overlay {
-      background-color: rgba(0, 0, 0, 0.55);
-      min-height: 100vh;
-      width: 100%;
-      padding-bottom: 60px;
-    }
-
-    header {
-      text-align: center;
-      padding: 40px 20px;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-    }
-
-    header h1 {
-      font-size: 42px;
-      color: #f28ca3;
-      margin-bottom: 10px;
-    }
-
-    header p {
-      font-size: 18px;
-      color: #fff0f5;
-    }
-
-    nav {
-      margin-top: 10px;
-    }
-
-    nav a {
-      margin: 0 12px;
-      font-weight: 600;
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #f9cbd8;
-      text-decoration: none;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    /* Fade-in animation */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-    .fade-in.visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    .about-section {
-      max-width: 900px;
+    .about-wrapper {
+      max-width: 1000px;
       margin: 60px auto;
-      padding: 40px 20px;
-      text-align: center;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
-
-    .about-section img {
-      max-width: 300px;
+    .about-wrapper img {
+      max-width: 280px;
       height: auto;
       margin-bottom: 20px;
-      border-radius: 0;
+      display: block;
       border: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
     }
-
-    .about-section h2 {
+    .about-wrapper h2 {
       font-size: 32px;
+      color: #b03060;
       margin-bottom: 20px;
-      color: #f4a4ba;
+      text-align: center;
     }
-
-    .about-section p {
+    .about-wrapper p {
       font-size: 16px;
-      margin-bottom: 20px;
-      color: #fff;
       line-height: 1.7;
+      margin-bottom: 18px;
+      text-align: justify;
     }
-
-    /* Team Section */
-    .team-section {
-      max-width: 900px;
-      margin: 60px auto;
-      padding: 20px;
-      color: #fff;
-      text-align: center;
-    }
-
-    .team-section h2 {
-      font-size: 32px;
-      margin-bottom: 40px;
-      color: #f4a4ba;
-    }
-
-    .team-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-    }
-
-    .team-member {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 20px;
-      width: 200px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      transition: transform 0.3s;
-    }
-
-    .team-member:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-    }
-
-    .team-member img {
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 12px;
-    }
-
-    .team-member h3 {
-      margin: 0;
-      font-size: 20px;
-      color: #f9cbd8;
-    }
-
-    /* Testimonials Section */
-    .testimonials-section {
-      max-width: 900px;
-      margin: 60px auto;
-      padding: 20px;
-      color: #fff;
-      text-align: center;
-    }
-
-    .testimonials-section h2 {
-      font-size: 32px;
-      margin-bottom: 40px;
-      color: #f4a4ba;
-    }
-
-    .testimonial {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 30px 20px;
-      margin-bottom: 30px;
-      font-style: italic;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      transition: background-color 0.3s;
-    }
-
-    .testimonial:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .testimonial p {
-      margin-bottom: 10px;
-      font-size: 18px;
-    }
-
-    .testimonial .author {
-      font-weight: bold;
-      color: #f9cbd8;
-    }
-
     footer {
       text-align: center;
       padding: 30px;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-top: 2px solid rgba(255, 255, 255, 0.15);
-      color: #f3ccd6;
+      background: #fff0f5;
+      border-top: 2px solid #f3cbd5;
+      color: #b76e79;
     }
-
     @media (max-width: 768px) {
-      .about-section img {
+      .about-wrapper {
+        padding: 20px;
+      }
+      .about-wrapper img {
         width: 90%;
-      }
-
-      header h1 {
-        font-size: 32px;
-      }
-
-      header p {
-        font-size: 16px;
-      }
-
-      .team-grid {
-        flex-direction: column;
-        align-items: center;
+        margin: 0 auto 20px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="bg-overlay">
-    <header>
-      <h1>PHANTOM VI</h1>
-      <p>From Ashes to Glory, Born in the Free State, Raised in Colesberg</p>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-      </nav>
-    </header>
+  <div class="about-wrapper">
+    <img src="images/vincent.jpg" alt="Vincent Makafu" />
 
-    <main>
-      <section class="about-section fade-in">
-        <img src="images/founder.jpg" alt="Vincent Makafu - Founder of Phantom VI" />
-        <h2>About Phantom VI</h2>
-        <p>
-          PHANTOM VI was founded in 2015 by <strong>Vincent Makafu</strong> in the heart of the Free State.
-          What started as a humble vision turned into one of South Africa’s most promising independent liquor brands.
-        </p>
-        <p>
-          Now based in Colesberg, Vincent is considered one of the best in the custom wine and gin game.
-          With hard work and unmatched vision, he grew PHANTOM VI into a premium solution for individuals looking to start or elevate their own alcohol brands.
-        </p>
-        <p>
-          We offer full product development, brand consultation, and licensing guidance even allowing new businesses to operate under our license for demos and events.
-          Your brand deserves a story. Let us help you tell it.
-        </p>
-      </section>
+    <h2>Our Story: From Ashes to Glory</h2>
+    <p>
+      PHANTOM VI was founded in 2015 by Vincent Makafu in the Free State, South Africa. With nothing more than ambition, creativity, and a deep love for premium spirits, Vincent began producing small-batch wines and gins in his hometown. Through trials, lessons, and an unshakable belief in his dream, PHANTOM VI grew from humble beginnings into a recognized brand.
+    </p>
+    <p>
+      Today, Vincent operates out of Colesberg — still hands-on in the development, branding, and bottling process. Known for his unmatched eye for aesthetics and flavor, he is now considered one of the most dynamic players in the South African custom spirits market.
+    </p>
+    <p>
+      PHANTOM VI specializes in custom bottles of wine, gin, and vodka — uniquely crafted for events, gifts, and new liquor brands. From design to labeling and final delivery, every bottle is made with precision and pride.
+    </p>
 
-      <section class="team-section fade-in">
-        <h2>Meet Our Team</h2>
-        <div class="team-grid">
-          <div class="team-member">
-            <img src="images/founder.jpg" alt="Vincent Makafu" />
-            <h3>Vincent Makafu</h3>
-            <p>Founder & CEO</p>
-          </div>
-          <div class="team-member">
-            <img src="images/team1.jpg" alt="Team Member 1" />
-            <h3>Johan Greyling</h3>
-            <p>Brand Strategist</p>
-          </div>
-          <div class="team-member">
-            <img src="images/team2.jpg" alt="Team Member 2" />
-            <h3>Thato Ramokone</h3>
-            <p>Operations Manager</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="testimonials-section fade-in">
-        <h2>What Our Clients Say</h2>
-
-        <div class="testimonial">
-          <p>"Phantom VI took my brand to the next level! Their attention to detail and service is unmatched."</p>
-          <div class="author">– Sipho Ndlovu</div>
-        </div>
-
-        <div class="testimonial">
-          <p>"I loved working with Phantom VI! They helped me navigate licensing and branding with ease."</p>
-          <div class="author">– Lerato Kganyago</div>
-        </div>
-
-        <div class="testimonial">
-          <p>"Excellent quality products and exceptional customer care. Highly recommended!"</p>
-          <div class="author">– Johan van der Merwe</div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2025 Phantom VI. All rights reserved. Site by Vincent Makafu.</p>
-    </footer>
+    <h2>Licensing & Compliance</h2>
+    <p>
+      PHANTOM VI operates under strict compliance with South African laws regarding the production and distribution of alcohol.
+    </p>
+    <p>
+      All production is done via licensed manufacturing partners. Our team provides assistance to individuals and businesses who wish to enter the alcohol industry without the initial hurdle of licensing.
+    </p>
+    <p>
+      <strong>Need Licensing Help?</strong> We help you sell under our license temporarily and guide you when you’re ready to apply for your own. The licensing process in South Africa may cost between R5,000 – R50,000 and takes 3–12 months.
+    </p>
+    <p>
+      Products sold through PHANTOM VI must always adhere to South African liquor regulations and are primarily for demonstration, corporate gifting, and promotional purposes until licensed independently.
+    </p>
   </div>
 
-  <script>
-    // Scroll animation for fade-in elements
-    function revealOnScroll() {
-      const faders = document.querySelectorAll('.fade-in');
-      const windowBottom = window.innerHeight;
-
-      faders.forEach(fader => {
-        const top = fader.getBoundingClientRect().top;
-
-        if(top < windowBottom - 100) {
-          fader.classList.add('visible');
-        }
-      });
-    }
-
-    window.addEventListener('scroll', revealOnScroll);
-    // Trigger on load too
-    window.addEventListener('load', revealOnScroll);
-  </script>
+  <footer>
+    <p>© 2015–2025 PHANTOM VI. All Rights Reserved. | WhatsApp: <a href="https://wa.me/27814458910">081 445 8910</a></p>
+  </footer>
 </body>
 </html>
