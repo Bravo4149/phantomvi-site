@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="background-blur"></div>
+
   <header>
     <h1>PHANTOM VI</h1>
     <p>Custom Wine, Gin & Vodka Made in Colesberg</p>
@@ -19,7 +21,6 @@
 
   <main>
     <section id="products" class="products">
-      <!-- WINE -->
       <div class="product">
         <img src="images/wine.jpg" alt="Wine Bottle" />
         <h2>Wines (R75)</h2>
@@ -38,12 +39,11 @@
             <option>Merlot</option>
             <option>Coffee Pinotage</option>
           </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
+          <input type="number" id="wineQty" placeholder="Quantity" min="1" />
           <button onclick="addToCart('Wine')">Add to Cart</button>
         </div>
       </div>
 
-      <!-- GIN -->
       <div class="product">
         <img src="images/gin.jpg" alt="Gin Bottle" />
         <h2>Gins (R165)</h2>
@@ -57,12 +57,11 @@
             <option>Orange & Lime</option>
             <option>Lavender Infused</option>
           </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
+          <input type="number" id="ginQty" placeholder="Quantity" min="1" />
           <button onclick="addToCart('Gin')">Add to Cart</button>
         </div>
       </div>
 
-      <!-- VODKA -->
       <div class="product">
         <img src="images/vodka.jpg" alt="Vodka Bottle" />
         <h2>Vodkas (R165)</h2>
@@ -72,114 +71,31 @@
             <option>Vanilla</option>
             <option>Triple Distilled</option>
           </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
+          <input type="number" id="vodkaQty" placeholder="Quantity" min="1" />
           <button onclick="addToCart('Vodka')">Add to Cart</button>
         </div>
       </div>
     </section>
 
-    <!-- CART SECTION -->
     <section id="cart" class="cart">
       <h3>Cart Summary:</h3>
       <ul id="cartItems"></ul>
+      <p id="emptyCartMessage">Your cart is empty.</p>
       <p>Courier Fee: <span id="courierFee">R0</span></p>
       <h3>Total: <span id="totalCost">R0</span></h3>
-
-      <!-- Yoco Payment -->
-      <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">
-        Pay with Yoco
-      </a>
-
-      <!-- WhatsApp Checkout -->
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left: 15px;">
-        Send Label & Address via WhatsApp
-      </a>
+      <a href="https://pay.yoco.com/TRP" target="_blank" class="btn">Pay with Yoco</a>
+      <a href="#" id="whatsappBtn" class="btn">Send Label & Address via WhatsApp</a>
     </section>
   </main>
 
   <footer>
-    <p>Contact us on WhatsApp: <a href="tel:0814458910">081 445 8910</a> | &copy; 2025 PHANTOM VI</p>
+    <p>&copy; 2025 PHANTOM VI. Crafted in Colesberg. WhatsApp: <a href="https://wa.me/27814458910" target="_blank">081 445 8910</a></p>
   </footer>
 
-  <!-- ✅ SCRIPT -->
-  <script>
-    let cartItems = [];
-    const prices = { Wine: 75, Gin: 165, Vodka: 165 };
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
 
-    function addToCart(type) {
-      const qtyInput = document.getElementById(type.toLowerCase() + 'Qty');
-      const selectInput = document.getElementById(type.toLowerCase() + 'Type');
-      const qty = parseInt(qtyInput.value);
-      const variant = selectInput.value;
-
-      if (!variant || qty <= 0) {
-        alert('Please select type and quantity');
-        return;
-      }
-
-      const existing = cartItems.find(item => item.type === type && item.variant === variant);
-      if (existing) {
-        existing.qty += qty;
-      } else {
-        cartItems.push({ type, variant, qty });
-      }
-
-      qtyInput.value = '';
-      selectInput.value = '';
-      updateCart();
-    }
-
-    function updateCart() {
-      const cartList = document.getElementById('cartItems');
-      cartList.innerHTML = '';
-
-      let totalQty = 0;
-      let totalCost = 0;
-
-      cartItems.forEach((item, index) => {
-        const itemTotal = item.qty * prices[item.type];
-        totalQty += item.qty;
-        totalCost += itemTotal;
-
-        const li = document.createElement('li');
-        li.innerHTML = `
-          ${item.qty} x ${item.variant} ${item.type} - R${itemTotal}
-          <button onclick="changeQty(${index}, -1)">−</button>
-          <button onclick="changeQty(${index}, 1)">+</button>
-        `;
-        cartList.appendChild(li);
-      });
-
-      let courier = 0;
-      if (totalQty > 0) {
-        courier = 180 + Math.max(0, (totalQty - 2) * 12);
-      }
-
-      const grandTotal = totalCost + courier;
-      document.getElementById('courierFee').innerText = `R${courier}`;
-      document.getElementById('totalCost').innerText = `R${grandTotal}`;
-
-      let message = `Hello PHANTOM VI,%0AI'm placing an order:%0A`;
-      cartItems.forEach(item => {
-        message += `${item.qty} x ${item.variant} ${item.type} (R${prices[item.type]})%0A`;
-      });
-      message += `Courier: R${courier}%0ATotal: R${grandTotal}%0A`;
-      message += `%0AI have completed payment via Yoco.%0AHere is my sticker label and delivery address:%0A`;
-
-      const whatsappLink = `https://wa.link/py9pq9?text=${message}`;
-      const waBtn = document.getElementById('whatsappBtn');
-      waBtn.href = whatsappLink;
-      waBtn.style.opacity = grandTotal > 0 ? '1' : '0.5';
-      waBtn.style.pointerEvents = grandTotal > 0 ? 'auto' : 'none';
-    }
-
-    function changeQty(index, delta) {
-      cartItems[index].qty += delta;
-      if (cartItems[index].qty <= 0) {
-        cartItems.splice(index, 1);
-      }
-      updateCart();
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
