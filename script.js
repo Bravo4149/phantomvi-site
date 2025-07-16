@@ -6,16 +6,19 @@ const whatsappBtn = document.getElementById('whatsappBtn');
 const emptyCartMessage = document.getElementById('emptyCartMessage');
 const loadingOverlay = document.getElementById('loadingOverlay');
 
-// Prices per product type
+// Base prices per product type
 const prices = {
   Wine: 75,
   Gin: 165,
   Vodka: 165
 };
 
-// Special pricing per variant
+// Special prices for certain variants
 const variantPrices = {
-  'Non-Alcoholic Wine': 125
+  'Non-Alcoholic Wine': 125,
+  'Shiraz': 85,
+  'Pinotage': 85,
+  'Cabernet Sauvignon': 85
 };
 
 // Cart array
@@ -30,7 +33,7 @@ window.onload = () => {
   }
 };
 
-// Add product to cart
+// Add to Cart
 function addToCart(type) {
   let productType, qty, sel;
   if (type === 'Wine') {
@@ -141,7 +144,7 @@ function updateCartUI() {
     cartItemsEl.appendChild(li);
   });
 
-  // Courier fee calculation
+  // Courier Fee
   let courierFee = 0;
   if (totalQty > 0) {
     courierFee = 180;
@@ -154,7 +157,7 @@ function updateCartUI() {
   courierFeeEl.textContent = `R${courierFee}`;
   totalCostEl.textContent = `R${grandTotal}`;
 
-  // WhatsApp message
+  // WhatsApp Order Message
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
     const unitPrice = variantPrices[item.variant] || prices[item.type];
