@@ -7,10 +7,8 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Background Blur -->
   <div id="backgroundBlur"></div>
 
-  <!-- Header -->
   <header>
     <h1>PHANTOM VI</h1>
     <p>Custom Wine, Gin & Vodka Made in Colesberg</p>
@@ -21,35 +19,34 @@
     </nav>
   </header>
 
-  <!-- Main Content -->
   <main>
     <section id="products" class="products">
-      <!-- Wine -->
+      <!-- Wine Product -->
       <div class="product">
         <img src="images/wine.jpg" alt="Wine Bottle" />
-        <h2>Wines (R75)</h2>
+        <h2>Wines</h2>
         <div class="product-form">
           <select id="wineType">
-  <option value="">Select Wine Type</option>
-  <option>Sweet Rosé (R75)</option>
-  <option>Shiraz (R85)</option>
-  <option>Sauvignon Blanc (R75)</option>
-  <option>Pinotage (R85)</option>
-  <option>Sweet White (R75)</option>
-  <option>Sweet Red (R75)</option>
-  <option>Chenin Blanc (R75)</option>
-  <option>Chardonnay (R75)</option>
-  <option>Cabernet Sauvignon (R85)</option>
-  <option>Merlot (R75)</option>
-  <option>Coffee Pinotage (R75)</option>
-  <option>Non-Alcoholic Wine (R125)</option>
-</select>
+            <option value="">Select Wine Type</option>
+            <option>Sweet Rosé</option>
+            <option>Shiraz</option>
+            <option>Sauvignon Blanc</option>
+            <option>Pinotage</option>
+            <option>Sweet White</option>
+            <option>Sweet Red</option>
+            <option>Chenin Blanc</option>
+            <option>Chardonnay</option>
+            <option>Cabernet Sauvignon</option>
+            <option>Merlot</option>
+            <option>Coffee Pinotage</option>
+            <option>Non-Alcoholic Wine</option>
+          </select>
           <input type="number" id="wineQty" placeholder="Quantity" min="0" />
           <button onclick="addToCart('Wine')">Add to Cart</button>
         </div>
       </div>
 
-      <!-- Gin -->
+      <!-- Gin Product -->
       <div class="product">
         <img src="images/gin.jpg" alt="Gin Bottle" />
         <h2>Gins (R165)</h2>
@@ -68,7 +65,7 @@
         </div>
       </div>
 
-      <!-- Vodka -->
+      <!-- Vodka Product -->
       <div class="product">
         <img src="images/vodka.jpg" alt="Vodka Bottle" />
         <h2>Vodkas (R165)</h2>
@@ -84,7 +81,7 @@
       </div>
     </section>
 
-    <!-- Cart -->
+    <!-- Cart Section -->
     <section id="cart" class="cart">
       <h3>Cart Summary:</h3>
       <ul id="cartItems"></ul>
@@ -92,29 +89,26 @@
       <p>Courier Fee: <span id="courierFee">R0</span></p>
       <h3>Total: <span id="totalCost">R0</span></h3>
 
-      <!-- Yoco Payment -->
+      <!-- Yoco Payment Button -->
       <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">
         Pay with Yoco
       </a>
 
-      <!-- WhatsApp Order -->
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left: 10px;">
+      <!-- WhatsApp Order Button -->
+      <a href="#" id="whatsappBtn" class="btn" style="margin-left:15px;">
         Send Label & Address via WhatsApp
       </a>
     </section>
   </main>
 
-  <!-- Footer -->
   <footer>
     <p>Contact us on WhatsApp: <a href="tel:0814458910">081 445 8910</a></p>
   </footer>
 
-  <!-- Loading Spinner -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
   </div>
 
-  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
