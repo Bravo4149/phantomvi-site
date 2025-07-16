@@ -6,12 +6,16 @@ const whatsappBtn = document.getElementById('whatsappBtn');
 const emptyCartMessage = document.getElementById('emptyCartMessage');
 const loadingOverlay = document.getElementById('loadingOverlay');
 
-// Prices per product category and special variant
+// Prices per product type
 const prices = {
   Wine: 75,
-  'Non-Alcoholic Wine': 125,
   Gin: 165,
   Vodka: 165
+};
+
+// Special pricing per variant
+const variantPrices = {
+  'Non-Alcoholic Wine': 125
 };
 
 // Cart array
@@ -26,7 +30,7 @@ window.onload = () => {
   }
 };
 
-// Add product to cart with loading effect
+// Add product to cart
 function addToCart(type) {
   let productType, qty, sel;
   if (type === 'Wine') {
@@ -110,7 +114,7 @@ function updateCartUI() {
   let totalQty = 0;
 
   cart.forEach((item, index) => {
-    const unitPrice = item.variant === 'Non-Alcoholic Wine' ? 125 : prices[item.type];
+    const unitPrice = variantPrices[item.variant] || prices[item.type];
     const itemTotal = unitPrice * item.qty;
     total += itemTotal;
     totalQty += item.qty;
@@ -137,7 +141,7 @@ function updateCartUI() {
     cartItemsEl.appendChild(li);
   });
 
-  // Courier fee logic
+  // Courier fee calculation
   let courierFee = 0;
   if (totalQty > 0) {
     courierFee = 180;
@@ -150,10 +154,10 @@ function updateCartUI() {
   courierFeeEl.textContent = `R${courierFee}`;
   totalCostEl.textContent = `R${grandTotal}`;
 
-  // WhatsApp Message Formatting
+  // WhatsApp message
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
-    const unitPrice = item.variant === 'Non-Alcoholic Wine' ? 125 : prices[item.type];
+    const unitPrice = variantPrices[item.variant] || prices[item.type];
     message += `${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${unitPrice * item.qty}%0A`;
   });
   message += `%0ACourier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0APlease find my sticker labels and delivery address below.`;
@@ -161,7 +165,6 @@ function updateCartUI() {
   const phoneNumber = '27814458910';
   whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
 
-  // Attach remove button listeners
   document.querySelectorAll('.remove-btn').forEach(button => {
     button.addEventListener('click', (e) => {
       const index = e.target.getAttribute('data-index');
