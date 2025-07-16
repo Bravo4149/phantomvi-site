@@ -293,23 +293,3 @@ footer {
   margin: 15px 0;
   color: #555;
 }
-
-/* MOBILE RESPONSIVE */
-@media (max-width: 768px) {
-  .products {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .product {
-    width: 90%;
-  }
-
-  .cart {
-    width: 90%;
-  }
-
-  header p {
-    font-size: 16px;
-  }
-}
