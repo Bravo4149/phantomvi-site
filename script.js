@@ -6,19 +6,24 @@ const whatsappBtn = document.getElementById('whatsappBtn');
 const emptyCartMessage = document.getElementById('emptyCartMessage');
 const loadingOverlay = document.getElementById('loadingOverlay');
 
-// Base prices per product type
+// Prices per product category
 const prices = {
-  Wine: 75,
+  Wine: {
+    "Sweet Rosé": 75,
+    "Shiraz": 85,
+    "Sauvignon Blanc": 75,
+    "Pinotage": 85,
+    "Sweet White": 75,
+    "Sweet Red": 75,
+    "Chenin Blanc": 75,
+    "Chardonnay": 75,
+    "Cabernet Sauvignon": 85,
+    "Merlot": 75,
+    "Coffee Pinotage": 75,
+    "Non-Alcoholic Wine": 125
+  },
   Gin: 165,
   Vodka: 165
-};
-
-// Special prices for certain variants
-const variantPrices = {
-  'Non-Alcoholic Wine': 125,
-  'Shiraz': 85,
-  'Pinotage': 85,
-  'Cabernet Sauvignon': 85
 };
 
 // Cart array
@@ -33,7 +38,7 @@ window.onload = () => {
   }
 };
 
-// Add to Cart
+// Add product to cart with loading effect
 function addToCart(type) {
   let productType, qty, sel;
   if (type === 'Wine') {
@@ -80,13 +85,13 @@ function addToCart(type) {
 }
 
 function clearInputs(type) {
-  if (type === 'Wine') {
+  if(type === 'Wine'){
     document.getElementById('wineQty').value = '';
     document.getElementById('wineType').value = '';
-  } else if (type === 'Gin') {
+  } else if(type === 'Gin'){
     document.getElementById('ginQty').value = '';
     document.getElementById('ginType').value = '';
-  } else if (type === 'Vodka') {
+  } else if(type === 'Vodka'){
     document.getElementById('vodkaQty').value = '';
     document.getElementById('vodkaType').value = '';
   }
@@ -117,11 +122,12 @@ function updateCartUI() {
   let totalQty = 0;
 
   cart.forEach((item, index) => {
-    const unitPrice = variantPrices[item.variant] || prices[item.type];
-    const itemTotal = unitPrice * item.qty;
+    const pricePerUnit = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
+    const itemTotal = pricePerUnit * item.qty;
     total += itemTotal;
     totalQty += item.qty;
 
+    // Create list item with remove button
     const li = document.createElement('li');
     li.style.display = 'flex';
     li.style.justifyContent = 'space-between';
@@ -129,7 +135,7 @@ function updateCartUI() {
     li.style.marginBottom = '8px';
 
     li.innerHTML = `
-      <span>${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${itemTotal}</span>
+      <span>${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${itemTotal}</span>
       <button class="remove-btn" data-index="${index}" style="
         background: #90284d;
         border: none;
@@ -144,7 +150,7 @@ function updateCartUI() {
     cartItemsEl.appendChild(li);
   });
 
-  // Courier Fee
+  // Courier fee: R180 for 2 bottles, +R12 for each extra bottle
   let courierFee = 0;
   if (totalQty > 0) {
     courierFee = 180;
@@ -157,17 +163,18 @@ function updateCartUI() {
   courierFeeEl.textContent = `R${courierFee}`;
   totalCostEl.textContent = `R${grandTotal}`;
 
-  // WhatsApp Order Message
+  // Update WhatsApp order link
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
-    const unitPrice = variantPrices[item.variant] || prices[item.type];
+    const unitPrice = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
     message += `${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${unitPrice * item.qty}%0A`;
   });
   message += `%0ACourier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0APlease find my sticker labels and delivery address below.`;
 
-  const phoneNumber = '27814458910';
+  const phoneNumber = '27814458910'; // your WhatsApp number (no +)
   whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
 
+  // Attach remove button event listeners
   document.querySelectorAll('.remove-btn').forEach(button => {
     button.addEventListener('click', (e) => {
       const index = e.target.getAttribute('data-index');
