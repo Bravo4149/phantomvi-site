@@ -90,10 +90,9 @@ main {
   border: none;
   border-radius: 0;
 }
-/* FIX: Smaller scaled wine image */
 .product img[alt="Wine Bottle"] {
   max-height: 100px;
-  max-width: 40%;
+  max-width: 60%;
   padding: 6px;
 }
 
@@ -150,6 +149,12 @@ main {
   color: #b03060;
   font-weight: 600;
 }
+.cart li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
 .cart p,
 .cart span {
   color: #9b4c62;
@@ -170,15 +175,20 @@ main {
   background: #90284d;
 }
 .cart .remove-btn {
-  margin-left: 8px;
+  margin-left: 12px;
   color: #fff;
   background: #b03060;
   border: none;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
+  border-radius: 8px;
+  padding: 6px 12px;
   font-size: 14px;
+  font-weight: bold;
   cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.cart .remove-btn:hover {
+  background: #90284d;
+  transform: scale(1.05);
 }
 
 /* EMPTY CART */
@@ -213,40 +223,7 @@ footer {
   font-size: 14px;
 }
 
-/* ABOUT US SECTION */
-.about-section {
-  max-width: 900px;
-  margin: 60px auto;
-  padding: 40px 20px;
-  text-align: center;
-  background-color: rgba(255, 255, 255, 0.85);
-  border-radius: 12px;
-}
-.about-section h2 {
-  color: #b03060;
-  margin-bottom: 20px;
-  font-size: 32px;
-}
-.about-section p {
-  color: #3f3f3f;
-  font-size: 16px;
-  margin-bottom: 20px;
-}
-
-/* TEAM AND PARTNER IMAGES - smaller, consistent sizes */
-.about-section img,
-.team-member img,
-.partner img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin: 0 auto 15px;
-  display: block;
-}
-
-/* TEAM GRID */
+/* TEAM SECTION */
 .team-grid {
   display: flex;
   flex-wrap: wrap;
@@ -257,6 +234,13 @@ footer {
 .team-member {
   width: 160px;
   text-align: center;
+}
+.team-member img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 .team-member h4 {
   margin-top: 10px;
@@ -302,13 +286,11 @@ footer {
   header p {
     font-size: 16px;
   }
-  .about-section img,
-  .team-member img,
-  .partner img {
+  .team-member {
+    width: 100px;
+  }
+  .team-member img {
     width: 80px;
     height: 80px;
-  }
-  .team-member {
-    width: 120px;
   }
 }
