@@ -29,7 +29,7 @@ const prices = {
 // Cart array
 let cart = [];
 
-// Load cart from localStorage
+// Load cart from localStorage on page load
 window.onload = () => {
   const savedCart = localStorage.getItem('phantomvi_cart');
   if (savedCart) {
@@ -38,22 +38,25 @@ window.onload = () => {
   }
 };
 
-// Add product to cart
+// Add product to cart with loading effect
 function addToCart(type) {
-  let productType, qty;
+  let productType, qty, sel;
   if (type === 'Wine') {
-    productType = document.getElementById('wineType').value;
+    sel = document.getElementById('wineType');
+    productType = sel.value;
     qty = parseInt(document.getElementById('wineQty').value);
   } else if (type === 'Gin') {
-    productType = document.getElementById('ginType').value;
+    sel = document.getElementById('ginType');
+    productType = sel.value;
     qty = parseInt(document.getElementById('ginQty').value);
   } else if (type === 'Vodka') {
-    productType = document.getElementById('vodkaType').value;
+    sel = document.getElementById('vodkaType');
+    productType = sel.value;
     qty = parseInt(document.getElementById('vodkaQty').value);
   }
 
   if (!productType) {
-    alert(`Please select a ${type} type.`);
+    alert('Please select a ' + type + ' type.');
     return;
   }
   if (!qty || qty <= 0) {
@@ -78,29 +81,26 @@ function addToCart(type) {
     updateCartUI();
     clearInputs(type);
     showLoading(false);
-  }, 800);
+  }, 1000);  // Simulate loading effect
 }
 
-// Clear inputs after adding
 function clearInputs(type) {
-  if (type === 'Wine') {
+  if(type === 'Wine'){
     document.getElementById('wineQty').value = '';
     document.getElementById('wineType').value = '';
-  } else if (type === 'Gin') {
+  } else if(type === 'Gin'){
     document.getElementById('ginQty').value = '';
     document.getElementById('ginType').value = '';
-  } else if (type === 'Vodka') {
+  } else if(type === 'Vodka'){
     document.getElementById('vodkaQty').value = '';
     document.getElementById('vodkaType').value = '';
   }
 }
 
-// Show/Hide loading overlay
 function showLoading(show) {
   loadingOverlay.style.display = show ? 'flex' : 'none';
 }
 
-// Update Cart UI
 function updateCartUI() {
   cartItemsEl.innerHTML = '';
 
@@ -112,11 +112,11 @@ function updateCartUI() {
     courierFeeEl.textContent = 'R0';
     totalCostEl.textContent = 'R0';
     return;
+  } else {
+    emptyCartMessage.style.display = 'none';
+    whatsappBtn.style.pointerEvents = 'auto';
+    whatsappBtn.style.opacity = '1';
   }
-
-  emptyCartMessage.style.display = 'none';
-  whatsappBtn.style.pointerEvents = 'auto';
-  whatsappBtn.style.opacity = '1';
 
   let total = 0;
   let totalQty = 0;
@@ -161,7 +161,6 @@ function updateCartUI() {
   courierFeeEl.textContent = `R${courierFee}`;
   totalCostEl.textContent = `R${grandTotal}`;
 
-  // WhatsApp message
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
     const unitPrice = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
@@ -180,7 +179,6 @@ function updateCartUI() {
   });
 }
 
-// Remove item from cart
 function removeFromCart(index) {
   if (index >= 0 && index < cart.length) {
     cart.splice(index, 1);
@@ -189,7 +187,6 @@ function removeFromCart(index) {
   }
 }
 
-// Save cart to localStorage
 function saveCart() {
   localStorage.setItem('phantomvi_cart', JSON.stringify(cart));
 }
