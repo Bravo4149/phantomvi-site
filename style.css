@@ -35,6 +35,12 @@ header h1 {
   color: #b03060;
   margin-bottom: 10px;
 }
+/* ✅ Add this below */
+.site-logo {
+  max-height: 80px;
+  width: auto;
+  margin-bottom: 10px;
+}
 header p {
   color: #cc7087;
   font-size: 18px;
