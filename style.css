@@ -157,3 +157,39 @@ footer {
     height: 100px;
   }
 }
+@media (max-width: 768px) {
+  .about-section img {
+    width: 80%;
+    max-width: 220px;
+    margin: 20px auto;
+    display: block;
+  }
+
+  .about-section {
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 30px 15px;
+  }
+
+  .about-section h2 {
+    font-size: 26px;
+  }
+
+  .team-member {
+    width: 45%;
+    margin-bottom: 20px;
+  }
+
+  .team-member img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .team-member h4 {
+    font-size: 14px;
+  }
+
+  .team-member p {
+    font-size: 12px;
+  }
+}
