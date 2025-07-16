@@ -9,6 +9,7 @@ const loadingOverlay = document.getElementById('loadingOverlay');
 // Prices per product category
 const prices = {
   Wine: 75,
+  'Non-Alcoholic Wine': 125,
   Gin: 165,
   Vodka: 165
 };
