@@ -29,7 +29,7 @@ const prices = {
 // Cart array
 let cart = [];
 
-// Load cart from localStorage on page load
+// Load cart from localStorage
 window.onload = () => {
   const savedCart = localStorage.getItem('phantomvi_cart');
   if (savedCart) {
@@ -38,25 +38,22 @@ window.onload = () => {
   }
 };
 
-// Add product to cart with loading effect
+// Add product to cart
 function addToCart(type) {
-  let productType, qty, sel;
+  let productType, qty;
   if (type === 'Wine') {
-    sel = document.getElementById('wineType');
-    productType = sel.value;
+    productType = document.getElementById('wineType').value;
     qty = parseInt(document.getElementById('wineQty').value);
   } else if (type === 'Gin') {
-    sel = document.getElementById('ginType');
-    productType = sel.value;
+    productType = document.getElementById('ginType').value;
     qty = parseInt(document.getElementById('ginQty').value);
   } else if (type === 'Vodka') {
-    sel = document.getElementById('vodkaType');
-    productType = sel.value;
+    productType = document.getElementById('vodkaType').value;
     qty = parseInt(document.getElementById('vodkaQty').value);
   }
 
   if (!productType) {
-    alert('Please select a ' + type + ' type.');
+    alert(`Please select a ${type} type.`);
     return;
   }
   if (!qty || qty <= 0) {
@@ -81,26 +78,29 @@ function addToCart(type) {
     updateCartUI();
     clearInputs(type);
     showLoading(false);
-  }, 1000);
+  }, 800);
 }
 
+// Clear inputs after adding
 function clearInputs(type) {
-  if(type === 'Wine'){
+  if (type === 'Wine') {
     document.getElementById('wineQty').value = '';
     document.getElementById('wineType').value = '';
-  } else if(type === 'Gin'){
+  } else if (type === 'Gin') {
     document.getElementById('ginQty').value = '';
     document.getElementById('ginType').value = '';
-  } else if(type === 'Vodka'){
+  } else if (type === 'Vodka') {
     document.getElementById('vodkaQty').value = '';
     document.getElementById('vodkaType').value = '';
   }
 }
 
+// Show/Hide loading overlay
 function showLoading(show) {
   loadingOverlay.style.display = show ? 'flex' : 'none';
 }
 
+// Update Cart UI
 function updateCartUI() {
   cartItemsEl.innerHTML = '';
 
@@ -112,11 +112,11 @@ function updateCartUI() {
     courierFeeEl.textContent = 'R0';
     totalCostEl.textContent = 'R0';
     return;
-  } else {
-    emptyCartMessage.style.display = 'none';
-    whatsappBtn.style.pointerEvents = 'auto';
-    whatsappBtn.style.opacity = '1';
   }
+
+  emptyCartMessage.style.display = 'none';
+  whatsappBtn.style.pointerEvents = 'auto';
+  whatsappBtn.style.opacity = '1';
 
   let total = 0;
   let totalQty = 0;
@@ -127,7 +127,6 @@ function updateCartUI() {
     total += itemTotal;
     totalQty += item.qty;
 
-    // Create list item with remove button
     const li = document.createElement('li');
     li.style.display = 'flex';
     li.style.justifyContent = 'space-between';
@@ -150,7 +149,6 @@ function updateCartUI() {
     cartItemsEl.appendChild(li);
   });
 
-  // Courier fee: R180 for 2 bottles, +R12 for each extra bottle
   let courierFee = 0;
   if (totalQty > 0) {
     courierFee = 180;
@@ -163,7 +161,7 @@ function updateCartUI() {
   courierFeeEl.textContent = `R${courierFee}`;
   totalCostEl.textContent = `R${grandTotal}`;
 
-  // Update WhatsApp order link
+  // WhatsApp message
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
     const unitPrice = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
@@ -171,10 +169,9 @@ function updateCartUI() {
   });
   message += `%0ACourier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0APlease find my sticker labels and delivery address below.`;
 
-  const phoneNumber = '27814458910'; // your WhatsApp number (no +)
+  const phoneNumber = '27814458910';
   whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
 
-  // Attach remove button event listeners
   document.querySelectorAll('.remove-btn').forEach(button => {
     button.addEventListener('click', (e) => {
       const index = e.target.getAttribute('data-index');
@@ -183,6 +180,7 @@ function updateCartUI() {
   });
 }
 
+// Remove item from cart
 function removeFromCart(index) {
   if (index >= 0 && index < cart.length) {
     cart.splice(index, 1);
@@ -191,6 +189,7 @@ function removeFromCart(index) {
   }
 }
 
+// Save cart to localStorage
 function saveCart() {
   localStorage.setItem('phantomvi_cart', JSON.stringify(cart));
 }
