@@ -153,7 +153,7 @@ function updateCartUI() {
   if (totalQty > 0) {
     courierFee = 180;
     if (totalQty > 2) {
-      courierFee += (totalQty - 2) * 12;
+      courierFee += (totalQty - 2) * 15;
     }
   }
 
