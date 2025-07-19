@@ -10,7 +10,7 @@
   <div id="backgroundBlur"></div>
 
   <header>
-    <img src="images/logo.png" alt="PHANTOM VI Logo" class="logo" />
+    <img src="images/your-logo.png" alt="PHANTOM VI Logo" class="logo" />
     <p>Custom Wine, Gin & Vodka Made in Colesberg</p>
     <nav>
       <a href="#products">Products</a>
@@ -21,7 +21,6 @@
 
   <main>
     <section id="products" class="products">
-      <!-- Wine -->
       <div class="product">
         <img src="images/wine.jpg" alt="Wine Bottle" />
         <h2>Wines</h2>
@@ -46,7 +45,6 @@
         </div>
       </div>
 
-      <!-- Gin -->
       <div class="product">
         <img src="images/gin.jpg" alt="Gin Bottle" />
         <h2>Gins (R165)</h2>
@@ -65,7 +63,6 @@
         </div>
       </div>
 
-      <!-- Vodka -->
       <div class="product">
         <img src="images/vodka.jpg" alt="Vodka Bottle" />
         <h2>Vodkas (R165)</h2>
@@ -81,7 +78,6 @@
       </div>
     </section>
 
-    <!-- Cart -->
     <section id="cart" class="cart">
       <h3>Cart Summary:</h3>
       <ul id="cartItems"></ul>
@@ -89,16 +85,10 @@
       <p>Courier Fee: <span id="courierFee">R0</span></p>
       <h3>Total: <span id="totalCost">R0</span></h3>
 
-      <label style="display: block; margin-top: 15px;">
-        <input type="checkbox" id="stickerOption" />
-        I need a custom label or sticker for my wine bottle
-      </label>
-
-      <div id="yoco-payment-form">
-        <button id="pay-button" class="btn" style="margin-top: 15px;">Pay Now</button>
-      </div>
-
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left: 15px;">
+      <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">
+        Pay with Yoco
+      </a>
+      <a href="#" id="whatsappBtn" class="btn" style="margin-left:15px;">
         Send Label & Address via WhatsApp
       </a>
     </section>
@@ -114,33 +104,5 @@
   </div>
 
   <script src="script.js"></script>
-  <script src="https://js.yoco.com/sdk/v1/yoco-sdk-web.js"></script>
-  <script>
-    const yoco = new window.YocoSDK({
-      publicKey: 'pk_live_241d4194jVJj12E49a24'
-    });
-
-    document.getElementById('pay-button').addEventListener('click', function () {
-      const totalText = document.getElementById('totalCost').textContent.replace('R', '').trim();
-      const amountInCents = Math.round(parseFloat(totalText) * 100);
-
-      const needsSticker = document.getElementById('stickerOption').checked;
-
-      yoco.showPopup({
-        amountInCents: amountInCents,
-        currency: 'ZAR',
-        name: 'Phantom VI Order',
-        description: needsSticker ? 'Includes custom wine label' : 'Custom bottle purchase',
-        callback: function (result) {
-          if (result.error) {
-            alert("Payment failed: " + result.error.message);
-          } else {
-            alert("Payment successful! Token: " + result.id);
-            // Send token + sticker request to backend if needed
-          }
-        }
-      });
-    });
-  </script>
 </body>
 </html>
