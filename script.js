@@ -20,7 +20,7 @@ const prices = {
     "Cabernet Sauvignon": 85,
     "Merlot": 75,
     "Coffee Pinotage": 75,
-    "Non-Alcoholic Wine": 125
+    "Non-Alcoholic Wine": 100
   },
   Gin: 165,
   Vodka: 165
