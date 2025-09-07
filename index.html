@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PHANTOM VI - Wine, Gin & Vodka</title>
+  <title>PHANTOM VI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -18,16 +18,17 @@
     </nav>
   </header>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN -->
   <main>
     <!-- PRODUCTS -->
     <section id="products" class="products">
+      <!-- Wine -->
       <div class="product">
-        <img src="images/wine.jpg" alt="Wine" />
+        <img src="images/wine.jpg" alt="Wine">
         <h3>Wine</h3>
         <form class="product-form">
           <select id="wineType">
-            <option value="">Select Type</option>
+            <option value="">Select Wine</option>
             <option>Sweet Rosé</option>
             <option>Shiraz</option>
             <option>Sauvignon Blanc</option>
@@ -41,31 +42,33 @@
             <option>Coffee Pinotage</option>
             <option>Non-Alcoholic Wine</option>
           </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="1"/>
+          <input type="number" id="wineQty" placeholder="Quantity" />
           <button type="button" onclick="addToCart('Wine')">Add to Cart</button>
         </form>
       </div>
 
+      <!-- Gin -->
       <div class="product">
-        <img src="images/gin.jpg" alt="Gin" />
+        <img src="images/gin.jpg" alt="Gin">
         <h3>Gin</h3>
         <form class="product-form">
           <select id="ginType">
             <option value="Classic Gin">Classic Gin</option>
           </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="1"/>
+          <input type="number" id="ginQty" placeholder="Quantity" />
           <button type="button" onclick="addToCart('Gin')">Add to Cart</button>
         </form>
       </div>
 
+      <!-- Vodka -->
       <div class="product">
-        <img src="images/vodka.jpg" alt="Vodka" />
+        <img src="images/vodka.jpg" alt="Vodka">
         <h3>Vodka</h3>
         <form class="product-form">
           <select id="vodkaType">
             <option value="Classic Vodka">Classic Vodka</option>
           </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="1"/>
+          <input type="number" id="vodkaQty" placeholder="Quantity" />
           <button type="button" onclick="addToCart('Vodka')">Add to Cart</button>
         </form>
       </div>
@@ -77,8 +80,8 @@
       <ul id="cartItems"></ul>
       <p id="emptyCartMessage">Your cart is empty.</p>
       <p>Courier Fee: <span id="courierFee">R0</span></p>
-      <p><strong>Total: <span id="totalCost">R0</span></strong></p>
-      <a id="whatsappBtn" class="btn" href="#">Checkout via WhatsApp</a>
+      <p>Total: <span id="totalCost">R0</span></p>
+      <a id="whatsappBtn" class="btn" target="_blank">Order via WhatsApp</a>
     </section>
   </main>
 
@@ -88,8 +91,10 @@
     <p>Contact us on WhatsApp: <a href="https://wa.me/27814458910">081 445 8910</a></p>
   </footer>
 
-  <!-- LOADING -->
-  <div id="loadingOverlay"><div class="spinner"></div></div>
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
 
   <script src="script.js"></script>
 </body>
