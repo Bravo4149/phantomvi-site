@@ -1,105 +1,67 @@
-// Elements
-const cartItemsEl = document.getElementById('cartItems');
-const courierFeeEl = document.getElementById('courierFee');
-const totalCostEl = document.getElementById('totalCost');
-const whatsappBtn = document.getElementById('whatsappBtn');
-const emptyCartMessage = document.getElementById('emptyCartMessage');
-const loadingOverlay = document.getElementById('loadingOverlay');
-
-// Prices per product category
-const prices = {
-  Wine: {
-    "Sweet Rosé": 75,
-    "Shiraz": 85,
-    "Sauvignon Blanc": 75,
-    "Pinotage": 85,
-    "Sweet White": 75,
-    "Sweet Red": 75,
-    "Chenin Blanc": 75,
-    "Chardonnay": 75,
-    "Cabernet Sauvignon": 85,
-    "Merlot": 75,
-    "Coffee Pinotage": 75,
-    "Non-Alcoholic Wine": 100
-  },
-  Gin: 165,
-  Vodka: 165
-};
-
-// Cart array
+// CART ARRAY
 let cart = [];
 
-// Load cart from localStorage on page load
+// HEADER SCROLL
+let lastScroll = 0;
+const header = document.querySelector('header');
+window.addEventListener('scroll', () => {
+  const currentScroll = window.pageYOffset;
+  if (currentScroll > lastScroll && currentScroll > 100) header.classList.add('hide');
+  else header.classList.remove('hide');
+  lastScroll = currentScroll;
+});
+
+// LOAD CART
 window.onload = () => {
   const savedCart = localStorage.getItem('phantomvi_cart');
-  if (savedCart) {
-    cart = JSON.parse(savedCart);
-    updateCartUI();
-  }
+  if (savedCart) { cart = JSON.parse(savedCart); updateCartUI(); }
 };
 
-// Add product to cart with loading effect
+// HELPER: GET UNIT PRICE BASED ON RULES
+function getUnitPrice(item) {
+  if (item.type === 'Wine') return item.qty > 50 ? 65 : 75;
+  if (item.type === 'Gin' || item.type === 'Vodka') return item.qty > 50 ? 140 : 165;
+  return 0;
+}
+
+// ADD PRODUCT
 function addToCart(type) {
-  let productType, qty;
+  let sel, qty, variant;
+  if (type === 'Wine') { sel = document.getElementById('wineType'); qty = parseInt(document.getElementById('wineQty').value); variant = sel.value; }
+  else if (type === 'Gin') { sel = document.getElementById('ginType'); qty = parseInt(document.getElementById('ginQty').value); variant = sel.value; }
+  else if (type === 'Vodka') { sel = document.getElementById('vodkaType'); qty = parseInt(document.getElementById('vodkaQty').value); variant = sel.value; }
 
-  if (type === 'Wine') {
-    productType = document.getElementById('wineType').value;
-    qty = parseInt(document.getElementById('wineQty').value);
-  } else if (type === 'Gin') {
-    productType = document.getElementById('ginType').value;
-    qty = parseInt(document.getElementById('ginQty').value);
-  } else if (type === 'Vodka') {
-    productType = document.getElementById('vodkaType').value;
-    qty = parseInt(document.getElementById('vodkaQty').value);
-  }
-
-  if (!productType) {
-    alert('Please select a ' + type + ' type.');
-    return;
-  }
-  if (!qty || qty <= 0) {
-    alert('Please enter a valid quantity.');
-    return;
-  }
+  if (!variant) { alert(`Please select a ${type}`); return; }
+  if (!qty || qty <= 0) { alert('Please enter a valid quantity'); return; }
 
   showLoading(true);
-
   setTimeout(() => {
-    const existingIndex = cart.findIndex(
-      item => item.type === type && item.variant === productType
-    );
+    const existingIndex = cart.findIndex(item => item.type === type && item.variant === variant);
+    if (existingIndex >= 0) cart[existingIndex].qty += qty;
+    else cart.push({ type, variant, qty });
 
-    if (existingIndex >= 0) {
-      cart[existingIndex].qty += qty;
-    } else {
-      cart.push({ type, variant: productType, qty });
-    }
-
-    saveCart();
-    updateCartUI();
-    clearInputs(type);
-    showLoading(false);
-  }, 800);
+    saveCart(); updateCartUI(); clearInputs(type); showLoading(false);
+  }, 500);
 }
 
+// CLEAR INPUTS
 function clearInputs(type) {
-  if (type === 'Wine') {
-    document.getElementById('wineQty').value = '';
-    document.getElementById('wineType').value = '';
-  } else if (type === 'Gin') {
-    document.getElementById('ginQty').value = '';
-    document.getElementById('ginType').value = '';
-  } else if (type === 'Vodka') {
-    document.getElementById('vodkaQty').value = '';
-    document.getElementById('vodkaType').value = '';
-  }
+  if (type === 'Wine') { document.getElementById('wineType').value = ''; document.getElementById('wineQty').value = ''; }
+  else if (type === 'Gin') { document.getElementById('ginType').value = ''; document.getElementById('ginQty').value = ''; }
+  else if (type === 'Vodka') { document.getElementById('vodkaType').value = ''; document.getElementById('vodkaQty').value = ''; }
 }
 
-function showLoading(state) {
-  loadingOverlay.style.display = state ? 'flex' : 'none';
-}
+// LOADING
+function showLoading(show) { document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none'; }
 
+// UPDATE CART UI
 function updateCartUI() {
+  const cartItemsEl = document.getElementById('cartItems');
+  const courierFeeEl = document.getElementById('courierFee');
+  const totalCostEl = document.getElementById('totalCost');
+  const whatsappBtn = document.getElementById('whatsappBtn');
+  const emptyCartMessage = document.getElementById('emptyCartMessage');
+
   cartItemsEl.innerHTML = '';
 
   if (cart.length === 0) {
@@ -120,7 +82,7 @@ function updateCartUI() {
   let totalQty = 0;
 
   cart.forEach((item, index) => {
-    const pricePerUnit = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
+    const pricePerUnit = getUnitPrice(item);
     const itemTotal = pricePerUnit * item.qty;
     total += itemTotal;
     totalQty += item.qty;
@@ -130,7 +92,6 @@ function updateCartUI() {
     li.style.justifyContent = 'space-between';
     li.style.alignItems = 'center';
     li.style.marginBottom = '8px';
-
     li.innerHTML = `
       <span>${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${itemTotal}</span>
       <button class="remove-btn" data-index="${index}" style="
@@ -143,40 +104,34 @@ function updateCartUI() {
         font-size: 14px;
       ">Remove</button>
     `;
-
     cartItemsEl.appendChild(li);
   });
 
+  // COURIER FEE
   let courierFee = 0;
-  if (totalQty > 0) {
-    courierFee = 180;
-    if (totalQty > 2) {
-      courierFee += (totalQty - 2) * 15;
-    }
-  }
+  if (totalQty > 0) { courierFee = 180; if (totalQty > 2) courierFee += (totalQty - 2) * 15; }
 
   const grandTotal = total + courierFee;
   courierFeeEl.textContent = `R${courierFee}`;
   totalCostEl.textContent = `R${grandTotal}`;
 
+  // WHATSAPP MESSAGE
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
-    const unitPrice = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
-    message += `${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${unitPrice * item.qty}%0A`;
+    const pricePerUnit = getUnitPrice(item);
+    message += `${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${pricePerUnit*item.qty}%0A`;
   });
   message += `%0ACourier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0APlease find my sticker labels and delivery address below.`;
 
-  const phoneNumber = '27814458910';
-  whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
+  whatsappBtn.href = `https://wa.me/27814458910?text=${message}`;
 
-  document.querySelectorAll('.remove-btn').forEach(button => {
-    button.addEventListener('click', (e) => {
-      const index = e.target.getAttribute('data-index');
-      removeFromCart(parseInt(index));
-    });
+  // REMOVE ITEM
+  document.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', e => removeFromCart(parseInt(e.target.dataset.index)));
   });
 }
 
+// REMOVE
 function removeFromCart(index) {
   if (index >= 0 && index < cart.length) {
     cart.splice(index, 1);
@@ -185,22 +140,5 @@ function removeFromCart(index) {
   }
 }
 
-function saveCart() {
-  localStorage.setItem('phantomvi_cart', JSON.stringify(cart));
-}
-
-// HEADER SCROLL HIDE/SHOW
-let lastScroll = 0;
-const header = document.querySelector("header");
-
-window.addEventListener("scroll", () => {
-  let currentScroll = window.pageYOffset;
-
-  if (currentScroll > lastScroll && currentScroll > 80) {
-    header.classList.add("hide");
-  } else {
-    header.classList.remove("hide");
-  }
-
-  lastScroll = currentScroll;
-});
+// SAVE CART
+function saveCart() { localStorage.setItem('phantomvi_cart', JSON.stringify(cart)); }
