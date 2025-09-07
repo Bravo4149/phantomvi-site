@@ -1,58 +1,90 @@
-/* ABOUT US PAGE STYLING FIXES */
-.founder-img {
-  display: block;
-  max-width: 200px;
-  width: 50%;
-  height: auto;
-  margin: 20px auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About - PHANTOM VI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
+  <!-- HEADER -->
+  <header id="siteHeader">
+    <img src="images/logo.png" alt="PHANTOM VI Logo" class="logo" />
+    <p>Custom Wine, Gin & Vodka, Made in Colesberg</p>
+    <nav>
+      <a href="index.html#products">Products</a>
+      <a href="index.html#cart">Order & Payment</a>
+      <a href="about.html">About Us</a>
+    </nav>
+  </header>
 
-.team-member {
-  background: #fffafc;
-  border: 1px solid #f3cbd5;
-  border-radius: 12px;
-  text-align: center;
-  padding: 15px;
-  transition: transform 0.3s;
-}
+  <!-- MAIN -->
+  <main class="about-section">
+    <h2>Our Story</h2>
+    <img src="images/founder.jpg" alt="Vincent Makafu" class="founder-img">
+    <p><strong>PHANTOM VI</strong> was founded in 2015 by <strong>Vincent Makafu</strong> in the Free State. With grit, creativity, and passion, he built the business from humble beginnings, eventually expanding operations to Colesberg.</p>
+    <p>Today, Phantom VI is a respected name in custom alcohol bottling, label printing, and private-brand support, known for transforming dreams into real, tangible products. From ashes to glory, Vincent’s journey is a true tale of resilience and excellence in the industry.</p>
 
-.team-member:hover {
-  transform: translateY(-5px);
-}
+    <h2>Our Team</h2>
+    <div class="team-grid">
+      <div class="team-member">
+        <img src="images/vincent1.jpg" alt="Vincent Makafu">
+        <h4>Vincent Makafu</h4>
+        <p>Founder & Branding Lead</p>
+      </div>
+      <div class="team-member">
+        <img src="images/partner1.jpg" alt="Johan Smit">
+        <h4>Johan Smit</h4>
+        <p>Production Manager</p>
+      </div>
+      <div class="team-member">
+        <img src="images/partner2.jpg" alt="Lebo Ndlovu">
+        <h4>Lebo Ndlovu</h4>
+        <p>Operations Coordinator</p>
+      </div>
+      <div class="team-member">
+        <img src="images/partner3.jpg" alt="Francina Baba">
+        <h4>Francina Baba</h4>
+        <p>Design & Label Expert</p>
+      </div>
+    </div>
 
-.team-member img {
-  max-width: 120px;
-  width: 70%;
-  height: auto;
-  border-radius: 50%;
-  margin-bottom: 10px;
-  object-fit: cover;
-}
+    <h2>Licensing & Legal in South Africa</h2>
+    <p>Licensing in SA can be complex; Phantom VI is here to help. You can sell under our existing license for promotions, events, and demos.</p>
+    <p><strong>Note:</strong> All sales must comply with South African liquor laws.</p>
 
-.about-section h2 {
-  text-align: center;
-  color: #b03060;
-  margin-bottom: 15px;
-}
+    <ul class="licensing-details">
+      <li><strong>Main Bodies:</strong> Provincial liquor boards</li>
+      <li><strong>Costs:</strong> R5,000 – R50,000+ depending on type and province</li>
+      <li><strong>Process:</strong> Application → Inspections → Hearing</li>
+      <li><strong>Timeline:</strong> 6 to 24 months</li>
+    </ul>
 
-.about-section p {
-  text-align: justify;
-  font-size: 16px;
-  line-height: 1.7;
-  margin-bottom: 15px;
-}
+    <p>When you’re ready for your own license, we’ll guide you every step of the way.</p>
+  </main>
 
-.licensing-details {
-  margin: 15px 0;
-  color: #555;
-  list-style: disc inside;
-}
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2015–2025 PHANTOM VI. All rights reserved.</p>
+    <p>Contact us on WhatsApp: <a href="https://wa.me/27814458910">081 445 8910</a></p>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    // HEADER HIDE ON SCROLL
+    let lastScroll = 0;
+    const header = document.getElementById('siteHeader');
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      if(currentScroll > lastScroll && currentScroll > 150){
+        header.classList.add('hide');
+      } else {
+        header.classList.remove('hide');
+      }
+      lastScroll = currentScroll;
+    });
+  </script>
+
+</body>
+</html>
