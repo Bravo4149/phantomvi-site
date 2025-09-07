@@ -81,7 +81,7 @@ function addToCart(type) {
     updateCartUI();
     clearInputs(type);
     showLoading(false);
-  }, 1000);  // Simulate loading effect
+  }, 1000);
 }
 
 function clearInputs(type) {
@@ -101,6 +101,7 @@ function showLoading(show) {
   loadingOverlay.style.display = show ? 'flex' : 'none';
 }
 
+// Pricing logic
 function updateCartUI() {
   cartItemsEl.innerHTML = '';
 
@@ -122,8 +123,31 @@ function updateCartUI() {
   let totalQty = 0;
 
   cart.forEach((item, index) => {
-    const pricePerUnit = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
-    const itemTotal = pricePerUnit * item.qty;
+    let itemTotal = 0;
+    let displayPrice = '';
+
+    if (item.type === "Wine") {
+      if (item.qty <= 50) {
+        itemTotal = item.qty * prices.Wine[item.variant];
+        displayPrice = `R${prices.Wine[item.variant]} each`;
+      } else {
+        const first50 = 50 * prices.Wine[item.variant];
+        const rest = (item.qty - 50) * 65;
+        itemTotal = first50 + rest;
+        displayPrice = `R${prices.Wine[item.variant]} (first 50), then R65`;
+      }
+    } else if (item.type === "Gin" || item.type === "Vodka") {
+      if (item.qty <= 50) {
+        itemTotal = item.qty * prices[item.type];
+        displayPrice = `R${prices[item.type]} each`;
+      } else {
+        const first50 = 50 * prices[item.type];
+        const rest = (item.qty - 50) * 140;
+        itemTotal = first50 + rest;
+        displayPrice = `R${prices[item.type]} (first 50), then R140`;
+      }
+    }
+
     total += itemTotal;
     totalQty += item.qty;
 
@@ -134,7 +158,7 @@ function updateCartUI() {
     li.style.marginBottom = '8px';
 
     li.innerHTML = `
-      <span>${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${itemTotal}</span>
+      <span>${item.qty} x ${item.variant} ${item.type} (${displayPrice}) - R${itemTotal}</span>
       <button class="remove-btn" data-index="${index}" style="
         background: #90284d;
         border: none;
@@ -163,8 +187,7 @@ function updateCartUI() {
 
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
-    const unitPrice = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
-    message += `${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${unitPrice * item.qty}%0A`;
+    message += `${item.qty} x ${item.variant} ${item.type}%0A`;
   });
   message += `%0ACourier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0APlease find my sticker labels and delivery address below.`;
 
@@ -190,3 +213,16 @@ function removeFromCart(index) {
 function saveCart() {
   localStorage.setItem('phantomvi_cart', JSON.stringify(cart));
 }
+
+// Header hide/show on scroll
+let lastScrollY = window.scrollY;
+const header = document.getElementById("site-header");
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > lastScrollY) {
+    header.classList.add("hidden");
+  } else {
+    header.classList.remove("hidden");
+  }
+  lastScrollY = window.scrollY;
+});
