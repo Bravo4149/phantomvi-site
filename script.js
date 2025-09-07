@@ -1,67 +1,103 @@
-// CART ARRAY
-let cart = [];
+// Elements
+const cartItemsEl = document.getElementById('cartItems');
+const courierFeeEl = document.getElementById('courierFee');
+const totalCostEl = document.getElementById('totalCost');
+const whatsappBtn = document.getElementById('whatsappBtn');
+const emptyCartMessage = document.getElementById('emptyCartMessage');
+const loadingOverlay = document.getElementById('loadingOverlay');
 
-// HEADER SCROLL
-let lastScroll = 0;
-const header = document.querySelector('header');
-window.addEventListener('scroll', () => {
-  const currentScroll = window.pageYOffset;
-  if (currentScroll > lastScroll && currentScroll > 100) header.classList.add('hide');
-  else header.classList.remove('hide');
-  lastScroll = currentScroll;
-});
-
-// LOAD CART
-window.onload = () => {
-  const savedCart = localStorage.getItem('phantomvi_cart');
-  if (savedCart) { cart = JSON.parse(savedCart); updateCartUI(); }
+// Prices per product category
+const prices = {
+  Wine: {
+    "Sweet Rosé": 75,
+    "Shiraz": 75,
+    "Sauvignon Blanc": 75,
+    "Pinotage": 75,
+    "Sweet White": 75,
+    "Sweet Red": 75,
+    "Chenin Blanc": 75,
+    "Chardonnay": 75,
+    "Cabernet Sauvignon": 75,
+    "Merlot": 75,
+    "Coffee Pinotage": 75,
+    "Non-Alcoholic Wine": 100
+  },
+  Gin: 165,
+  Vodka: 165
 };
 
-// HELPER: GET UNIT PRICE BASED ON RULES
-function getUnitPrice(item) {
-  if (item.type === 'Wine') return item.qty > 50 ? 65 : 75;
-  if (item.type === 'Gin' || item.type === 'Vodka') return item.qty > 50 ? 140 : 165;
-  return 0;
-}
+// Cart array
+let cart = [];
 
-// ADD PRODUCT
+// Load cart from localStorage
+window.onload = () => {
+  const savedCart = localStorage.getItem('phantomvi_cart');
+  if (savedCart) {
+    cart = JSON.parse(savedCart);
+    updateCartUI();
+  }
+};
+
+// Add product to cart
 function addToCart(type) {
-  let sel, qty, variant;
-  if (type === 'Wine') { sel = document.getElementById('wineType'); qty = parseInt(document.getElementById('wineQty').value); variant = sel.value; }
-  else if (type === 'Gin') { sel = document.getElementById('ginType'); qty = parseInt(document.getElementById('ginQty').value); variant = sel.value; }
-  else if (type === 'Vodka') { sel = document.getElementById('vodkaType'); qty = parseInt(document.getElementById('vodkaQty').value); variant = sel.value; }
+  let productType, qty, sel;
+  if (type === 'Wine') {
+    sel = document.getElementById('wineType');
+    productType = sel.value;
+    qty = parseInt(document.getElementById('wineQty').value);
+  } else if (type === 'Gin') {
+    sel = document.getElementById('ginType');
+    productType = sel.value;
+    qty = parseInt(document.getElementById('ginQty').value);
+  } else if (type === 'Vodka') {
+    sel = document.getElementById('vodkaType');
+    productType = sel.value;
+    qty = parseInt(document.getElementById('vodkaQty').value);
+  }
 
-  if (!variant) { alert(`Please select a ${type}`); return; }
-  if (!qty || qty <= 0) { alert('Please enter a valid quantity'); return; }
+  if (!productType || qty <= 0) {
+    alert('Please select a type and enter a valid quantity.');
+    return;
+  }
 
   showLoading(true);
-  setTimeout(() => {
-    const existingIndex = cart.findIndex(item => item.type === type && item.variant === variant);
-    if (existingIndex >= 0) cart[existingIndex].qty += qty;
-    else cart.push({ type, variant, qty });
 
-    saveCart(); updateCartUI(); clearInputs(type); showLoading(false);
+  setTimeout(() => {
+    const existingIndex = cart.findIndex(
+      item => item.type === type && item.variant === productType
+    );
+
+    if (existingIndex >= 0) {
+      cart[existingIndex].qty += qty;
+    } else {
+      cart.push({ type, variant: productType, qty });
+    }
+
+    saveCart();
+    updateCartUI();
+    clearInputs(type);
+    showLoading(false);
   }, 500);
 }
 
-// CLEAR INPUTS
 function clearInputs(type) {
-  if (type === 'Wine') { document.getElementById('wineType').value = ''; document.getElementById('wineQty').value = ''; }
-  else if (type === 'Gin') { document.getElementById('ginType').value = ''; document.getElementById('ginQty').value = ''; }
-  else if (type === 'Vodka') { document.getElementById('vodkaType').value = ''; document.getElementById('vodkaQty').value = ''; }
+  if(type === 'Wine'){
+    document.getElementById('wineQty').value = '';
+    document.getElementById('wineType').value = '';
+  } else if(type === 'Gin'){
+    document.getElementById('ginQty').value = '';
+    document.getElementById('ginType').value = '';
+  } else if(type === 'Vodka'){
+    document.getElementById('vodkaQty').value = '';
+    document.getElementById('vodkaType').value = '';
+  }
 }
 
-// LOADING
-function showLoading(show) { document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none'; }
+function showLoading(show) {
+  loadingOverlay.style.display = show ? 'flex' : 'none';
+}
 
-// UPDATE CART UI
 function updateCartUI() {
-  const cartItemsEl = document.getElementById('cartItems');
-  const courierFeeEl = document.getElementById('courierFee');
-  const totalCostEl = document.getElementById('totalCost');
-  const whatsappBtn = document.getElementById('whatsappBtn');
-  const emptyCartMessage = document.getElementById('emptyCartMessage');
-
   cartItemsEl.innerHTML = '';
 
   if (cart.length === 0) {
@@ -82,7 +118,15 @@ function updateCartUI() {
   let totalQty = 0;
 
   cart.forEach((item, index) => {
-    const pricePerUnit = getUnitPrice(item);
+    let pricePerUnit;
+    if(item.type === 'Wine') {
+      pricePerUnit = prices.Wine[item.variant];
+      if(item.qty >= 50) pricePerUnit = 65; // discount
+    } else if(item.type === 'Gin' || item.type === 'Vodka') {
+      pricePerUnit = prices[item.type];
+      if(item.qty >= 50) pricePerUnit = 140; // discount
+    }
+
     const itemTotal = pricePerUnit * item.qty;
     total += itemTotal;
     totalQty += item.qty;
@@ -92,6 +136,7 @@ function updateCartUI() {
     li.style.justifyContent = 'space-between';
     li.style.alignItems = 'center';
     li.style.marginBottom = '8px';
+
     li.innerHTML = `
       <span>${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${itemTotal}</span>
       <button class="remove-btn" data-index="${index}" style="
@@ -104,34 +149,36 @@ function updateCartUI() {
         font-size: 14px;
       ">Remove</button>
     `;
+
     cartItemsEl.appendChild(li);
   });
 
-  // COURIER FEE
-  let courierFee = 0;
-  if (totalQty > 0) { courierFee = 180; if (totalQty > 2) courierFee += (totalQty - 2) * 15; }
+  let courierFee = totalQty > 0 ? 180 + Math.max(0, totalQty - 2) * 15 : 0;
 
-  const grandTotal = total + courierFee;
+  totalCostEl.textContent = `R${total + courierFee}`;
   courierFeeEl.textContent = `R${courierFee}`;
-  totalCostEl.textContent = `R${grandTotal}`;
 
-  // WHATSAPP MESSAGE
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
-    const pricePerUnit = getUnitPrice(item);
-    message += `${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${pricePerUnit*item.qty}%0A`;
+    const unitPrice = item.type === 'Wine' && item.qty >= 50 ? 65
+                      : (item.type === 'Gin' || item.type === 'Vodka') && item.qty >= 50 ? 140
+                      : item.type === 'Wine' ? prices.Wine[item.variant]
+                      : prices[item.type];
+    message += `${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${unitPrice*item.qty}%0A`;
   });
-  message += `%0ACourier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0APlease find my sticker labels and delivery address below.`;
+  message += `%0ACourier Fee: R${courierFee}%0ATotal: R${total + courierFee}%0A%0APlease provide delivery details.`;
 
-  whatsappBtn.href = `https://wa.me/27814458910?text=${message}`;
+  const phoneNumber = '27814458910';
+  whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
 
-  // REMOVE ITEM
-  document.querySelectorAll('.remove-btn').forEach(btn => {
-    btn.addEventListener('click', e => removeFromCart(parseInt(e.target.dataset.index)));
+  document.querySelectorAll('.remove-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const index = parseInt(e.target.getAttribute('data-index'));
+      removeFromCart(index);
+    });
   });
 }
 
-// REMOVE
 function removeFromCart(index) {
   if (index >= 0 && index < cart.length) {
     cart.splice(index, 1);
@@ -140,5 +187,6 @@ function removeFromCart(index) {
   }
 }
 
-// SAVE CART
-function saveCart() { localStorage.setItem('phantomvi_cart', JSON.stringify(cart)); }
+function saveCart() {
+  localStorage.setItem('phantomvi_cart', JSON.stringify(cart));
+}
