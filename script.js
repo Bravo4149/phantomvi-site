@@ -79,7 +79,7 @@ function addToCart(type) {
     updateCartUI();
     clearInputs(type);
     showLoading(false);
-  }, 800); // small loading effect
+  }, 800);
 }
 
 function clearInputs(type) {
@@ -147,7 +147,6 @@ function updateCartUI() {
     cartItemsEl.appendChild(li);
   });
 
-  // Courier fee calculation
   let courierFee = 0;
   if (totalQty > 0) {
     courierFee = 180;
@@ -160,7 +159,6 @@ function updateCartUI() {
   courierFeeEl.textContent = `R${courierFee}`;
   totalCostEl.textContent = `R${grandTotal}`;
 
-  // Build WhatsApp message
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
     const unitPrice = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
@@ -171,7 +169,6 @@ function updateCartUI() {
   const phoneNumber = '27814458910';
   whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
 
-  // Remove item buttons
   document.querySelectorAll('.remove-btn').forEach(button => {
     button.addEventListener('click', (e) => {
       const index = e.target.getAttribute('data-index');
@@ -200,9 +197,9 @@ window.addEventListener("scroll", () => {
   let currentScroll = window.pageYOffset;
 
   if (currentScroll > lastScroll && currentScroll > 80) {
-    header.classList.add("hide"); // scrolling down → hide
+    header.classList.add("hide");
   } else {
-    header.classList.remove("hide"); // scrolling up → show
+    header.classList.remove("hide");
   }
 
   lastScroll = currentScroll;
