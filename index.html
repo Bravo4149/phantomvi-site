@@ -1,104 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PHANTOM VI - Custom Bottles</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phantom VI Wines & Spirits</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div id="backgroundBlur"></div>
-
-  <header>
-    <img src="images/logo.png" alt="PHANTOM VI Logo" class="logo" />
-    <p>Custom Wine, Gin & Vodka Made in Colesberg</p>
+  <!-- HEADER -->
+  <header id="site-header">
+    <img src="images/logo.png" alt="Phantom VI Logo" class="logo">
+    <h1>Phantom VI Wines & Spirits</h1>
+    <p>Luxury in Every Bottle</p>
     <nav>
       <a href="#products">Products</a>
-      <a href="#cart">Order & Payment</a>
-      <a href="about.html">About Us</a>
+      <a href="#cart">Cart</a>
+      <a href="#about">About</a>
     </nav>
   </header>
 
+  <!-- MAIN -->
   <main>
+    <!-- PRODUCTS -->
     <section id="products" class="products">
+      <!-- WINE -->
       <div class="product">
-        <img src="images/wine.jpg" alt="Wine Bottle" />
-        <h2>Wines</h2>
-        <div class="product-form">
+        <img src="images/wine.jpg" alt="Wine">
+        <h3>Wine</h3>
+        <form class="product-form">
           <select id="wineType">
-            <option value="">Select Wine Type</option>
-            <option>Sweet Rosé</option>
-            <option>Shiraz</option>
-            <option>Sauvignon Blanc</option>
-            <option>Pinotage</option>
-            <option>Sweet White</option>
-            <option>Sweet Red</option>
-            <option>Chenin Blanc</option>
-            <option>Chardonnay</option>
-            <option>Cabernet Sauvignon</option>
-            <option>Merlot</option>
-            <option>Coffee Pinotage</option>
-            <option>Non-Alcoholic Wine</option>
+            <option value="">Select Type</option>
+            <option value="Sweet Rosé">Sweet Rosé</option>
+            <option value="Shiraz">Shiraz</option>
+            <option value="Sauvignon Blanc">Sauvignon Blanc</option>
+            <option value="Pinotage">Pinotage</option>
+            <option value="Sweet White">Sweet White</option>
+            <option value="Sweet Red">Sweet Red</option>
+            <option value="Chenin Blanc">Chenin Blanc</option>
+            <option value="Chardonnay">Chardonnay</option>
+            <option value="Cabernet Sauvignon">Cabernet Sauvignon</option>
+            <option value="Merlot">Merlot</option>
+            <option value="Coffee Pinotage">Coffee Pinotage</option>
+            <option value="Non-Alcoholic Wine">Non-Alcoholic Wine</option>
           </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Wine')">Add to Cart</button>
-        </div>
+          <input type="number" id="wineQty" placeholder="Quantity">
+          <button type="button" onclick="addToCart('Wine')">Add to Cart</button>
+        </form>
       </div>
 
+      <!-- GIN -->
       <div class="product">
-        <img src="images/gin.jpg" alt="Gin Bottle" />
-        <h2>Gins (R165)</h2>
-        <div class="product-form">
+        <img src="images/gin.jpg" alt="Gin">
+        <h3>Gin</h3>
+        <form class="product-form">
           <select id="ginType">
-            <option value="">Select Gin Type</option>
-            <option>London Dry</option>
-            <option>Strawberry</option>
-            <option>Apple & Cinnamon</option>
-            <option>Blueberry</option>
-            <option>Orange & Lime</option>
-            <option>Lavender Infused</option>
+            <option value="Standard Gin">Standard Gin</option>
           </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Gin')">Add to Cart</button>
-        </div>
+          <input type="number" id="ginQty" placeholder="Quantity">
+          <button type="button" onclick="addToCart('Gin')">Add to Cart</button>
+        </form>
       </div>
 
+      <!-- VODKA -->
       <div class="product">
-        <img src="images/vodka.jpg" alt="Vodka Bottle" />
-        <h2>Vodkas (R165)</h2>
-        <div class="product-form">
+        <img src="images/vodka.jpg" alt="Vodka">
+        <h3>Vodka</h3>
+        <form class="product-form">
           <select id="vodkaType">
-            <option value="">Select Vodka Type</option>
-            <option>Vanilla</option>
-            <option>Triple Distilled</option>
+            <option value="Standard Vodka">Standard Vodka</option>
           </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Vodka')">Add to Cart</button>
-        </div>
+          <input type="number" id="vodkaQty" placeholder="Quantity">
+          <button type="button" onclick="addToCart('Vodka')">Add to Cart</button>
+        </form>
       </div>
     </section>
 
+    <!-- CART -->
     <section id="cart" class="cart">
-      <h3>Cart Summary:</h3>
+      <h3>Your Cart</h3>
       <ul id="cartItems"></ul>
       <p id="emptyCartMessage">Your cart is empty.</p>
       <p>Courier Fee: <span id="courierFee">R0</span></p>
-      <h3>Total: <span id="totalCost">R0</span></h3>
+      <p><strong>Total: <span id="totalCost">R0</span></strong></p>
+      <a href="#" id="whatsappBtn" class="btn">Checkout via WhatsApp</a>
+    </section>
 
-      <a href="https://pay.yoco.com/TRP" target="_blank" class="btn" rel="noopener noreferrer">
-        Pay with Yoco
-      </a>
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left:15px;">
-        Send Label & Address via WhatsApp
-      </a>
+    <!-- ABOUT -->
+    <section id="about" class="about-section">
+      <h2>About Phantom VI</h2>
+      <p>
+        Phantom VI is a premium South African wine & spirits brand, delivering luxury and elegance in every bottle. 
+        From smooth wines to bold gins and vodkas, we take pride in quality that speaks for itself.
+      </p>
     </section>
   </main>
 
+  <!-- FOOTER -->
   <footer>
-    <p>Contact us on WhatsApp: <a href="tel:0814458910">081 445 8910</a></p>
+    <p>&copy; 2025 Phantom VI Wines & Spirits. All Rights Reserved.</p>
   </footer>
 
-  <!-- Loading Spinner -->
+  <!-- LOADING OVERLAY -->
   <div id="loadingOverlay">
     <div class="spinner"></div>
   </div>
