@@ -10,14 +10,14 @@ const loadingOverlay = document.getElementById('loadingOverlay');
 const prices = {
   Wine: {
     "Sweet Rosé": 75,
-    "Shiraz": 75,
+    "Shiraz": 85,
     "Sauvignon Blanc": 75,
-    "Pinotage": 75,
+    "Pinotage": 85,
     "Sweet White": 75,
     "Sweet Red": 75,
     "Chenin Blanc": 75,
     "Chardonnay": 75,
-    "Cabernet Sauvignon": 75,
+    "Cabernet Sauvignon": 85,
     "Merlot": 75,
     "Coffee Pinotage": 75,
     "Non-Alcoholic Wine": 100
@@ -77,7 +77,7 @@ function addToCart(type) {
     updateCartUI();
     clearInputs(type);
     showLoading(false);
-  }, 500);
+  }, 1000);
 }
 
 function clearInputs(type) {
@@ -118,15 +118,7 @@ function updateCartUI() {
   let totalQty = 0;
 
   cart.forEach((item, index) => {
-    let pricePerUnit;
-    if(item.type === 'Wine') {
-      pricePerUnit = prices.Wine[item.variant];
-      if(item.qty >= 50) pricePerUnit = 65; // discount
-    } else if(item.type === 'Gin' || item.type === 'Vodka') {
-      pricePerUnit = prices[item.type];
-      if(item.qty >= 50) pricePerUnit = 140; // discount
-    }
-
+    const pricePerUnit = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
     const itemTotal = pricePerUnit * item.qty;
     total += itemTotal;
     totalQty += item.qty;
@@ -153,28 +145,32 @@ function updateCartUI() {
     cartItemsEl.appendChild(li);
   });
 
-  let courierFee = totalQty > 0 ? 180 + Math.max(0, totalQty - 2) * 15 : 0;
+  let courierFee = 0;
+  if (totalQty > 0) {
+    courierFee = 180;
+    if (totalQty > 2) {
+      courierFee += (totalQty - 2) * 15;
+    }
+  }
 
-  totalCostEl.textContent = `R${total + courierFee}`;
+  const grandTotal = total + courierFee;
   courierFeeEl.textContent = `R${courierFee}`;
+  totalCostEl.textContent = `R${grandTotal}`;
 
   let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
   cart.forEach(item => {
-    const unitPrice = item.type === 'Wine' && item.qty >= 50 ? 65
-                      : (item.type === 'Gin' || item.type === 'Vodka') && item.qty >= 50 ? 140
-                      : item.type === 'Wine' ? prices.Wine[item.variant]
-                      : prices[item.type];
-    message += `${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${unitPrice*item.qty}%0A`;
+    const unitPrice = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
+    message += `${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${unitPrice * item.qty}%0A`;
   });
-  message += `%0ACourier Fee: R${courierFee}%0ATotal: R${total + courierFee}%0A%0APlease provide delivery details.`;
+  message += `%0ACourier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0APlease find my sticker labels and delivery address below.`;
 
   const phoneNumber = '27814458910';
   whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
 
   document.querySelectorAll('.remove-btn').forEach(button => {
     button.addEventListener('click', (e) => {
-      const index = parseInt(e.target.getAttribute('data-index'));
-      removeFromCart(index);
+      const index = e.target.getAttribute('data-index');
+      removeFromCart(parseInt(index));
     });
   });
 }
