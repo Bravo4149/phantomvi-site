@@ -7,9 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- HEADER -->
-  <header id="siteHeader">
+  <header>
     <img src="images/logo.png" alt="PHANTOM VI Logo" class="logo" />
     <p>Custom Wine, Gin & Vodka, Made in Colesberg</p>
     <nav>
@@ -19,10 +17,9 @@
     </nav>
   </header>
 
-  <!-- MAIN -->
   <main class="about-section">
     <h2>Our Story</h2>
-    <img src="images/founder.jpg" alt="Vincent Makafu" class="founder-img">
+    <img src="images/founder.jpg" alt="Vincent Makafu">
     <p><strong>PHANTOM VI</strong> was founded in 2015 by <strong>Vincent Makafu</strong> in the Free State. With grit, creativity, and passion, he built the business from humble beginnings, eventually expanding operations to Colesberg.</p>
     <p>Today, Phantom VI is a respected name in custom alcohol bottling, label printing, and private-brand support, known for transforming dreams into real, tangible products. From ashes to glory, Vincent’s journey is a true tale of resilience and excellence in the industry.</p>
 
@@ -34,24 +31,24 @@
         <p>Founder & Branding Lead</p>
       </div>
       <div class="team-member">
-        <img src="images/partner1.jpg" alt="Johan Smit">
+        <img src="images/partner1.jpg" alt="Partner 1">
         <h4>Johan Smit</h4>
         <p>Production Manager</p>
       </div>
       <div class="team-member">
-        <img src="images/partner2.jpg" alt="Lebo Ndlovu">
+        <img src="images/partner2.jpg" alt="Partner 2">
         <h4>Lebo Ndlovu</h4>
         <p>Operations Coordinator</p>
       </div>
       <div class="team-member">
-        <img src="images/partner3.jpg" alt="Francina Baba">
+        <img src="images/partner3.jpg" alt="Partner 3">
         <h4>Francina Baba</h4>
         <p>Design & Label Expert</p>
       </div>
     </div>
 
     <h2>Licensing & Legal in South Africa</h2>
-    <p>Licensing in SA can be complex; Phantom VI is here to help. You can sell under our existing license for promotions, events, and demos.</p>
+    <p>Licensing in SA can be complex, Phantom VI is here to help. You can sell under our existing license for promotions, events, and demos.</p>
     <p><strong>Note:</strong> All sales must comply with South African liquor laws.</p>
 
     <ul class="licensing-details">
@@ -64,27 +61,9 @@
     <p>When you’re ready for your own license, we’ll guide you every step of the way.</p>
   </main>
 
-  <!-- FOOTER -->
   <footer>
     <p>&copy; 2015–2025 PHANTOM VI. All rights reserved.</p>
     <p>Contact us on WhatsApp: <a href="https://wa.me/27814458910">081 445 8910</a></p>
   </footer>
-
-  <!-- SCRIPT -->
-  <script>
-    // HEADER HIDE ON SCROLL
-    let lastScroll = 0;
-    const header = document.getElementById('siteHeader');
-    window.addEventListener('scroll', () => {
-      const currentScroll = window.pageYOffset;
-      if(currentScroll > lastScroll && currentScroll > 150){
-        header.classList.add('hide');
-      } else {
-        header.classList.remove('hide');
-      }
-      lastScroll = currentScroll;
-    });
-  </script>
-
 </body>
 </html>
