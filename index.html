@@ -1,125 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PHANTOM VI - Custom Wine, Gin & Vodka</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phantom VI</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="content-wrapper">
+    <img src="images/logo.png" alt="Phantom VI Logo" class="logo">
+    <h1>Phantom VI</h1>
+    <p class="subtitle">Custom Wines, Gin & Vodka</p>
 
-  <!-- HEADER -->
-  <header id="siteHeader">
-    <img src="images/logo.png" alt="PHANTOM VI Logo" class="logo" />
-    <p>Custom Wine, Gin & Vodka, Made in Colesberg</p>
-    <nav>
-      <a href="#products">Products</a>
-      <a href="#cart">Order & Payment</a>
-      <a href="about.html">About Us</a>
-    </nav>
-  </header>
+    <div class="why">
+      <h2>Why Choose Us?</h2>
+      <p>We provide premium beverages sourced from the finest grapes and ingredients, tailored for your taste.</p>
+    </div>
 
-  <!-- MAIN -->
-  <main>
-
-    <!-- PRODUCTS -->
-    <section id="products" class="products">
-
-      <!-- Wine -->
-      <div class="product">
-        <img src="images/wine.png" alt="Wine Bottle">
-        <h3>Custom Wine</h3>
-        <form class="product-form" onsubmit="event.preventDefault(); addToCart('Wine');">
-          <select id="wineType">
-            <option value="">Select Type</option>
-            <option>Sweet Rosé</option>
-            <option>Shiraz</option>
-            <option>Sauvignon Blanc</option>
-            <option>Pinotage</option>
-            <option>Sweet White</option>
-            <option>Sweet Red</option>
-            <option>Chenin Blanc</option>
-            <option>Chardonnay</option>
-            <option>Cabernet Sauvignon</option>
-            <option>Merlot</option>
-            <option>Coffee Pinotage</option>
-            <option>Non-Alcoholic Wine</option>
-          </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="1" />
-          <button type="submit">Add to Cart</button>
-        </form>
+    <div class="countdown-wrapper">
+      <div class="countdown">
+        <div class="time-box">
+          <div class="time" id="days">00</div>
+          <div class="label">Days</div>
+        </div>
+        <div class="time-box">
+          <div class="time" id="hours">00</div>
+          <div class="label">Hours</div>
+        </div>
+        <div class="time-box">
+          <div class="time" id="minutes">00</div>
+          <div class="label">Minutes</div>
+        </div>
+        <div class="time-box">
+          <div class="time" id="seconds">00</div>
+          <div class="label">Seconds</div>
+        </div>
       </div>
+    </div>
 
-      <!-- Gin -->
-      <div class="product">
-        <img src="images/gin.png" alt="Gin Bottle">
-        <h3>Custom Gin</h3>
-        <form class="product-form" onsubmit="event.preventDefault(); addToCart('Gin');">
-          <select id="ginType">
-            <option value="">Select Type</option>
-            <option>Classic</option>
-            <option>Botanical</option>
-          </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="1" />
-          <button type="submit">Add to Cart</button>
-        </form>
+    <button class="btn">Order Now</button>
+
+    <div class="video-section">
+      <h2>Our Videos</h2>
+      <div class="videos">
+        <iframe src="https://www.youtube.com/embed/example1" frameborder="0" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/example2" frameborder="0" allowfullscreen></iframe>
       </div>
-
-      <!-- Vodka -->
-      <div class="product">
-        <img src="images/vodka.png" alt="Vodka Bottle">
-        <h3>Custom Vodka</h3>
-        <form class="product-form" onsubmit="event.preventDefault(); addToCart('Vodka');">
-          <select id="vodkaType">
-            <option value="">Select Type</option>
-            <option>Classic</option>
-            <option>Flavored</option>
-          </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="1" />
-          <button type="submit">Add to Cart</button>
-        </form>
-      </div>
-
-    </section>
-
-    <!-- CART -->
-    <section id="cart" class="cart">
-      <h3>Your Cart</h3>
-      <ul id="cartItems"></ul>
-      <p>Courier Fee: <span id="courierFee">R0</span></p>
-      <p>Total: <span id="totalCost">R0</span></p>
-      <a id="whatsappBtn" class="btn" href="#" target="_blank">Order via WhatsApp</a>
-      <p id="emptyCartMessage" style="margin-top:10px;">Your cart is empty</p>
-    </section>
-
-  </main>
-
-  <!-- LOADING OVERLAY -->
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
+    </div>
   </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <p>&copy; 2015–2025 PHANTOM VI. All rights reserved.</p>
-    <p>Contact us on WhatsApp: <a href="https://wa.me/27814458910">081 445 8910</a></p>
-  </footer>
-
-  <!-- SCRIPT -->
-  <script src="script.js"></script>
-  <script>
-    // HEADER HIDE ON SCROLL
-    let lastScroll = 0;
-    const header = document.getElementById('siteHeader');
-    window.addEventListener('scroll', () => {
-      const currentScroll = window.pageYOffset;
-      if(currentScroll > lastScroll && currentScroll > 150){
-        header.classList.add('hide');
-      } else {
-        header.classList.remove('hide');
-      }
-      lastScroll = currentScroll;
-    });
-  </script>
 </body>
 </html>
