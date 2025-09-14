@@ -23,6 +23,12 @@ a:hover {
   text-decoration: underline;
 }
 
+/* HEADINGS: PREMIUM FONT */
+h1, h2, h3 {
+  font-family: 'Playfair Display', serif;
+  color: #7b1e3d;
+}
+
 /* LOGO */
 .logo {
   max-width: 280px;
@@ -88,12 +94,13 @@ main {
   width: 300px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
   padding-bottom: 20px;
 }
 
 .product:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 6px 18px rgba(176, 48, 96, 0.25);
 }
 
 .product img {
@@ -130,17 +137,18 @@ main {
 
 .product-form button {
   padding: 10px;
-  background: #f28ca3;
+  background: linear-gradient(135deg, #b03060, #7b1e3d);
   color: white;
   font-weight: bold;
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .product-form button:hover {
-  background: #e36c88;
+  background: linear-gradient(135deg, #90284d, #5a142b);
+  transform: translateY(-2px);
 }
 
 /* CART */
@@ -168,6 +176,24 @@ main {
   font-weight: 600;
 }
 
+.cart ul li {
+  background: #fff0f5;
+  border-radius: 25px;
+  padding: 8px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cart ul li button {
+  background: none;
+  border: none;
+  color: #b03060;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .cart p,
 .cart span {
   color: #9b4c62;
@@ -177,17 +203,18 @@ main {
 .cart .btn {
   display: inline-block;
   margin-top: 15px;
-  background: #b03060;
+  background: linear-gradient(135deg, #b03060, #7b1e3d);
   color: white;
   padding: 12px 20px;
   text-decoration: none;
   border-radius: 30px;
   font-weight: bold;
-  transition: background 0.3s;
+  transition: background 0.3s, transform 0.2s;
 }
 
 .cart .btn:hover {
-  background: #90284d;
+  background: linear-gradient(135deg, #90284d, #5a142b);
+  transform: translateY(-2px);
 }
 
 /* FOOTER */
@@ -290,4 +317,15 @@ footer {
   list-style: disc inside;
   margin: 15px 0;
   color: #555;
+}
+
+/* MOBILE PRODUCT STACK */
+@media (max-width: 768px) {
+  .products {
+    flex-direction: column;
+    align-items: center;
+  }
+  .product {
+    width: 90%;
+  }
 }
