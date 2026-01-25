@@ -19,8 +19,8 @@ const prices = {
     "Chardonnay": 75,
     "Cabernet Sauvignon": 85,
     "Merlot": 75,
-    "Coffee Pinotage": 75,
-    "Non-Alcoholic Wine": 100
+    "Coffee Pinotage": 85,
+    "Non-Alcoholic Wine": 110
   },
   Gin: 165,
   Vodka: 165
@@ -153,7 +153,7 @@ function updateCartUI() {
   if (totalQty > 0) {
     courierFee = 180;
     if (totalQty > 2) {
-      courierFee += (totalQty - 2) * 17;
+      courierFee += (totalQty - 2) * 19;
     }
   }
 
