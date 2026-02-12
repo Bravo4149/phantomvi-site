@@ -218,4 +218,12 @@ body{
   .how-grid{
     grid-template-columns: 1fr;
   }
+   .cart-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:8px;
+}
+
 }
