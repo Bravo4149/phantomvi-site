@@ -136,18 +136,7 @@ function updateCartUI() {
     li.style.alignItems = 'center';
     li.style.marginBottom = '8px';
 
-    li.innerHTML =
-      <span>${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${itemTotal}</span>
-      <button class="remove-btn" data-index="${index}" style="
-        background: #90284d;
-        border: none;
-        color: white;
-        border-radius: 6px;
-        cursor: pointer;
-        padding: 4px 8px;
-        font-size: 14px;
-      ">Remove</button>
-    ;
+    li.innerHTML = <span>${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${itemTotal}</span> <button class="remove-btn" data-index="${index}" style=" background: #90284d; border: none; color: white; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-size: 14px; ">Remove</button> ;
 
     cartItemsEl.appendChild(li);
   });
