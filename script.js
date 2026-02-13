@@ -45,15 +45,15 @@ function addToCart(type) {
   if (type === 'Wine') {
     sel = document.getElementById('wineType');
     productType = sel.value;
-    qty = parseInt(document.getElementById('wineQty').value);
+    qty = parseInt(document.getElementById('wineQty').value, 10);
   } else if (type === 'Gin') {
     sel = document.getElementById('ginType');
     productType = sel.value;
-    qty = parseInt(document.getElementById('ginQty').value);
+    qty = parseInt(document.getElementById('ginQty').value, 10);
   } else if (type === 'Vodka') {
     sel = document.getElementById('vodkaType');
     productType = sel.value;
-    qty = parseInt(document.getElementById('vodkaQty').value);
+    qty = parseInt(document.getElementById('vodkaQty').value, 10);
   }
 
   if (!productType) {
@@ -70,7 +70,7 @@ function addToCart(type) {
 
   setTimeout(() => {
     const existingIndex = cart.findIndex(
-      item => item.type === type && item.variant === productType
+      (item) => item.type === type && item.variant === productType
     );
 
     if (existingIndex >= 0) {
@@ -83,17 +83,17 @@ function addToCart(type) {
     updateCartUI();
     clearInputs(type);
     showLoading(false);
-  }, 1000); // Simulate loading effect
+  }, 500);
 }
 
 function clearInputs(type) {
-  if(type === 'Wine'){
+  if (type === 'Wine') {
     document.getElementById('wineQty').value = '';
     document.getElementById('wineType').value = '';
-  } else if(type === 'Gin'){
+  } else if (type === 'Gin') {
     document.getElementById('ginQty').value = '';
     document.getElementById('ginType').value = '';
-  } else if(type === 'Vodka'){
+  } else if (type === 'Vodka') {
     document.getElementById('vodkaQty').value = '';
     document.getElementById('vodkaType').value = '';
   }
@@ -124,19 +124,28 @@ function updateCartUI() {
   let totalQty = 0;
 
   cart.forEach((item, index) => {
-    const pricePerUnit = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
+    const pricePerUnit =
+      item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
+
     const itemTotal = pricePerUnit * item.qty;
 
     total += itemTotal;
     totalQty += item.qty;
 
     const li = document.createElement('li');
-    li.style.display = 'flex';
-    li.style.justifyContent = 'space-between';
-    li.style.alignItems = 'center';
-    li.style.marginBottom = '8px';
 
-    li.innerHTML = <span>${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${itemTotal}</span> <button class="remove-btn" data-index="${index}" style=" background: #90284d; border: none; color: white; border-radius: 6px; cursor: pointer; padding: 4px 8px; font-size: 14px; ">Remove</button> ;
+    li.innerHTML = `
+      <span>${item.qty} x ${item.variant} ${item.type} (R${pricePerUnit} each) - R${itemTotal}</span>
+      <button class="remove-btn" data-index="${index}" style="
+        background: #90284d;
+        border: none;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        padding: 4px 8px;
+        font-size: 14px;
+      ">Remove</button>
+    `;
 
     cartItemsEl.appendChild(li);
   });
@@ -151,25 +160,28 @@ function updateCartUI() {
 
   const grandTotal = total + courierFee;
 
-  courierFeeEl.textContent = R${courierFee};
-  totalCostEl.textContent = R${grandTotal};
+  courierFeeEl.textContent = `R${courierFee}`;
+  totalCostEl.textContent = `R${grandTotal}`;
 
-  let message = Hello, I have placed an order with Phantom VI:%0A%0A;
+  let message = `Hello, I have placed an order with Phantom VI:%0A%0A`;
 
-  cart.forEach(item => {
-    const unitPrice = item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
-    message += ${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${unitPrice * item.qty}%0A;
+  cart.forEach((item) => {
+    const unitPrice =
+      item.type === 'Wine' ? prices.Wine[item.variant] : prices[item.type];
+    message += `${item.qty} x ${item.variant} ${item.type} (R${unitPrice} each) - R${
+      unitPrice * item.qty
+    }%0A`;
   });
 
-  message += %0ACourier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0APlease find my sticker labels and delivery address below.;
+  message += `%0ACourier Fee: R${courierFee}%0ATotal: R${grandTotal}%0A%0APlease find my sticker labels and delivery address below.`;
 
   const phoneNumber = '27814458910';
-  whatsappBtn.href = https://wa.me/${phoneNumber}?text=${message};
+  whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
 
-  document.querySelectorAll('.remove-btn').forEach(button => {
+  document.querySelectorAll('.remove-btn').forEach((button) => {
     button.addEventListener('click', (e) => {
-      const index = e.target.getAttribute('data-index');
-      removeFromCart(parseInt(index));
+      const idx = parseInt(e.target.getAttribute('data-index'), 10);
+      removeFromCart(idx);
     });
   });
 }
