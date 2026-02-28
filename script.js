@@ -14,7 +14,7 @@ const STORAGE_KEY_CUSTOMER = 'phantomvi_customer_v1';
 
 // WhatsApp + Yoco
 const PHONE_NUMBER = '27814458910';
-const YOCO_URL = 'https://pay.yoco.com/TRP';
+const YOCO_URL = 'https://pay.yoco.com/XVICrafters';
 
 // Prices
 const prices = {
