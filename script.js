@@ -1,15 +1,23 @@
-// =======================
-// PHANTOM VI COMPLETE ENGINE
-// =======================
+/* 
+PHANTOM VI — Front-end cart + add-ons + Google Sheets logging
 
-const CONFIG = {
-  STORAGE: 'phantom_cart',
-  WHATSAPP: '27814458910',
-  PAYMENT: 'https://pay.ikhokha.com/phantomvi/mpr/vi'
-};
+To connect Google Sheets logging:
+- Create an Apps Script Web App (code provided in README in the zip)
+- Paste the Web App URL into admin.html and Save
+*/
 
-// --- PRICES ---
-const PRICES = {
+// --- Config ---
+const STORAGE_KEY_CART = 'phantomvi_cart_v6';
+const STORAGE_KEY_ADDONS = 'phantomvi_addons_v6';
+const STORAGE_KEY_ADMIN = 'phantomvi_admin_cfg';
+const STORAGE_KEY_CUSTOMER = 'phantomvi_customer_v1';
+
+// WhatsApp + Yoco
+const PHONE_NUMBER = '27814458910';
+const YOCO_URL = 'https://pay.yoco.com/XVICrafters';
+
+// Prices
+const prices = {
   Wine: {
     "Sweet Rosé": 75,
     "Shiraz": 85,
@@ -18,204 +26,161 @@ const PRICES = {
     "Sweet White": 75,
     "Sweet Red": 75,
     "Chenin Blanc": 75,
-    "Chardonnay": 85,
-    "Cabernet Sauvignon": 95,
-    "Merlot": 90,
-    "Coffee Pinotage": 95,
-    "Non-Alcoholic Wine": 125
+    "Chardonnay": 75,
+    "Cabernet Sauvignon": 85,
+    "Merlot": 75,
+    "Coffee Pinotage": 75,
+    "Non-Alcoholic Wine": 100
   },
   Gin: 165,
-  Vodka: 165,
-  LabelDesign: 500,
-  InsurancePer20: 120,
-  Barcode: 500
+  Vodka: 165
 };
 
+// Add-on prices
+const ADDON_LABEL_DESIGN = 500;
+const ADDON_INSURANCE_PER_20 = 120;
+const ADDON_BARCODE_EACH = 500;
+
+// --- State ---
 let cart = [];
-let addons = {
-  label: false,
-  insurance: false,
-  barcode: 0
-};
+let addons = { labelDesign: false, insurance: false, barcodeCount: 0 };
+let customer = { name: '', phone: '', address: '', city: '', postal: '', notes: '' };
 
-// --- HELPERS ---
-const $ = id => document.getElementById(id);
-
-function save() {
-  localStorage.setItem(CONFIG.STORAGE, JSON.stringify({ cart, addons }));
-}
-
-function load() {
-  const data = JSON.parse(localStorage.getItem(CONFIG.STORAGE));
-  if (data) {
-    cart = data.cart || [];
-    addons = data.addons || addons;
+// --- Helpers ---
+function loadJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
   }
 }
 
-// --- CART ---
-function addToCart(type) {
-  let variant, qty;
+function saveJSON(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
 
-  if (type === 'Wine') {
-    variant = $('wineType').value;
-    qty = +$('wineQty').value;
+function money(n) {
+  return `R${Number(n || 0)}`;
+}
+
+function getUnitPrice(item) {
+  if (item.type === 'Wine') return prices.Wine[item.variant] || 0;
+  return prices[item.type] || 0;
+}
+
+function getTotals() {
+  const totalBottles = cart.reduce((s, i) => s + (Number(i.qty) || 0), 0);
+  const itemsSubtotal = cart.reduce((s, i) => s + getUnitPrice(i) * i.qty, 0);
+
+  let courierFee = 0;
+  if (totalBottles > 0) {
+    courierFee = 168;
+    if (totalBottles > 2) courierFee += (totalBottles - 2) * 9;
   }
 
-  if (type === 'Gin') {
-    variant = $('ginType').value;
-    qty = +$('ginQty').value;
+  const labelDesignFee = addons.labelDesign ? ADDON_LABEL_DESIGN : 0;
+  const insuranceBlocks = Math.ceil(totalBottles / 20);
+  const insuranceFee = addons.insurance && totalBottles > 0
+    ? insuranceBlocks * ADDON_INSURANCE_PER_20
+    : 0;
+
+  const maxBarcodes = Math.min(10, Math.max(totalBottles, 0));
+  const barcodeCount = Math.min(addons.barcodeCount || 0, maxBarcodes);
+  const barcodeFee = barcodeCount * ADDON_BARCODE_EACH;
+
+  const addonsTotal = labelDesignFee + insuranceFee + barcodeFee;
+  const grandTotal = itemsSubtotal + courierFee + addonsTotal;
+
+  return {
+    totalBottles,
+    itemsSubtotal,
+    courierFee,
+    labelDesignFee,
+    insuranceFee,
+    insuranceBlocks,
+    barcodeCount,
+    maxBarcodes,
+    barcodeFee,
+    addonsTotal,
+    grandTotal
+  };
+}
+
+function normalizeAddons() {
+  const t = getTotals();
+  if (addons.barcodeCount > t.maxBarcodes) addons.barcodeCount = t.maxBarcodes;
+  if (t.totalBottles === 0) {
+    addons.insurance = false;
+    addons.labelDesign = false;
+    addons.barcodeCount = 0;
   }
-
-  if (type === 'Vodka') {
-    variant = $('vodkaType').value;
-    qty = +$('vodkaQty').value;
-  }
-
-  if (!variant) return alert('Select product');
-  if (!qty || qty <= 0) return alert('Enter quantity');
-
-  const item = cart.find(i => i.type === type && i.variant === variant);
-
-  if (item) item.qty += qty;
-  else cart.push({ type, variant, qty });
-
-  save();
-  render();
+  saveJSON(STORAGE_KEY_ADDONS, addons);
 }
 
-function updateQty(i, change) {
-  cart[i].qty += change;
-  if (cart[i].qty <= 0) cart.splice(i, 1);
+// --- DOM ---
+const els = {
+  cartItems: document.getElementById('cartItems'),
+  courierFee: document.getElementById('courierFee'),
+  itemsSubtotal: document.getElementById('itemsSubtotal'),
+  addonsTotal: document.getElementById('addonsTotal'),
+  grandTotal: document.getElementById('grandTotal'),
+  whatsappBtn: document.getElementById('whatsappBtn'),
+  yocoBtn: document.getElementById('yocoBtn'),
+  emptyCartMessage: document.getElementById('emptyCartMessage'),
+  loadingOverlay: document.getElementById('loadingOverlay'),
+  addonsWrap: document.getElementById('addons'),
+  addonLabelDesign: document.getElementById('addonLabelDesign'),
+  addonInsurance: document.getElementById('addonInsurance'),
+  insurancePrice: document.getElementById('insurancePrice'),
+  barcodeMinus: document.getElementById('barcodeMinus'),
+  barcodePlus: document.getElementById('barcodePlus'),
+  barcodeCount: document.getElementById('barcodeCount'),
+  barcodeHint: document.getElementById('barcodeHint'),
 
-  save();
-  render();
-}
-
-// --- TOTALS ---
-function itemTotal() {
-  return cart.reduce((sum, i) => {
-    const price = i.type === 'Wine' ? PRICES.Wine[i.variant] : PRICES[i.type];
-    return sum + price * i.qty;
-  }, 0);
-}
-
-function bottleCount() {
-  return cart.reduce((sum, i) => sum + i.qty, 0);
-}
-
-function insuranceCost() {
-  if (!addons.insurance) return 0;
-  return Math.ceil(bottleCount() / 20) * PRICES.InsurancePer20;
-}
-
-function addonsTotal() {
-  return (addons.label ? PRICES.LabelDesign : 0)
-       + insuranceCost()
-       + addons.barcode * PRICES.Barcode;
-}
-
-function grandTotal() {
-  return itemTotal() + addonsTotal();
-}
-
-// --- RENDER ---
-function render() {
-  const list = $('cartItems');
-
-  if (cart.length === 0) {
-    $('emptyCartMessage').style.display = 'block';
-    list.innerHTML = '';
-  } else {
-    $('emptyCartMessage').style.display = 'none';
-
-    list.innerHTML = cart.map((i, idx) => {
-      const price = i.type === 'Wine'
-        ? PRICES.Wine[i.variant]
-        : PRICES[i.type];
-
-      return `
-        <li>
-          ${i.variant} (${i.type}) - R${price}
-          <button onclick="updateQty(${idx}, -1)">-</button>
-          ${i.qty}
-          <button onclick="updateQty(${idx}, 1)">+</button>
-        </li>
-      `;
-    }).join('');
-  }
-
-  $('barcodeCount').textContent = addons.barcode;
-  $('grandTotal').textContent = `R${grandTotal()}`;
-
-  updateButtons();
-}
-
-// --- ADDONS ---
-$('addonLabelDesign').onclick = () => {
-  addons.label = !addons.label;
-  save(); render();
+  custName: document.getElementById('custName'),
+  custPhone: document.getElementById('custPhone'),
+  custAddress: document.getElementById('custAddress'),
+  custCity: document.getElementById('custCity'),
+  custPostal: document.getElementById('custPostal'),
+  custNotes: document.getElementById('custNotes'),
+  checkoutHint: document.getElementById('checkoutHint')
 };
 
-$('addonInsurance').onclick = () => {
-  addons.insurance = !addons.insurance;
-  save(); render();
-};
-
-$('barcodePlus').onclick = () => {
-  addons.barcode++;
-  save(); render();
-};
-
-$('barcodeMinus').onclick = () => {
-  if (addons.barcode > 0) addons.barcode--;
-  save(); render();
-};
-
-// --- CUSTOMER ---
-function validCustomer() {
-  return $('custName').value &&
-         $('custPhone').value &&
-         $('custAddress').value;
-}
-
-// --- WHATSAPP ---
-function buildWhatsApp() {
-  let msg = "PHANTOM VI ORDER:%0A";
+// --- WhatsApp Message ---
+function buildOrderText(t) {
+  const c = getCustomerFromInputs();
+  let msg = `Hello, I have placed an order with Phantom VI:\n\n`;
 
   cart.forEach(i => {
-    msg += `${i.qty} x ${i.variant}%0A`;
+    const unit = getUnitPrice(i);
+    msg += `${i.qty} x ${i.variant} ${i.type} (R${unit} each) - R${unit * i.qty}\n`;
   });
 
-  if (addons.label) msg += "Label Design%0A";
-  if (addons.insurance) msg += "Insurance Included%0A";
-  if (addons.barcode) msg += `Barcodes: ${addons.barcode}%0A`;
+  msg += `\nCourier Fee: R${t.courierFee}\nTotal: R${t.grandTotal}\n\n`;
 
-  msg += `%0ATotal: R${grandTotal()}%0A`;
+  msg += `Delivery Details:\n`;
+  msg += `Name: ${c.name || '-'}\n`;
+  msg += `Phone: ${c.phone || '-'}\n`;
+  msg += `Address: ${c.address || '-'}\n`;
 
-  return `https://wa.me/${CONFIG.WHATSAPP}?text=${msg}`;
+  return encodeURIComponent(msg);
 }
 
-// --- BUTTON CONTROL ---
-function updateButtons() {
-  const active = cart.length && validCustomer();
-
-  $('ikhokhaBtn').disabled = !active;
-  $('ikhokhaBtn').onclick = active
-    ? () => window.location.href = CONFIG.PAYMENT
-    : null;
-
-  $('whatsappBtn').href = active ? buildWhatsApp() : '#';
+// --- UI ---
+function updateUI() {
+  const t = getTotals();
+  if (els.itemsSubtotal) els.itemsSubtotal.textContent = money(t.itemsSubtotal);
+  if (els.courierFee) els.courierFee.textContent = money(t.courierFee);
+  if (els.grandTotal) els.grandTotal.textContent = money(t.grandTotal);
 }
 
-// --- INIT ---
-function init() {
-  load();
-  render();
+// --- Init ---
+(function init() {
+  cart = loadJSON(STORAGE_KEY_CART, []);
+  addons = loadJSON(STORAGE_KEY_ADDONS, addons);
+  customer = loadJSON(STORAGE_KEY_CUSTOMER, customer);
 
-  ['custName','custPhone','custAddress'].forEach(id => {
-    $(id).addEventListener('input', updateButtons);
-  });
-}
-
-init();
+  normalizeAddons();
+  updateUI();
+})();
