@@ -3,112 +3,285 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Order custom wine, gin, and vodka bottles made in Colesberg from Phantom VI. Delivered nationwide with secure Yoco payment." />
   <title>PHANTOM VI - Custom Bottles</title>
 
-  <!-- CSS LINK -->
   <link rel="stylesheet" href="style.css" />
-
-  <!-- FONT -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<header>
-  <img src="images/logo.png" class="logo" />
-  <p>Custom Wine, Gin & Vodka</p>
+  <div id="backgroundBlur"></div>
 
-  <nav>
-    <a href="#products">Products</a>
-    <a href="#cart">Cart</a>
-  </nav>
-</header>
+  <!-- HEADER -->
+  <header>
+    <img src="images/logo.png" alt="PHANTOM VI Logo" class="logo" />
+    <p>Custom Wine, Gin & Vodka Made in Colesberg</p>
 
-<main>
+    <nav>
+      <a href="#products">Products</a>
+      <a href="#cart">Order & Payment</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#faqs">FAQs</a>
+      <a href="about.html">About Us</a>
+    </nav>
+  </header>
 
-<!-- PRODUCTS -->
-<section id="products" class="products">
+  <main>
 
-  <!-- WINE -->
-  <div class="product">
-    <h2>Wine</h2>
+    <!-- PRODUCTS -->
+    <section id="products" class="products">
 
-    <select id="wineType">
-      <option value="">Select Wine</option>
-      <option>Sweet Rosé</option>
-      <option>Shiraz</option>
-      <option>Merlot</option>
-      <option>Non-Alcoholic Wine</option>
-    </select>
+      <!-- WINE -->
+      <div class="product">
+        <img src="images/wine.jpg" alt="Phantom VI Wine Bottle" />
+        <h2>Wines</h2>
 
-    <input type="number" id="wineQty" placeholder="Qty" />
+        <div class="product-form">
+          <select id="wineType">
+            <option value="">Select Wine Type</option>
+            <option>Sweet Rosé</option>
+            <option>Shiraz</option>
+            <option>Sauvignon Blanc</option>
+            <option>Pinotage</option>
+            <option>Sweet White</option>
+            <option>Sweet Red</option>
+            <option>Chenin Blanc</option>
+            <option>Chardonnay</option>
+            <option>Cabernet Sauvignon</option>
+            <option>Merlot</option>
+            <option>Coffee Pinotage</option>
+            <option>Non-Alcoholic Wine</option>
+          </select>
 
-    <button onclick="addToCart('Wine')">Add to Cart</button>
+          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
+          <button type="button" onclick="addToCart('Wine')">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- GIN -->
+      <div class="product">
+        <img src="images/gin.jpg" alt="Phantom VI Gin Bottle" />
+        <h2>Gins (R165)</h2>
+
+        <div class="product-form">
+          <select id="ginType">
+            <option value="">Select Gin Type</option>
+            <option>London Dry</option>
+            <option>Strawberry</option>
+            <option>Apple & Cinnamon</option>
+            <option>Blueberry</option>
+            <option>Orange & Lime</option>
+            <option>Lavender Infused</option>
+          </select>
+
+          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
+          <button type="button" onclick="addToCart('Gin')">Add to Cart</button>
+        </div>
+      </div>
+
+      <!-- VODKA -->
+      <div class="product">
+        <img src="images/vodka.jpg" alt="Phantom VI Vodka Bottle" />
+        <h2>Vodkas (R165)</h2>
+
+        <div class="product-form">
+          <select id="vodkaType">
+            <option value="">Select Vodka Type</option>
+            <option>Vanilla</option>
+            <option>Triple Distilled</option>
+          </select>
+
+          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
+          <button type="button" onclick="addToCart('Vodka')">Add to Cart</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- CART -->
+    <section id="cart" class="cart">
+
+      <h3>Cart Summary:</h3>
+      <ul id="cartItems" class="cart-list"></ul>
+      <p id="emptyCartMessage">Your cart is empty.</p>
+
+      <!-- ADD-ONS -->
+      <div id="addons" class="addons" aria-live="polite">
+
+        <h3 class="addons-title">Add-ons</h3>
+
+        <div class="addons-grid">
+
+          <!-- DESIGN -->
+          <div class="addon-group">
+            <div class="addon-head">
+              <h4>Design</h4>
+              <p>Professional label layout for print.</p>
+            </div>
+
+            <button id="addonLabelDesign" class="addon-card" type="button" aria-pressed="false">
+              <div class="addon-main">
+                <span class="addon-name">Bottle Label Design (Front + Back)</span>
+                <span class="addon-price">R500</span>
+              </div>
+              <span class="addon-note">Tap to add/remove</span>
+            </button>
+          </div>
+
+          <!-- INSURANCE -->
+          <div class="addon-group">
+            <div class="addon-head">
+              <h4>Protection</h4>
+              <p>Insurance for bottles in transit.</p>
+            </div>
+
+            <button id="addonInsurance" class="addon-card" type="button" aria-pressed="false">
+              <div class="addon-main">
+                <span class="addon-name">Bottle Insurance</span>
+                <span class="addon-price" id="insurancePrice">R0</span>
+              </div>
+              <span class="addon-note">R120 per 20 bottles (auto)</span>
+            </button>
+          </div>
+
+          <!-- BARCODE -->
+          <div class="addon-group">
+            <div class="addon-head">
+              <h4>Compliance</h4>
+              <p>Barcode registration per label.</p>
+            </div>
+
+            <div class="addon-card addon-card-static" role="group">
+              <div class="addon-main">
+                <span class="addon-name">Barcode Registration</span>
+                <span class="addon-price">R500 each</span>
+              </div>
+
+              <div class="stepper">
+                <button type="button" id="barcodeMinus">−</button>
+                <span id="barcodeCount">0</span>
+                <button type="button" id="barcodePlus">+</button>
+              </div>
+
+              <span id="barcodeHint">Add bottles to enable</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DELIVERY -->
+      <section class="checkout-panel" id="checkoutPanel">
+        <h3>Delivery Details</h3>
+
+        <div class="form-grid">
+
+          <label>
+            Full Name
+            <input id="custName" type="text" />
+          </label>
+
+          <label>
+            Phone
+            <input id="custPhone" type="tel" />
+          </label>
+
+          <label class="full">
+            Address
+            <input id="custAddress" type="text" />
+          </label>
+
+          <label>
+            City
+            <input id="custCity" type="text" />
+          </label>
+
+          <label>
+            Postal Code
+            <input id="custPostal" type="text" />
+          </label>
+
+          <label class="full">
+            Notes
+            <input id="custNotes" type="text" />
+          </label>
+
+        </div>
+
+        <p id="checkoutHint">Enter your details to enable checkout.</p>
+      </section>
+
+      <!-- TOTALS -->
+      <div class="totals">
+        <p>Products Subtotal: <span id="itemsSubtotal">R0</span></p>
+        <p>Add-ons Total: <span id="addonsTotal">R0</span></p>
+        <p>Courier Fee: <span id="courierFee">R0</span></p>
+        <h3>Grand Total: <span id="grandTotal">R0</span></h3>
+      </div>
+
+      <!-- ACTIONS -->
+      <a href="https://pay.ikhokha.com/phantomvi/mpr/vi" target="_blank" id="yocoBtn" class="btn">
+        Pay with Yoco
+      </a>
+
+      <a href="#" id="whatsappBtn" class="btn">
+        Send via WhatsApp
+      </a>
+
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="content-section reveal">
+      <h2>Testimonials</h2>
+
+      <div class="cards">
+        <div class="card">
+          <p>“Packaging was clean, delivery was smooth.”</p>
+        </div>
+        <div class="card">
+          <p>“The label design looked premium.”</p>
+        </div>
+        <div class="card">
+          <p>“Payment and support were fast.”</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faqs" class="content-section reveal">
+      <h2>FAQs</h2>
+
+      <div class="faq">
+        <button class="faq-q">Delivery time?</button>
+        <div class="faq-a"><p>2–5 business days.</p></div>
+      </div>
+
+      <div class="faq">
+        <button class="faq-q">Nationwide?</button>
+        <div class="faq-a"><p>Yes.</p></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      41c Mynhardt Street, Strand • 
+      <a href="tel:0814458910">081 445 8910</a> • 
+      <a href="admin.html">Admin</a>
+    </p>
+  </footer>
+
+  <!-- LOADING -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
   </div>
 
-  <!-- GIN -->
-  <div class="product">
-    <h2>Gin</h2>
-
-    <select id="ginType">
-      <option value="">Select Gin</option>
-      <option>London Dry</option>
-      <option>Strawberry</option>
-    </select>
-
-    <input type="number" id="ginQty" placeholder="Qty" />
-
-    <button onclick="addToCart('Gin')">Add to Cart</button>
-  </div>
-
-  <!-- VODKA -->
-  <div class="product">
-    <h2>Vodka</h2>
-
-    <select id="vodkaType">
-      <option value="">Select Vodka</option>
-      <option>Vanilla</option>
-      <option>Triple Distilled</option>
-    </select>
-
-    <input type="number" id="vodkaQty" placeholder="Qty" />
-
-    <button onclick="addToCart('Vodka')">Add to Cart</button>
-  </div>
-
-</section>
-
-<!-- CART -->
-<section id="cart" class="cart">
-
-  <h3>Cart</h3>
-
-  <ul id="cartItems"></ul>
-
-  <p id="emptyCartMessage">Your cart is empty</p>
-
-  <!-- CUSTOMER -->
-  <input id="custName" placeholder="Name" />
-  <input id="custPhone" placeholder="Phone" />
-  <input id="custAddress" placeholder="Address" />
-
-  <!-- TOTALS -->
-  <p>Items: <span id="itemsSubtotal">R0</span></p>
-  <p>Courier: <span id="courierFee">R0</span></p>
-  <p>Addons: <span id="addonsTotal">R0</span></p>
-
-  <h2>Total: <span id="grandTotal">R0</span></h2>
-
-  <!-- BUTTONS -->
-  <button id="ikhokhaBtn">Pay</button>
-  <a id="whatsappBtn" href="#">WhatsApp</a>
-
-</section>
-
-</main>
-
-<!-- JS LINK -->
-<script src="script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 </html>
