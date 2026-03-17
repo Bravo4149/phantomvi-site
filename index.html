@@ -3,158 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Order custom wine, gin, and vodka bottles made in Colesberg from Phantom VI. Delivered nationwide with secure online payment." />
   <title>PHANTOM VI - Custom Bottles</title>
+
+  <!-- CSS LINK -->
   <link rel="stylesheet" href="style.css" />
+
+  <!-- FONT -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <div id="backgroundBlur"></div>
 
-  <header>
-    <img src="images/logo.png" alt="PHANTOM VI Logo" class="logo" />
-    <p>Custom Wine, Gin & Vodka Made in Colesberg</p>
-    <nav>
-      <a href="#products">Products</a>
-      <a href="#cart">Order & Payment</a>
-      <a href="#testimonials">Testimonials</a>
-      <a href="#faqs">FAQs</a>
-      <a href="about.html">About Us</a>
-    </nav>
-  </header>
+<header>
+  <img src="images/logo.png" class="logo" />
+  <p>Custom Wine, Gin & Vodka</p>
 
-  <main>
-    <section id="products" class="products">
+  <nav>
+    <a href="#products">Products</a>
+    <a href="#cart">Cart</a>
+  </nav>
+</header>
 
-      <!-- WINE -->
-      <div class="product">
-        <img src="images/wine.jpg" alt="Phantom VI Wine Bottle" />
-        <h2>Wines</h2>
-        <div class="product-form">
-          <select id="wineType">
-            <option value="">Select Wine Type</option>
-            <option>Sweet Rosé</option>
-            <option>Shiraz</option>
-            <option>Sauvignon Blanc</option>
-            <option>Pinotage</option>
-            <option>Sweet White</option>
-            <option>Sweet Red</option>
-            <option>Chenin Blanc</option>
-            <option>Chardonnay</option>
-            <option>Cabernet Sauvignon</option>
-            <option>Merlot</option>
-            <option>Coffee Pinotage</option>
-            <option>Non-Alcoholic Wine</option>
-          </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Wine')">Add to Cart</button>
-        </div>
-      </div>
+<main>
 
-      <!-- GIN -->
-      <div class="product">
-        <img src="images/gin.jpg" alt="Phantom VI Gin Bottle" />
-        <h2>Gins (R165)</h2>
-        <div class="product-form">
-          <select id="ginType">
-            <option value="">Select Gin Type</option>
-            <option>London Dry</option>
-            <option>Strawberry</option>
-            <option>Apple & Cinnamon</option>
-            <option>Blueberry</option>
-            <option>Orange & Lime</option>
-            <option>Lavender Infused</option>
-          </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Gin')">Add to Cart</button>
-        </div>
-      </div>
+<!-- PRODUCTS -->
+<section id="products" class="products">
 
-      <!-- VODKA -->
-      <div class="product">
-        <img src="images/vodka.jpg" alt="Phantom VI Vodka Bottle" />
-        <h2>Vodkas (R165)</h2>
-        <div class="product-form">
-          <select id="vodkaType">
-            <option value="">Select Vodka Type</option>
-            <option>Vanilla</option>
-            <option>Triple Distilled</option>
-          </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Vodka')">Add to Cart</button>
-        </div>
-      </div>
+  <!-- WINE -->
+  <div class="product">
+    <h2>Wine</h2>
 
-    </section>
+    <select id="wineType">
+      <option value="">Select Wine</option>
+      <option>Sweet Rosé</option>
+      <option>Shiraz</option>
+      <option>Merlot</option>
+      <option>Non-Alcoholic Wine</option>
+    </select>
 
-    <!-- CART -->
-    <section id="cart" class="cart">
-      <h3>Cart Summary:</h3>
-      <ul id="cartItems" class="cart-list"></ul>
-      <p id="emptyCartMessage">Your cart is empty.</p>
+    <input type="number" id="wineQty" placeholder="Qty" />
 
-      <!-- DELIVERY -->
-      <section class="checkout-panel">
-        <h3>Delivery Details</h3>
-
-        <input id="custName" type="text" placeholder="Full Name" />
-        <input id="custPhone" type="tel" placeholder="Phone Number" />
-        <input id="custAddress" type="text" placeholder="Delivery Address" />
-        <input id="custCity" type="text" placeholder="City" />
-        <input id="custPostal" type="text" placeholder="Postal Code" />
-
-        <p id="checkoutHint">Enter your details to enable checkout.</p>
-      </section>
-
-      <!-- TOTALS -->
-      <div class="totals">
-        <p>Products Subtotal: <span id="itemsSubtotal">R0</span></p>
-        <p>Add-ons Total: <span id="addonsTotal">R0</span></p>
-        <p>Courier Fee: <span id="courierFee">R0</span></p>
-        <h3>Grand Total: <span id="grandTotal">R0</span></h3>
-      </div>
-
-      <!-- ✅ FIXED BUTTONS -->
-      <a href="#" class="btn" id="ikhokhaBtn">
-        Pay Securely (Card / EFT)
-      </a>
-
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left:15px;">
-        Send Label & Address via WhatsApp
-      </a>
-
-    </section>
-
-    <!-- TESTIMONIALS -->
-    <section id="testimonials">
-      <h2>Testimonials</h2>
-      <p>“Packaging was clean and premium.” — Lerato</p>
-      <p>“The label design was perfect.” — Thabo</p>
-      <p>“Payment was quick and secure.” — Nandi</p>
-    </section>
-
-    <!-- FAQ -->
-    <section id="faqs">
-      <h2>FAQs</h2>
-      <p><strong>Delivery?</strong> 2–5 working days.</p>
-      <p><strong>Nationwide?</strong> Yes.</p>
-      <p><strong>After payment?</strong> Send label + address via WhatsApp.</p>
-    </section>
-
-  </main>
-
-  <footer>
-    <p>
-      41c Mynhardt Street, Strand • 081 445 8910
-    </p>
-  </footer>
-
-  <!-- LOADER -->
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
+    <button onclick="addToCart('Wine')">Add to Cart</button>
   </div>
 
-  <script src="script.js"></script>
+  <!-- GIN -->
+  <div class="product">
+    <h2>Gin</h2>
+
+    <select id="ginType">
+      <option value="">Select Gin</option>
+      <option>London Dry</option>
+      <option>Strawberry</option>
+    </select>
+
+    <input type="number" id="ginQty" placeholder="Qty" />
+
+    <button onclick="addToCart('Gin')">Add to Cart</button>
+  </div>
+
+  <!-- VODKA -->
+  <div class="product">
+    <h2>Vodka</h2>
+
+    <select id="vodkaType">
+      <option value="">Select Vodka</option>
+      <option>Vanilla</option>
+      <option>Triple Distilled</option>
+    </select>
+
+    <input type="number" id="vodkaQty" placeholder="Qty" />
+
+    <button onclick="addToCart('Vodka')">Add to Cart</button>
+  </div>
+
+</section>
+
+<!-- CART -->
+<section id="cart" class="cart">
+
+  <h3>Cart</h3>
+
+  <ul id="cartItems"></ul>
+
+  <p id="emptyCartMessage">Your cart is empty</p>
+
+  <!-- CUSTOMER -->
+  <input id="custName" placeholder="Name" />
+  <input id="custPhone" placeholder="Phone" />
+  <input id="custAddress" placeholder="Address" />
+
+  <!-- TOTALS -->
+  <p>Items: <span id="itemsSubtotal">R0</span></p>
+  <p>Courier: <span id="courierFee">R0</span></p>
+  <p>Addons: <span id="addonsTotal">R0</span></p>
+
+  <h2>Total: <span id="grandTotal">R0</span></h2>
+
+  <!-- BUTTONS -->
+  <button id="ikhokhaBtn">Pay</button>
+  <a id="whatsappBtn" href="#">WhatsApp</a>
+
+</section>
+
+</main>
+
+<!-- JS LINK -->
+<script src="script.js"></script>
+
 </body>
 </html>
