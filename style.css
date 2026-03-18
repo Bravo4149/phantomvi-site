@@ -5,72 +5,70 @@
   padding: 0;
 }
 
+/* BODY */
 body {
   font-family: 'Inter', sans-serif;
-  background: #0c0c0c;
-  color: #e5d3a3;
+  background: url('images/bg.jpg') center/cover fixed no-repeat;
+  color: #5a142b;
   line-height: 1.6;
+  position: relative;
 }
 
-/* BACKGROUND OVERLAY */
-#backgroundBlur {
+/* SOFT OVERLAY (KEY UPGRADE) */
+body::before {
+  content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('images/bg.jpg') center/cover no-repeat;
-  filter: blur(8px) brightness(0.4);
+  inset: 0;
+  background: rgba(255, 245, 248, 0.75);
+  backdrop-filter: blur(6px);
   z-index: -1;
 }
 
 /* HEADINGS */
 h1, h2, h3 {
   font-family: 'Playfair Display', serif;
-  color: #f5e6b3;
+  color: #7b1e3d;
 }
 
 /* HEADER */
 header {
-  text-align: center;
+  background: rgba(255, 240, 245, 0.85);
   padding: 50px 20px;
-  background: rgba(0,0,0,0.7);
-  border-bottom: 1px solid rgba(255,215,0,0.2);
+  text-align: center;
+  border-bottom: 1px solid rgba(176,48,96,0.15);
 }
 
 .brand-title {
-  font-size: 42px;
-  letter-spacing: 3px;
+  font-size: 38px;
+  letter-spacing: 2px;
 }
 
 .tagline {
-  color: #c9b37a;
+  color: #9b4c62;
   margin-top: 8px;
 }
 
 /* NAV */
 nav a {
-  margin: 0 12px;
-  font-weight: 500;
-  color: #d4af37;
-}
-
-nav a:hover {
-  color: white;
+  margin: 0 10px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 1px;
 }
 
 /* HERO */
 .hero {
   text-align: center;
-  margin: 40px 0;
+  margin: 40px auto;
+  max-width: 700px;
 }
 
 .hero h2 {
-  font-size: 32px;
+  font-size: 28px;
 }
 
 .hero p {
-  color: #c9b37a;
+  color: #9b4c62;
 }
 
 /* PRODUCTS */
@@ -83,18 +81,18 @@ nav a:hover {
 
 /* PRODUCT CARD */
 .product {
-  background: #111;
-  border: 1px solid rgba(255,215,0,0.15);
+  background: white;
   border-radius: 16px;
   width: 300px;
   padding: 20px;
   text-align: center;
-  transition: 0.3s;
+  border: 1px solid rgba(176,48,96,0.12);
+  transition: 0.25s;
 }
 
 .product:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 30px rgba(255,215,0,0.2);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(176,48,96,0.15);
 }
 
 .product img {
@@ -113,66 +111,67 @@ nav a:hover {
 .product-form input {
   padding: 10px;
   border-radius: 8px;
-  border: none;
-  background: #1a1a1a;
-  color: #fff;
+  border: 1px solid rgba(176,48,96,0.2);
+  background: #fff;
 }
 
 .product-form button {
-  background: linear-gradient(135deg, #d4af37, #a67c00);
-  color: black;
-  border: none;
+  background: linear-gradient(135deg, #b03060, #7b1e3d);
+  color: white;
   padding: 12px;
   border-radius: 30px;
   font-weight: bold;
+  border: none;
   cursor: pointer;
 }
 
 .product-form button:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
 }
 
 /* CART */
 .cart {
-  max-width: 700px;
+  max-width: 720px;
   margin: 50px auto;
-  background: #111;
+  background: white;
   padding: 30px;
   border-radius: 16px;
-  border: 1px solid rgba(255,215,0,0.2);
+  border: 1px solid rgba(176,48,96,0.15);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
 /* TOTALS */
-.totals {
-  margin-top: 20px;
-}
-
 .totals p,
 .totals h3 {
   display: flex;
   justify-content: space-between;
-  margin: 8px 0;
+  margin: 10px 0;
 }
 
 /* BUTTONS */
 .btn {
   display: block;
-  margin-top: 20px;
   text-align: center;
+  margin-top: 15px;
   padding: 14px;
   border-radius: 30px;
   font-weight: bold;
+  transition: 0.2s;
 }
 
 .primary-btn {
-  background: linear-gradient(135deg, #d4af37, #a67c00);
-  color: black;
+  background: linear-gradient(135deg, #b03060, #7b1e3d);
+  color: white;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
 }
 
 .secondary-btn {
+  border: 1px solid #b03060;
+  color: #b03060;
   background: transparent;
-  border: 1px solid #d4af37;
-  color: #d4af37;
 }
 
 /* CARDS */
@@ -183,10 +182,10 @@ nav a:hover {
 }
 
 .card {
-  background: #111;
-  padding: 15px;
+  background: white;
   border-radius: 12px;
-  border: 1px solid rgba(255,215,0,0.2);
+  padding: 15px;
+  border: 1px solid rgba(176,48,96,0.12);
 }
 
 /* FAQ */
@@ -196,15 +195,16 @@ nav a:hover {
 
 .faq-q {
   width: 100%;
-  background: #111;
-  color: #d4af37;
   padding: 12px;
+  background: #fff0f5;
   border: none;
-  text-align: left;
+  font-weight: bold;
 }
 
 .faq-a {
   display: none;
+  padding: 12px;
+  background: white;
 }
 
 .faq.open .faq-a {
@@ -215,5 +215,5 @@ nav a:hover {
 footer {
   text-align: center;
   padding: 30px;
-  color: #aaa;
+  color: #9b4c62;
 }
