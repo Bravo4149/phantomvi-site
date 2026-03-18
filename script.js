@@ -14,7 +14,7 @@ const STORAGE_KEY_CUSTOMER = 'phantomvi_customer_v1';
 
 // WhatsApp + Yoco
 const PHONE_NUMBER = '27814458910';
-const YOCO_URL = 'https://pay.ikhokha.com/phantomvi/mpr/vi';
+const IKHOKHA_URL = 'https://pay.ikhokha.com/phantomvi/mpr/vi';
 
 // Prices
 const prices = {
