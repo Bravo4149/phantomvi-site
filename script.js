@@ -1,14 +1,11 @@
-// --- Config ---
+// --- CONFIG ---
 const STORAGE_KEY_CART = 'phantomvi_cart_v6';
-const STORAGE_KEY_ADDONS = 'phantomvi_addons_v6';
-const STORAGE_KEY_ADMIN = 'phantomvi_admin_cfg';
 const STORAGE_KEY_CUSTOMER = 'phantomvi_customer_v1';
 
-// WhatsApp + iKhokha
 const PHONE_NUMBER = '27814458910';
 const IKHOKHA_URL = 'https://pay.ikhokha.com/phantomvi/mpr/vi';
 
-// Prices
+// --- PRICES ---
 const prices = {
   Wine: {
     "Sweet Rosé": 75,
@@ -28,141 +25,156 @@ const prices = {
   Vodka: 165
 };
 
-// Add-ons
-const ADDON_LABEL_DESIGN = 500;
-const ADDON_INSURANCE_PER_20 = 120;
-const ADDON_BARCODE_EACH = 500;
-
-// --- State ---
+// --- STATE ---
 let cart = [];
-let addons = { labelDesign: false, insurance: false, barcodeCount: 0 };
-let customer = { name: '', phone: '', address: '', city: '', postal: '', notes: '' };
 
-// --- Helpers ---
-function loadJSON(key, fallback) {
-  try { return JSON.parse(localStorage.getItem(key)) || fallback; }
-  catch { return fallback; }
+// --- HELPERS ---
+function saveCart() {
+  localStorage.setItem(STORAGE_KEY_CART, JSON.stringify(cart));
 }
 
-function saveJSON(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+function loadCart() {
+  cart = JSON.parse(localStorage.getItem(STORAGE_KEY_CART)) || [];
 }
 
-function money(n) { return `R${Number(n || 0)}`; }
+function money(n) {
+  return `R${n}`;
+}
 
 function getUnitPrice(item) {
-  if (item.type === 'Wine') return prices.Wine[item.variant] || 0;
-  return prices[item.type] || 0;
+  return item.type === 'Wine'
+    ? prices.Wine[item.variant]
+    : prices[item.type];
 }
 
-function getTotals() {
-  const totalBottles = cart.reduce((s, i) => s + (Number(i.qty) || 0), 0);
-  const itemsSubtotal = cart.reduce((s, i) => s + getUnitPrice(i) * i.qty, 0);
-
-  let courierFee = totalBottles > 0 ? 168 + Math.max(0, totalBottles - 2) * 9 : 0;
-
-  const labelDesignFee = addons.labelDesign ? ADDON_LABEL_DESIGN : 0;
-  const insuranceBlocks = Math.ceil(totalBottles / 20);
-  const insuranceFee = addons.insurance ? insuranceBlocks * ADDON_INSURANCE_PER_20 : 0;
-
-  const maxBarcodes = Math.min(10, totalBottles);
-  const barcodeCount = Math.min(addons.barcodeCount, maxBarcodes);
-  const barcodeFee = barcodeCount * ADDON_BARCODE_EACH;
-
-  const addonsTotal = labelDesignFee + insuranceFee + barcodeFee;
-  const grandTotal = itemsSubtotal + courierFee + addonsTotal;
-
-  return { totalBottles, itemsSubtotal, courierFee, addonsTotal, grandTotal, labelDesignFee, insuranceFee, barcodeFee, barcodeCount, insuranceBlocks };
-}
-
-// --- DOM ---
-const els = {
-  cartItems: document.getElementById('cartItems'),
-  itemsSubtotal: document.getElementById('itemsSubtotal'),
-  addonsTotal: document.getElementById('addonsTotal'),
-  courierFee: document.getElementById('courierFee'),
-  grandTotal: document.getElementById('grandTotal'),
-  whatsappBtn: document.getElementById('whatsappBtn'),
-  payBtn: document.getElementById('payBtn'),
-  emptyCartMessage: document.getElementById('emptyCartMessage'),
-  checkoutHint: document.getElementById('checkoutHint')
-};
-
-// --- Cart ---
+// --- ADD TO CART (FIXED) ---
 function addToCart(type) {
-  let variant = document.getElementById(type.toLowerCase() + 'Type').value;
-  let qty = parseInt(document.getElementById(type.toLowerCase() + 'Qty').value);
+  let variant, qty;
 
-  if (!variant || !qty) return alert('Select product and quantity');
+  if (type === 'Wine') {
+    variant = document.getElementById('wineType').value;
+    qty = parseInt(document.getElementById('wineQty').value);
+  }
+  if (type === 'Gin') {
+    variant = document.getElementById('ginType').value;
+    qty = parseInt(document.getElementById('ginQty').value);
+  }
+  if (type === 'Vodka') {
+    variant = document.getElementById('vodkaType').value;
+    qty = parseInt(document.getElementById('vodkaQty').value);
+  }
+
+  if (!variant) return alert("Select a type first");
+  if (!qty || qty <= 0) return alert("Enter quantity");
 
   const existing = cart.find(i => i.type === type && i.variant === variant);
-  existing ? existing.qty += qty : cart.push({ type, variant, qty });
 
-  saveJSON(STORAGE_KEY_CART, cart);
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({ type, variant, qty });
+  }
+
+  saveCart();
   updateUI();
+}
+
+// --- TOTALS ---
+function getTotals() {
+  let itemsSubtotal = 0;
+  let totalBottles = 0;
+
+  cart.forEach(i => {
+    itemsSubtotal += getUnitPrice(i) * i.qty;
+    totalBottles += i.qty;
+  });
+
+  let courier = totalBottles > 0 ? 168 + Math.max(0, totalBottles - 2) * 9 : 0;
+
+  return {
+    itemsSubtotal,
+    courier,
+    total: itemsSubtotal + courier,
+    totalBottles
+  };
 }
 
 // --- UI ---
 function updateUI() {
+  const list = document.getElementById('cartItems');
+  const empty = document.getElementById('emptyCartMessage');
+
+  list.innerHTML = '';
+
+  if (cart.length === 0) {
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+
+    cart.forEach((item, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        ${item.qty} x ${item.variant} (${item.type})
+        <button onclick="removeItem(${i})">X</button>
+      `;
+      list.appendChild(li);
+    });
+  }
+
   const t = getTotals();
 
-  els.cartItems.innerHTML = cart.length
-    ? cart.map(i => `<li>${i.qty} x ${i.variant} (${i.type})</li>`).join('')
-    : 'Your cart is empty.';
-
-  els.itemsSubtotal.textContent = money(t.itemsSubtotal);
-  els.addonsTotal.textContent = money(t.addonsTotal);
-  els.courierFee.textContent = money(t.courierFee);
-  els.grandTotal.textContent = money(t.grandTotal);
+  document.getElementById('itemsSubtotal').textContent = money(t.itemsSubtotal);
+  document.getElementById('courierFee').textContent = money(t.courier);
+  document.getElementById('grandTotal').textContent = money(t.total);
 
   updateButtons(t);
 }
 
-// --- Buttons ---
-function isCustomerValid() {
-  const name = document.getElementById('custName')?.value;
-  const phone = document.getElementById('custPhone')?.value;
-  const address = document.getElementById('custAddress')?.value;
+// --- REMOVE ---
+function removeItem(i) {
+  cart.splice(i, 1);
+  saveCart();
+  updateUI();
+}
+
+// --- CUSTOMER VALIDATION ---
+function validCustomer() {
+  const name = document.getElementById('custName').value;
+  const phone = document.getElementById('custPhone').value;
+  const address = document.getElementById('custAddress').value;
+
   return name && phone && address;
 }
 
+// --- BUTTONS ---
 function updateButtons(t) {
-  const canCheckout = t.totalBottles > 0 && isCustomerValid();
+  const payBtn = document.getElementById('payBtn');
+  const waBtn = document.getElementById('whatsappBtn');
 
-  if (els.payBtn) {
-    els.payBtn.style.opacity = canCheckout ? '1' : '0.5';
-    els.payBtn.style.pointerEvents = canCheckout ? 'auto' : 'none';
-    els.payBtn.href = canCheckout ? IKHOKHA_URL : '#';
-  }
+  const can = t.totalBottles > 0 && validCustomer();
 
-  if (els.whatsappBtn) {
-    const msg = buildMessage(t);
-    els.whatsappBtn.href = canCheckout ? `https://wa.me/${PHONE_NUMBER}?text=${msg}` : '#';
-  }
+  payBtn.style.pointerEvents = can ? 'auto' : 'none';
+  payBtn.style.opacity = can ? '1' : '0.5';
+  payBtn.href = can ? IKHOKHA_URL : '#';
 
-  if (els.checkoutHint) {
-    els.checkoutHint.textContent = canCheckout
-      ? 'Ready ✅ Secure your order below.'
-      : 'Fill in delivery details to continue.';
-  }
+  waBtn.href = can ? buildWhatsApp(t) : '#';
 }
 
-// --- WhatsApp ---
-function buildMessage(t) {
-  let msg = `New Phantom VI Order:%0A%0A`;
+// --- WHATSAPP ---
+function buildWhatsApp(t) {
+  let msg = "Phantom VI Order:%0A%0A";
 
   cart.forEach(i => {
     msg += `${i.qty} x ${i.variant} ${i.type}%0A`;
   });
 
-  msg += `%0ATotal: R${t.grandTotal}%0A`;
-  msg += `%0APlease confirm payment & delivery.`;
+  msg += `%0ATotal: R${t.total}`;
 
-  return msg;
+  return `https://wa.me/${PHONE_NUMBER}?text=${msg}`;
 }
 
-// --- Init ---
-(function init() {
-  cart = loadJSON(STORAGE_KEY_CART, []);
+// --- INIT ---
+(function () {
+  loadCart();
   updateUI();
 })();
