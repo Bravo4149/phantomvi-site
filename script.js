@@ -391,11 +391,11 @@ function updateButtons() {
     els.whatsappBtn.href = canCheckout ? `https://wa.me/${PHONE_NUMBER}?text=${buildOrderText(t)}` : '#';
   }
 
-  if (els.yocoBtn) {
-    els.yocoBtn.style.pointerEvents = canCheckout ? 'auto' : 'none';
-    els.yocoBtn.style.opacity = canCheckout ? '1' : '0.5';
-    els.yocoBtn.href = canCheckout ? YOCO_URL : '#';
-  }
+ if (els.payBtn) {
+  els.payBtn.style.pointerEvents = canCheckout ? 'auto' : 'none';
+  els.payBtn.style.opacity = canCheckout ? '1' : '0.5';
+  els.payBtn.href = canCheckout ? IKHOKHA_URL : '#';
+}
 
   if (els.checkoutHint) {
     if (!hasBottles) {
@@ -548,18 +548,25 @@ async function logOrderToSheets(channel) {
 }
 
 function bindCheckoutLogging() {
-  if (els.yocoBtn) {
-    els.yocoBtn.addEventListener('click', async (e) => {
+  if (els.payBtn) {
+    els.payBtn.addEventListener('click', async (e) => {
       const t = getTotals();
       const c = getCustomerFromInputs();
+
       if (t.totalBottles === 0 || !isCustomerValid(c)) {
         e.preventDefault();
         alert('Please add bottles and fill in your delivery details (name, phone, address) to checkout.');
         return;
       }
 
+      // Log order (optional, won’t block payment)
+      logOrderToSheets('iKhokha');
+    });
+  }
+}
+
       // Log, but never block payment
-      logOrderToSheets('Yoco');
+      logOrderToSheets('iKhokha');
       // default behavior continues
     });
   }
