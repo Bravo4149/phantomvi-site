@@ -1,250 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Order custom wine, gin, and vodka bottles made in Colesberg from Phantom VI. Delivered nationwide with secure Yoco payment." />
-  <title>PHANTOM VI - Custom Bottles</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Phantom VI</title>
 </head>
 <body>
-  <div id="backgroundBlur"></div>
 
-  <header>
-    <img src="images/logo.png" alt="PHANTOM VI Logo" class="logo" />
-    <p>Custom Wine, Gin & Vodka Made in Colesberg</p>
-    <nav>
-      <a href="#products">Products</a>
-      <a href="#cart">Order & Payment</a>
-      <a href="#testimonials">Testimonials</a>
-      <a href="#faqs">FAQs</a>
-      <a href="about.html">About Us</a>
-    </nav>
-  </header>
+<h1>PHANTOM VI</h1>
 
-  <main>
-    <section id="products" class="products">
-      <div class="product">
-        <img src="images/wine.jpg" alt="Phantom VI Wine Bottle" />
-        <h2>Wines</h2>
-        <div class="product-form">
-          <select id="wineType">
-            <option value="">Select Wine Type</option>
-            <option>Sweet Rosé</option>
-            <option>Shiraz</option>
-            <option>Sauvignon Blanc</option>
-            <option>Pinotage</option>
-            <option>Sweet White</option>
-            <option>Sweet Red</option>
-            <option>Chenin Blanc</option>
-            <option>Chardonnay</option>
-            <option>Cabernet Sauvignon</option>
-            <option>Merlot</option>
-            <option>Coffee Pinotage</option>
-            <option>Non-Alcoholic Wine</option>
-          </select>
-          <input type="number" id="wineQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Wine')">Add to Cart</button>
-        </div>
-      </div>
+<!-- PRODUCTS -->
+<h2>Wine</h2>
+<select id="wineType">
+  <option value="">Select Wine</option>
+  <option>Sweet Rosé</option>
+  <option>Shiraz</option>
+</select>
+<input type="number" id="wineQty" placeholder="Qty">
+<button onclick="addToCart('Wine')">Add Wine</button>
 
-      <div class="product">
-        <img src="images/gin.jpg" alt="Phantom VI Gin Bottle" />
-        <h2>Gins (R165)</h2>
-        <div class="product-form">
-          <select id="ginType">
-            <option value="">Select Gin Type</option>
-            <option>London Dry</option>
-            <option>Strawberry</option>
-            <option>Apple & Cinnamon</option>
-            <option>Blueberry</option>
-            <option>Orange & Lime</option>
-            <option>Lavender Infused</option>
-          </select>
-          <input type="number" id="ginQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Gin')">Add to Cart</button>
-        </div>
-      </div>
+<h2>Gin</h2>
+<select id="ginType">
+  <option value="">Select Gin</option>
+  <option>London Dry</option>
+</select>
+<input type="number" id="ginQty" placeholder="Qty">
+<button onclick="addToCart('Gin')">Add Gin</button>
 
-      <div class="product">
-        <img src="images/vodka.jpg" alt="Phantom VI Vodka Bottle" />
-        <h2>Vodkas (R165)</h2>
-        <div class="product-form">
-          <select id="vodkaType">
-            <option value="">Select Vodka Type</option>
-            <option>Vanilla</option>
-            <option>Triple Distilled</option>
-          </select>
-          <input type="number" id="vodkaQty" placeholder="Quantity" min="0" />
-          <button onclick="addToCart('Vodka')">Add to Cart</button>
-        </div>
-      </div>
-    </section>
+<h2>Vodka</h2>
+<select id="vodkaType">
+  <option value="">Select Vodka</option>
+  <option>Vanilla</option>
+</select>
+<input type="number" id="vodkaQty" placeholder="Qty">
+<button onclick="addToCart('Vodka')">Add Vodka</button>
 
-    <section id="cart" class="cart">
-      <h3>Cart Summary:</h3>
-      <ul id="cartItems" class="cart-list"></ul>
-      <p id="emptyCartMessage">Your cart is empty.</p>
+<hr>
 
-      <!-- Add-ons (only visible when bottles are in cart) -->
-      <div id="addons" class="addons" aria-live="polite">
-        <h3 class="addons-title">Add-ons</h3>
-        <div class="addons-grid">
-          <div class="addon-group">
-            <div class="addon-head">
-              <h4>Design</h4>
-              <p>Professional label layout for print.</p>
-            </div>
-            <button id="addonLabelDesign" class="addon-card" type="button" aria-pressed="false">
-              <div class="addon-main">
-                <span class="addon-name">Bottle Label Design (Front + Back)</span>
-                <span class="addon-price">R500</span>
-              </div>
-              <span class="addon-note">Tap to add/remove</span>
-            </button>
-          </div>
+<!-- CART -->
+<h2>Cart</h2>
+<ul id="cartItems"></ul>
+<p id="emptyCartMessage">Cart is empty</p>
 
-          <div class="addon-group">
-            <div class="addon-head">
-              <h4>Protection</h4>
-              <p>Insurance for bottles in transit.</p>
-            </div>
-            <button id="addonInsurance" class="addon-card" type="button" aria-pressed="false">
-              <div class="addon-main">
-                <span class="addon-name">Bottle Insurance</span>
-                <span class="addon-price" id="insurancePrice">R0</span>
-              </div>
-              <span class="addon-note">R120 per 20 bottles (auto)</span>
-            </button>
-          </div>
+<p>Subtotal: <span id="itemsSubtotal">R0</span></p>
+<p>Courier: <span id="courierFee">R0</span></p>
+<h3>Total: <span id="grandTotal">R0</span></h3>
 
-          <div class="addon-group">
-            <div class="addon-head">
-              <h4>Compliance</h4>
-              <p>Barcode registration per label.</p>
-            </div>
-            <div class="addon-card addon-card-static" role="group" aria-label="Barcode Registration">
-              <div class="addon-main">
-                <span class="addon-name">Barcode Registration</span>
-                <span class="addon-price">R500 each</span>
-              </div>
-              <div class="stepper">
-                <button type="button" class="stepper-btn" id="barcodeMinus" aria-label="Decrease barcode count">−</button>
-                <span id="barcodeCount" class="stepper-count">0</span>
-                <button type="button" class="stepper-btn" id="barcodePlus" aria-label="Increase barcode count">+</button>
-              </div>
-              <span class="addon-note" id="barcodeHint">Add bottles to enable</span>
-            </div>
-          </div>
-        </div>
-      </div>
+<hr>
 
-      <!-- Delivery details (required for checkout) -->
-      <section class="checkout-panel" id="checkoutPanel" aria-label="Delivery Details">
-        <h3 class="checkout-title">Delivery Details</h3>
-        <div class="form-grid">
-          <label>
-            Full Name
-            <input id="custName" type="text" placeholder="e.g. Thabo Mokoena" autocomplete="name" />
-          </label>
+<!-- CUSTOMER -->
+<h2>Details</h2>
+<input id="custName" placeholder="Name"><br>
+<input id="custPhone" placeholder="Phone"><br>
+<input id="custAddress" placeholder="Address"><br>
 
-          <label>
-            Phone Number
-            <input id="custPhone" type="tel" placeholder="e.g. 081 445 8910" autocomplete="tel" />
-          </label>
+<br>
 
-          <label class="full">
-            Delivery Address
-            <input id="custAddress" type="text" placeholder="Street, Suburb" autocomplete="street-address" />
-          </label>
+<!-- BUTTON -->
+<button id="payBtn">Secure Checkout</button>
 
-          <label>
-            City
-            <input id="custCity" type="text" placeholder="e.g. Cape Town" autocomplete="address-level2" />
-          </label>
-
-          <label>
-            Postal Code
-            <input id="custPostal" type="text" placeholder="e.g. 7139" autocomplete="postal-code" />
-          </label>
-
-          <label class="full">
-            Notes (optional)
-            <input id="custNotes" type="text" placeholder="Gate code, delivery time, etc." />
-          </label>
-        </div>
-        <p class="checkout-hint" id="checkoutHint">Enter your details to enable checkout.</p>
-      </section>
-
-      <!-- Totals breakdown -->
-      <div class="totals">
-        <p>Products Subtotal: <span id="itemsSubtotal">R0</span></p>
-        <p>Add-ons Total: <span id="addonsTotal">R0</span></p>
-        <p>Courier Fee: <span id="courierFee">R0</span></p>
-        <h3>Grand Total: <span id="grandTotal">R0</span></h3>
-      </div>
-
-    <button class="btn primary-btn" id="payBtn">
-  Secure Checkout
-</button>
-      <a href="#" id="whatsappBtn" class="btn" style="margin-left:15px;">
-        Send Label & Address via WhatsApp
-      </a>
-    </section>
-
-    <section id="testimonials" class="content-section reveal">
-      <h2>Testimonials</h2>
-      <div class="cards">
-        <div class="card">
-          <p>“Packaging was clean, delivery was smooth, and the bottles looked expensive.”</p>
-          <span class="meta">— Lerato, Gauteng</span>
-        </div>
-        <div class="card">
-          <p>“The gin label design came out exactly like the mockups. Proper premium.”</p>
-          <span class="meta">— Thabo, Cape Town</span>
-        </div>
-        <div class="card">
-          <p>“I paid on Yoco and got updates fast. Customer service is on point.”</p>
-          <span class="meta">— Nandi, Durban</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="faqs" class="content-section reveal">
-      <h2>FAQs</h2>
-      <div class="faq">
-        <button class="faq-q" type="button">How long does delivery take?</button>
-        <div class="faq-a"><p>Typically 2–5 business days depending on your area and stock.</p></div>
-      </div>
-      <div class="faq">
-        <button class="faq-q" type="button">Do you deliver nationwide?</button>
-        <div class="faq-a"><p>Yes — we deliver across South Africa with courier tracking.</p></div>
-      </div>
-      <div class="faq">
-        <button class="faq-q" type="button">What do you need from me after I pay?</button>
-        <div class="faq-a"><p>Send your label artwork (or request label design), plus your delivery address & contact number.</p></div>
-      </div>
-      <div class="faq">
-        <button class="faq-q" type="button">How does bottle insurance work?</button>
-        <div class="faq-a"><p>Insurance is calculated automatically at R120 per 20 bottles (or part thereof).</p></div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>
-      Address: <strong>41c Mynhardt Street, Strand, Cape Town</strong>
-      &nbsp;•&nbsp; WhatsApp: <a href="tel:0814458910">081 445 8910</a>
-      &nbsp;•&nbsp; <a href="admin.html">Admin</a>
-    </p>
-  </footer>
-
-  <!-- Loading Spinner -->
-  <div id="loadingOverlay">
-    <div class="spinner"></div>
-  </div>
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
