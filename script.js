@@ -1,22 +1,13 @@
-/*
-  PHANTOM VI — Front-end cart + add-ons + Google Sheets logging
-
-  To connect Google Sheets logging:
-  - Create an Apps Script Web App (code provided in README in the zip)
-  - Paste the Web App URL into admin.html and Save
-*/
-
-// --- Config ---
+// --- CONFIG ---
 const STORAGE_KEY_CART = 'phantomvi_cart_v6';
 const STORAGE_KEY_ADDONS = 'phantomvi_addons_v6';
 const STORAGE_KEY_ADMIN = 'phantomvi_admin_cfg';
 const STORAGE_KEY_CUSTOMER = 'phantomvi_customer_v1';
 
-// WhatsApp + Yoco
 const PHONE_NUMBER = '27814458910';
 const IKHOKHA_URL = 'https://pay.ikhokha.com/phantomvi/mpr/vi';
 
-// Prices
+// --- PRICES ---
 const prices = {
   Wine: {
     "Sweet Rosé": 75,
@@ -36,36 +27,19 @@ const prices = {
   Vodka: 165
 };
 
-// Add-on prices
 const ADDON_LABEL_DESIGN = 500;
 const ADDON_INSURANCE_PER_20 = 120;
 const ADDON_BARCODE_EACH = 500;
 
-// --- State ---
-let cart = []; // [{type, variant, qty}]
-let addons = {
-  labelDesign: false,
-  insurance: false,
-  barcodeCount: 0
-};
+// --- STATE ---
+let cart = [];
+let addons = { labelDesign: false, insurance: false, barcodeCount: 0 };
+let customer = {};
 
-let customer = {
-  name: '',
-  phone: '',
-  address: '',
-  city: '',
-  postal: '',
-  notes: ''
-};
-
-// --- Helpers ---
+// --- HELPERS ---
 function loadJSON(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
+  try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+  catch { return fallback; }
 }
 
 function saveJSON(key, value) {
@@ -77,559 +51,152 @@ function money(n) {
 }
 
 function getUnitPrice(item) {
-  if (item.type === 'Wine') return prices.Wine[item.variant] || 0;
-  return prices[item.type] || 0;
+  return item.type === 'Wine'
+    ? prices.Wine[item.variant]
+    : prices[item.type];
 }
 
 function getTotals() {
-  const totalBottles = cart.reduce((s, i) => s + (Number(i.qty) || 0), 0);
+  const totalBottles = cart.reduce((s, i) => s + i.qty, 0);
   const itemsSubtotal = cart.reduce((s, i) => s + getUnitPrice(i) * i.qty, 0);
 
-  // Courier
-  let courierFee = 0;
-  if (totalBottles > 0) {
-    // R168 covers the first 2 bottles, then add R9 per additional bottle
-    courierFee = 168;
-    if (totalBottles > 2) courierFee += (totalBottles - 2) * 9;
-  }
+  let courierFee = totalBottles > 0 ? 168 + Math.max(0, totalBottles - 2) * 9 : 0;
 
-  // Add-ons
   const labelDesignFee = addons.labelDesign ? ADDON_LABEL_DESIGN : 0;
-  const insuranceBlocks = Math.ceil(totalBottles / 20);
-  const insuranceFee = addons.insurance && totalBottles > 0 ? insuranceBlocks * ADDON_INSURANCE_PER_20 : 0;
-
-  // Barcodes: cap at 10 (and never exceed total bottles in cart)
-  const maxBarcodes = Math.min(10, Math.max(totalBottles, 0));
-  const barcodeCount = Math.min(addons.barcodeCount || 0, maxBarcodes);
-  const barcodeFee = barcodeCount * ADDON_BARCODE_EACH;
+  const insuranceFee = addons.insurance ? Math.ceil(totalBottles / 20) * ADDON_INSURANCE_PER_20 : 0;
+  const barcodeFee = addons.barcodeCount * ADDON_BARCODE_EACH;
 
   const addonsTotal = labelDesignFee + insuranceFee + barcodeFee;
   const grandTotal = itemsSubtotal + courierFee + addonsTotal;
 
-  return {
-    totalBottles,
-    itemsSubtotal,
-    courierFee,
-    labelDesignFee,
-    insuranceFee,
-    insuranceBlocks,
-    barcodeCount,
-    maxBarcodes,
-    barcodeFee,
-    addonsTotal,
-    grandTotal
-  };
-}
-
-function normalizeAddons() {
-  const t = getTotals();
-  if (addons.barcodeCount > t.maxBarcodes) addons.barcodeCount = t.maxBarcodes;
-  if (t.totalBottles === 0) {
-    addons.insurance = false;
-    addons.labelDesign = false;
-    addons.barcodeCount = 0;
-  }
-  saveJSON(STORAGE_KEY_ADDONS, addons);
+  return { totalBottles, itemsSubtotal, courierFee, addonsTotal, grandTotal };
 }
 
 // --- DOM ---
 const els = {
   cartItems: document.getElementById('cartItems'),
-courierFee: document.getElementById('courierFee'),
-itemsSubtotal: document.getElementById('itemsSubtotal'),
-addonsTotal: document.getElementById('addonsTotal'),
-grandTotal: document.getElementById('grandTotal'),
+  courierFee: document.getElementById('courierFee'),
+  itemsSubtotal: document.getElementById('itemsSubtotal'),
+  addonsTotal: document.getElementById('addonsTotal'),
+  grandTotal: document.getElementById('grandTotal'),
 
-whatsappBtn: document.getElementById('whatsappBtn'),
-payBtn: document.getElementById('payBtn'),
+  whatsappBtn: document.getElementById('whatsappBtn'),
+  payBtn: document.getElementById('payBtn'),
 
-emptyCartMessage: document.getElementById('emptyCartMessage'),
-loadingOverlay: document.getElementById('loadingOverlay'),
+  emptyCartMessage: document.getElementById('emptyCartMessage'),
 
-addonsWrap: document.getElementById('addons'),
-addonLabelDesign: document.getElementById('addonLabelDesign'),
-addonInsurance: document.getElementById('addonInsurance'),
-insurancePrice: document.getElementById('insurancePrice'),
-
-barcodeMinus: document.getElementById('barcodeMinus'),
-barcodePlus: document.getElementById('barcodePlus'),
-barcodeCount: document.getElementById('barcodeCount'),
-barcodeHint: document.getElementById('barcodeHint'),
-
-  // customer fields
   custName: document.getElementById('custName'),
   custPhone: document.getElementById('custPhone'),
   custAddress: document.getElementById('custAddress'),
-  custCity: document.getElementById('custCity'),
-  custPostal: document.getElementById('custPostal'),
-  custNotes: document.getElementById('custNotes'),
-  checkoutHint: document.getElementById('checkoutHint')
 };
 
-function getCustomerFromInputs() {
-  return {
-    name: (els.custName?.value || '').trim(),
-    phone: (els.custPhone?.value || '').trim(),
-    address: (els.custAddress?.value || '').trim(),
-    city: (els.custCity?.value || '').trim(),
-    postal: (els.custPostal?.value || '').trim(),
-    notes: (els.custNotes?.value || '').trim()
-  };
-}
-
-function setCustomerInputs(data) {
-  if (els.custName) els.custName.value = data.name || '';
-  if (els.custPhone) els.custPhone.value = data.phone || '';
-  if (els.custAddress) els.custAddress.value = data.address || '';
-  if (els.custCity) els.custCity.value = data.city || '';
-  if (els.custPostal) els.custPostal.value = data.postal || '';
-  if (els.custNotes) els.custNotes.value = data.notes || '';
-}
-
-function isCustomerValid(data) {
-  return Boolean((data.name || '').trim() && (data.phone || '').trim() && (data.address || '').trim());
-}
-
-function saveCustomer(data) {
-  customer = { ...customer, ...data };
-  saveJSON(STORAGE_KEY_CUSTOMER, customer);
-}
-
-function bindCustomerInputs() {
-  const inputs = [els.custName, els.custPhone, els.custAddress, els.custCity, els.custPostal, els.custNotes].filter(Boolean);
-  if (!inputs.length) return;
-
-  const onChange = () => {
-    saveCustomer(getCustomerFromInputs());
-    updateButtons();
-  };
-  inputs.forEach(i => i.addEventListener('input', onChange));
-}
-
-function showLoading(show) {
-  if (!els.loadingOverlay) return;
-  els.loadingOverlay.style.display = show ? 'flex' : 'none';
-}
-
-// --- Cart ops ---
-function saveCart() {
-  saveJSON(STORAGE_KEY_CART, cart);
-}
-
+// --- ADD TO CART (FIXED) ---
 function addToCart(type) {
-  let productType, qty;
+  let variant = '';
+  let qty = 0;
+
   if (type === 'Wine') {
-    productType = document.getElementById('wineType').value;
-    qty = parseInt(document.getElementById('wineQty').value, 10);
-  } else if (type === 'Gin') {
-    productType = document.getElementById('ginType').value;
-    qty = parseInt(document.getElementById('ginQty').value, 10);
-  } else if (type === 'Vodka') {
-    productType = document.getElementById('vodkaType').value;
-    qty = parseInt(document.getElementById('vodkaQty').value, 10);
+    variant = document.getElementById('wineType').value;
+    qty = parseInt(document.getElementById('wineQty').value);
+  }
+  if (type === 'Gin') {
+    variant = document.getElementById('ginType').value;
+    qty = parseInt(document.getElementById('ginQty').value);
+  }
+  if (type === 'Vodka') {
+    variant = document.getElementById('vodkaType').value;
+    qty = parseInt(document.getElementById('vodkaQty').value);
   }
 
-  if (!productType) {
-    alert('Please select a ' + type + ' type.');
-    return;
-  }
-  if (!qty || qty <= 0) {
-    alert('Please enter a valid quantity.');
-    return;
-  }
+  if (!variant) return alert('Select product type');
+  if (!qty || qty <= 0) return alert('Enter quantity');
 
-  showLoading(true);
+  const existing = cart.find(i => i.type === type && i.variant === variant);
+  existing ? existing.qty += qty : cart.push({ type, variant, qty });
 
-  setTimeout(() => {
-    const idx = cart.findIndex(i => i.type === type && i.variant === productType);
-    if (idx >= 0) cart[idx].qty += qty;
-    else cart.push({ type, variant: productType, qty });
-
-    saveCart();
-    normalizeAddons();
-    updateUI();
-
-    // clear
-    if (type === 'Wine') {
-      document.getElementById('wineQty').value = '';
-      document.getElementById('wineType').value = '';
-    } else if (type === 'Gin') {
-      document.getElementById('ginQty').value = '';
-      document.getElementById('ginType').value = '';
-    } else if (type === 'Vodka') {
-      document.getElementById('vodkaQty').value = '';
-      document.getElementById('vodkaType').value = '';
-    }
-
-    showLoading(false);
-  }, 450);
-}
-
-function setQty(index, newQty) {
-  if (index < 0 || index >= cart.length) return;
-  const q = Math.max(0, Number(newQty) || 0);
-  if (q === 0) cart.splice(index, 1);
-  else cart[index].qty = q;
-  saveCart();
-  normalizeAddons();
+  saveJSON(STORAGE_KEY_CART, cart);
   updateUI();
 }
 
-// --- Add-ons UI ---
-function updateAddonsUI() {
-  if (!els.addonsWrap) return;
-
-  const t = getTotals();
-  const hasBottles = t.totalBottles > 0;
-  els.addonsWrap.style.display = hasBottles ? 'block' : 'none';
-
-  // insurance price label
-  els.insurancePrice.textContent = money(t.insuranceBlocks * ADDON_INSURANCE_PER_20);
-
-  // pressed states
-  els.addonLabelDesign.setAttribute('aria-pressed', addons.labelDesign ? 'true' : 'false');
-  els.addonInsurance.setAttribute('aria-pressed', addons.insurance ? 'true' : 'false');
-
-  // barcode
-  els.barcodeCount.textContent = String(t.barcodeCount);
-  const enabled = hasBottles && t.maxBarcodes > 0;
-  els.barcodeMinus.disabled = !enabled;
-  els.barcodePlus.disabled = !enabled;
-  els.barcodeHint.textContent = enabled
-    ? `Max ${t.maxBarcodes}`
-    : 'Add bottles to enable';
-
-  // disable toggles when no bottles
-  els.addonLabelDesign.disabled = !hasBottles;
-  els.addonInsurance.disabled = !hasBottles;
-  els.addonLabelDesign.style.opacity = hasBottles ? '1' : '0.6';
-  els.addonInsurance.style.opacity = hasBottles ? '1' : '0.6';
-}
-
-function bindAddonEvents() {
-  if (els.addonLabelDesign) {
-    els.addonLabelDesign.addEventListener('click', () => {
-      const t = getTotals();
-      if (t.totalBottles === 0) return;
-      addons.labelDesign = !addons.labelDesign;
-      saveJSON(STORAGE_KEY_ADDONS, addons);
-      updateUI();
-    });
-  }
-
-  if (els.addonInsurance) {
-    els.addonInsurance.addEventListener('click', () => {
-      const t = getTotals();
-      if (t.totalBottles === 0) return;
-      addons.insurance = !addons.insurance;
-      saveJSON(STORAGE_KEY_ADDONS, addons);
-      updateUI();
-    });
-  }
-
-  if (els.barcodeMinus) {
-    els.barcodeMinus.addEventListener('click', () => {
-      const t = getTotals();
-      if (t.totalBottles === 0) return;
-      addons.barcodeCount = Math.max(0, (addons.barcodeCount || 0) - 1);
-      normalizeAddons();
-      updateUI();
-    });
-  }
-
-  if (els.barcodePlus) {
-    els.barcodePlus.addEventListener('click', () => {
-      const t = getTotals();
-      if (t.totalBottles === 0) return;
-      addons.barcodeCount = Math.min(t.maxBarcodes, (addons.barcodeCount || 0) + 1);
-      normalizeAddons();
-      updateUI();
-    });
-  }
-}
-
-// --- WhatsApp / Yoco message ---
-function buildOrderText(t) {
-  const c = getCustomerFromInputs();
-  let msg = `Hello, I have placed an order with Phantom VI:%0A%0A`;
-  cart.forEach(i => {
-    const unit = getUnitPrice(i);
-    msg += `${i.qty} x ${i.variant} ${i.type} (R${unit} each) - R${unit * i.qty}%0A`;
-  });
-
-  // Add-ons
-  const addonsLines = [];
-  if (t.labelDesignFee) addonsLines.push(`Bottle Label Design (Front + Back): R${t.labelDesignFee}`);
-  if (t.insuranceFee) addonsLines.push(`Bottle Insurance (${t.insuranceBlocks} x R${ADDON_INSURANCE_PER_20}): R${t.insuranceFee}`);
-  if (t.barcodeFee) addonsLines.push(`Barcode Registration (${t.barcodeCount} x R${ADDON_BARCODE_EACH}): R${t.barcodeFee}`);
-
-  if (addonsLines.length) {
-    msg += `%0AAdd-ons:%0A`;
-    addonsLines.forEach(l => (msg += `${encodeURIComponent(l)}%0A`));
-  }
-
-  msg += `%0ACourier Fee: R${t.courierFee}%0ATotal: R${t.grandTotal}%0A%0A`;
-
-  msg += `%0ADelivery Details:%0A`;
-  msg += `${encodeURIComponent(`Name: ${c.name || '-'}`)}%0A`;
-  msg += `${encodeURIComponent(`Phone: ${c.phone || '-'}`)}%0A`;
-  msg += `${encodeURIComponent(`Address: ${c.address || '-'}`)}%0A`;
-  if (c.city) msg += `${encodeURIComponent(`City: ${c.city}`)}%0A`;
-  if (c.postal) msg += `${encodeURIComponent(`Postal Code: ${c.postal}`)}%0A`;
-  if (c.notes) msg += `${encodeURIComponent(`Notes: ${c.notes}`)}%0A`;
-
-  msg += `%0AIf you selected label design, please send any inspiration or your logo.`;
-
-  return msg;
-}
-
-function updateButtons() {
-  const t = getTotals();
-  const hasBottles = t.totalBottles > 0;
-  const c = getCustomerFromInputs();
-  const canCheckout = hasBottles && isCustomerValid(c);
-
-  if (els.whatsappBtn) {
-    els.whatsappBtn.style.pointerEvents = canCheckout ? 'auto' : 'none';
-    els.whatsappBtn.style.opacity = canCheckout ? '1' : '0.5';
-    els.whatsappBtn.href = canCheckout ? `https://wa.me/${PHONE_NUMBER}?text=${buildOrderText(t)}` : '#';
-  }
-
- if (els.payBtn) {
-  els.payBtn.style.pointerEvents = canCheckout ? 'auto' : 'none';
-  els.payBtn.style.opacity = canCheckout ? '1' : '0.5';
-  els.payBtn.href = canCheckout ? IKHOKHA_URL : '#';
-}
-
-  if (els.checkoutHint) {
-    if (!hasBottles) {
-      els.checkoutHint.classList.remove('ok');
-      els.checkoutHint.textContent = 'Add bottles to your cart to continue.';
-    } else if (!isCustomerValid(c)) {
-      els.checkoutHint.classList.remove('ok');
-      els.checkoutHint.textContent = 'Enter your name, phone and delivery address to enable checkout.';
-    } else {
-      els.checkoutHint.classList.add('ok');
-      els.checkoutHint.textContent = 'Ready ✅ You can now pay on Yoco or send the order on WhatsApp.';
-    }
-  }
-}
-
-// --- Render cart ---
+// --- CART UI ---
 function updateCartList() {
-  if (!els.cartItems) return;
   els.cartItems.innerHTML = '';
-
-  const t = getTotals();
 
   if (cart.length === 0) {
     els.emptyCartMessage.style.display = 'block';
     return;
   }
+
   els.emptyCartMessage.style.display = 'none';
 
-  cart.forEach((item, index) => {
-    const unit = getUnitPrice(item);
-    const itemTotal = unit * item.qty;
-
+  cart.forEach((item, i) => {
     const li = document.createElement('li');
-
-    li.innerHTML = `
-      <div class="cart-row">
-        <div class="cart-left">
-          <div class="cart-title">${item.variant} <span style="font-weight:700;">${item.type}</span></div>
-          <div class="cart-sub">${money(unit)} each • ${money(itemTotal)} total</div>
-        </div>
-        <div class="qty" aria-label="Quantity controls">
-          <button class="qty-btn" data-action="dec" data-index="${index}" type="button">−</button>
-          <span class="qty-count">${item.qty}</span>
-          <button class="qty-btn" data-action="inc" data-index="${index}" type="button">+</button>
-        </div>
-        <button class="remove-btn" data-action="remove" data-index="${index}" type="button">Remove</button>
-      </div>
-    `;
-
+    li.innerHTML = `${item.qty} x ${item.variant} (${item.type})
+    <button onclick="removeItem(${i})">X</button>`;
     els.cartItems.appendChild(li);
   });
+}
 
-  // bind row events
-  els.cartItems.querySelectorAll('button[data-action]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = Number(btn.getAttribute('data-index'));
-      const action = btn.getAttribute('data-action');
-      if (Number.isNaN(idx) || idx < 0 || idx >= cart.length) return;
-      if (action === 'inc') setQty(idx, cart[idx].qty + 1);
-      if (action === 'dec') setQty(idx, cart[idx].qty - 1);
-      if (action === 'remove') setQty(idx, 0);
-    });
-  });
+function removeItem(i) {
+  cart.splice(i, 1);
+  saveJSON(STORAGE_KEY_CART, cart);
+  updateUI();
 }
 
 function updateTotalsUI() {
   const t = getTotals();
-  if (els.itemsSubtotal) els.itemsSubtotal.textContent = money(t.itemsSubtotal);
-  if (els.addonsTotal) els.addonsTotal.textContent = money(t.addonsTotal);
-  if (els.courierFee) els.courierFee.textContent = money(t.courierFee);
-  if (els.grandTotal) els.grandTotal.textContent = money(t.grandTotal);
+  els.itemsSubtotal.textContent = money(t.itemsSubtotal);
+  els.courierFee.textContent = money(t.courierFee);
+  els.addonsTotal.textContent = money(t.addonsTotal);
+  els.grandTotal.textContent = money(t.grandTotal);
 }
 
+// --- VALIDATION ---
+function isCustomerValid() {
+  return els.custName.value && els.custPhone.value && els.custAddress.value;
+}
+
+// --- BUTTONS ---
+function updateButtons() {
+  const t = getTotals();
+  const canCheckout = t.totalBottles > 0 && isCustomerValid();
+
+  if (els.payBtn) {
+    els.payBtn.style.pointerEvents = canCheckout ? 'auto' : 'none';
+    els.payBtn.style.opacity = canCheckout ? '1' : '0.5';
+    els.payBtn.href = canCheckout ? IKHOKHA_URL : '#';
+  }
+
+  if (els.whatsappBtn) {
+    els.whatsappBtn.href = canCheckout
+      ? `https://wa.me/${PHONE_NUMBER}?text=Order Total: R${t.grandTotal}`
+      : '#';
+  }
+}
+
+// --- UI UPDATE ---
 function updateUI() {
   updateCartList();
-  updateAddonsUI();
   updateTotalsUI();
   updateButtons();
 }
 
-// --- Google Sheets logging ---
-function getAdminCfg() {
-  return loadJSON(STORAGE_KEY_ADMIN, {});
-}
-
-function buildOrderPayload(channel) {
-  const t = getTotals();
-  const c = getCustomerFromInputs();
-
-  const itemsSummary = cart
-    .map(i => `${i.qty} x ${i.variant} ${i.type} @ R${getUnitPrice(i)}`)
-    .join('\n');
-
-  const addonsSummary = [
-    t.labelDesignFee ? `Label Design: R${t.labelDesignFee}` : null,
-    t.insuranceFee ? `Insurance: R${t.insuranceFee}` : null,
-    t.barcodeFee ? `Barcodes (${t.barcodeCount}): R${t.barcodeFee}` : null
-  ].filter(Boolean).join(' | ');
-
-  const orderId = `PV-${Date.now().toString(36).toUpperCase()}`;
-
-  return {
-    orderId,
-    channel,
-    customer: {
-      name: c.name || '',
-      phone: c.phone || '',
-      address: c.address || '',
-      city: c.city || '',
-      postal: c.postal || '',
-      notes: c.notes || ''
-    },
-    totalBottles: t.totalBottles,
-    itemsSubtotal: t.itemsSubtotal,
-    courierFee: t.courierFee,
-    addons: {
-      labelDesign: addons.labelDesign,
-      insurance: addons.insurance,
-      insuranceBlocks: t.insuranceBlocks,
-      barcodeCount: t.barcodeCount
-    },
-    addonsTotal: t.addonsTotal,
-    grandTotal: t.grandTotal,
-    items: cart,
-    itemsSummary,
-    addonsSummary
-  };
-}
-
-async function logOrderToSheets(channel) {
-  const cfg = getAdminCfg();
-  if (!cfg.endpoint) return { ok: false, skipped: true };
-
-  try {
-    const payload = buildOrderPayload(channel);
-    const url = new URL(cfg.endpoint);
-    if (cfg.token) url.searchParams.set('token', cfg.token);
-
-    await fetch(url.toString(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    return { ok: true };
-  } catch (err) {
-    console.warn('Order logging failed:', err);
-    return { ok: false, error: String(err) };
-  }
-}
-
+// --- CHECKOUT LOGGING FIXED ---
 function bindCheckoutLogging() {
   if (els.payBtn) {
-    els.payBtn.addEventListener('click', async (e) => {
+    els.payBtn.addEventListener('click', (e) => {
       const t = getTotals();
-      const c = getCustomerFromInputs();
-
-      if (t.totalBottles === 0 || !isCustomerValid(c)) {
+      if (t.totalBottles === 0 || !isCustomerValid()) {
         e.preventDefault();
-        alert('Please add bottles and fill in your delivery details (name, phone, address) to checkout.');
-        return;
+        alert('Fill in details and add items');
       }
-
-      // Log order (optional, won’t block payment)
-      logOrderToSheets('iKhokha');
     });
   }
 }
 
-      // Log, but never block payment
-      logOrderToSheets('iKhokha');
-      // default behavior continues
-    });
-  }
-
-  if (els.whatsappBtn) {
-    els.whatsappBtn.addEventListener('click', async (e) => {
-      const t = getTotals();
-      const c = getCustomerFromInputs();
-      if (t.totalBottles === 0 || !isCustomerValid(c)) {
-        e.preventDefault();
-        alert('Please add bottles and fill in your delivery details (name, phone, address) to checkout.');
-        return;
-      }
-
-      // Log first, then proceed
-      e.preventDefault();
-      await logOrderToSheets('WhatsApp');
-      window.open(els.whatsappBtn.href, '_blank', 'noopener,noreferrer');
-    });
-  }
-}
-
-// --- FAQ accordion + reveal transitions ---
-function initFAQ() {
-  document.querySelectorAll('.faq').forEach(f => {
-    const q = f.querySelector('.faq-q');
-    if (!q) return;
-    q.addEventListener('click', () => {
-      const isOpen = f.classList.contains('open');
-      document.querySelectorAll('.faq.open').forEach(x => x.classList.remove('open'));
-      if (!isOpen) f.classList.add('open');
-    });
-  });
-}
-
-function initReveal() {
-  const nodes = document.querySelectorAll('.reveal');
-  if (!nodes.length) return;
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(ent => {
-      if (ent.isIntersecting) ent.target.classList.add('visible');
-    });
-  }, { threshold: 0.12 });
-  nodes.forEach(n => io.observe(n));
-}
-
-// --- Boot ---
+// --- INIT ---
 (function init() {
   cart = loadJSON(STORAGE_KEY_CART, []);
-  addons = loadJSON(STORAGE_KEY_ADDONS, addons);
-  customer = loadJSON(STORAGE_KEY_CUSTOMER, customer);
-  setCustomerInputs(customer);
-
-  normalizeAddons();
-  bindAddonEvents();
-  bindCustomerInputs();
   bindCheckoutLogging();
-  initFAQ();
-  initReveal();
-
   updateUI();
 })();
