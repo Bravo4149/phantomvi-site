@@ -195,3 +195,38 @@ function updateUI() {
   loadCart();
   updateUI();
 })();
+document.getElementById('payBtn').addEventListener('click', function () {
+  const t = getTotals();
+
+  // Validation
+  if (t.totalBottles === 0) {
+    alert('Add items to cart first');
+    return;
+  }
+
+  if (!isCustomerValid()) {
+    alert('Fill in delivery details');
+    return;
+  }
+
+  // Create Order ID
+  const orderId = "PV" + Date.now();
+
+  // Build order summary
+  let orderText = `🛒 PHANTOM VI ORDER\n\nOrder ID: ${orderId}\n\n`;
+
+  cart.forEach(item => {
+    orderText += `${item.qty} x ${item.variant} (${item.type})\n`;
+  });
+
+  orderText += `\nTotal: R${t.grandTotal}`;
+
+  // Open WhatsApp with order
+  const whatsappURL = `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(orderText)}`;
+  window.open(whatsappURL, '_blank');
+
+  // THEN open payment page
+  setTimeout(() => {
+    window.open(IKHOKHA_URL, '_blank');
+  }, 800);
+});
