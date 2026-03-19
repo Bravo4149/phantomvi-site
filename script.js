@@ -135,22 +135,26 @@ function normalizeAddons() {
 // --- DOM ---
 const els = {
   cartItems: document.getElementById('cartItems'),
-  courierFee: document.getElementById('courierFee'),
-  itemsSubtotal: document.getElementById('itemsSubtotal'),
-  addonsTotal: document.getElementById('addonsTotal'),
-  grandTotal: document.getElementById('grandTotal'),
-  whatsappBtn: document.getElementById('whatsappBtn'),
-  yocoBtn: document.getElementById('yocoBtn'),
-  emptyCartMessage: document.getElementById('emptyCartMessage'),
-  loadingOverlay: document.getElementById('loadingOverlay'),
-  addonsWrap: document.getElementById('addons'),
-  addonLabelDesign: document.getElementById('addonLabelDesign'),
-  addonInsurance: document.getElementById('addonInsurance'),
-  insurancePrice: document.getElementById('insurancePrice'),
-  barcodeMinus: document.getElementById('barcodeMinus'),
-  barcodePlus: document.getElementById('barcodePlus'),
-  barcodeCount: document.getElementById('barcodeCount'),
-  barcodeHint: document.getElementById('barcodeHint'),
+courierFee: document.getElementById('courierFee'),
+itemsSubtotal: document.getElementById('itemsSubtotal'),
+addonsTotal: document.getElementById('addonsTotal'),
+grandTotal: document.getElementById('grandTotal'),
+
+whatsappBtn: document.getElementById('whatsappBtn'),
+payBtn: document.getElementById('payBtn'),
+
+emptyCartMessage: document.getElementById('emptyCartMessage'),
+loadingOverlay: document.getElementById('loadingOverlay'),
+
+addonsWrap: document.getElementById('addons'),
+addonLabelDesign: document.getElementById('addonLabelDesign'),
+addonInsurance: document.getElementById('addonInsurance'),
+insurancePrice: document.getElementById('insurancePrice'),
+
+barcodeMinus: document.getElementById('barcodeMinus'),
+barcodePlus: document.getElementById('barcodePlus'),
+barcodeCount: document.getElementById('barcodeCount'),
+barcodeHint: document.getElementById('barcodeHint'),
 
   // customer fields
   custName: document.getElementById('custName'),
