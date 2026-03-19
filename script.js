@@ -91,7 +91,7 @@ const els = {
 };
 
 // --- ADD TO CART (FIXED) ---
-function addToCart(type) {
+window.addToCart = function(type) {
   let variant = '';
   let qty = 0;
 
@@ -99,15 +99,41 @@ function addToCart(type) {
     variant = document.getElementById('wineType').value;
     qty = parseInt(document.getElementById('wineQty').value);
   }
+
   if (type === 'Gin') {
     variant = document.getElementById('ginType').value;
     qty = parseInt(document.getElementById('ginQty').value);
   }
+
   if (type === 'Vodka') {
     variant = document.getElementById('vodkaType').value;
     qty = parseInt(document.getElementById('vodkaQty').value);
   }
 
+  if (!variant) {
+    alert('Select a product type');
+    return;
+  }
+
+  if (!qty || qty <= 0) {
+    alert('Enter quantity');
+    return;
+  }
+
+  const existing = cart.find(i => i.type === type && i.variant === variant);
+
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({ type, variant, qty });
+  }
+
+  localStorage.setItem(STORAGE_KEY_CART, JSON.stringify(cart));
+
+  updateUI();
+
+  alert('Added to cart ✅');
+};
   if (!variant) return alert('Select product type');
   if (!qty || qty <= 0) return alert('Enter quantity');
 
