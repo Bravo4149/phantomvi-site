@@ -119,19 +119,21 @@ window.removeItem = function (index) {
   updateUI();
 };
 
-// --- UPDATE CART UI ---
+// --- CART UI ---
 function updateCartList() {
   const cartItems = document.getElementById('cartItems');
   const emptyMsg = document.getElementById('emptyCartMessage');
 
+  if (!cartItems) return;
+
   cartItems.innerHTML = '';
 
   if (cart.length === 0) {
-    emptyMsg.style.display = 'block';
+    if (emptyMsg) emptyMsg.style.display = 'block';
     return;
   }
 
-  emptyMsg.style.display = 'none';
+  if (emptyMsg) emptyMsg.style.display = 'none';
 
   cart.forEach((item, i) => {
     const li = document.createElement('li');
@@ -143,26 +145,35 @@ function updateCartList() {
   });
 }
 
-// --- UPDATE TOTALS ---
+// --- TOTALS ---
 function updateTotalsUI() {
   const t = getTotals();
 
-  document.getElementById('itemsSubtotal').textContent = money(t.itemsSubtotal);
-  document.getElementById('courierFee').textContent = money(t.courierFee);
-  document.getElementById('addonsTotal').textContent = 'R0';
-  document.getElementById('grandTotal').textContent = money(t.grandTotal);
+  const itemsSubtotal = document.getElementById('itemsSubtotal');
+  const courierFee = document.getElementById('courierFee');
+  const addonsTotal = document.getElementById('addonsTotal');
+  const grandTotal = document.getElementById('grandTotal');
+
+  if (itemsSubtotal) itemsSubtotal.textContent = money(t.itemsSubtotal);
+  if (courierFee) courierFee.textContent = money(t.courierFee);
+  if (addonsTotal) addonsTotal.textContent = 'R0';
+  if (grandTotal) grandTotal.textContent = money(t.grandTotal);
+
+  // Optional display
+  const finalAmount = document.getElementById('finalAmount');
+  if (finalAmount) finalAmount.textContent = money(t.grandTotal);
 }
 
 // --- VALIDATION ---
 function isCustomerValid() {
-  return (
-    document.getElementById('custName').value &&
-    document.getElementById('custPhone').value &&
-    document.getElementById('custAddress').value
-  );
+  const name = document.getElementById('custName');
+  const phone = document.getElementById('custPhone');
+  const address = document.getElementById('custAddress');
+
+  return name?.value && phone?.value && address?.value;
 }
 
-// --- BUTTON CONTROL ---
+// --- BUTTON STATE ---
 function updateButtons() {
   const t = getTotals();
   const payBtn = document.getElementById('payBtn');
@@ -171,9 +182,9 @@ function updateButtons() {
   const canCheckout = t.totalBottles > 0 && isCustomerValid();
 
   if (payBtn) {
-    payBtn.style.pointerEvents = canCheckout ? 'auto' : 'none';
+    payBtn.disabled = !canCheckout;
     payBtn.style.opacity = canCheckout ? '1' : '0.5';
-    payBtn.href = canCheckout ? IKHOKHA_URL : '#';
+    payBtn.style.cursor = canCheckout ? 'pointer' : 'not-allowed';
   }
 
   if (whatsappBtn) {
@@ -183,7 +194,7 @@ function updateButtons() {
   }
 }
 
-// --- MAIN UI UPDATE ---
+// --- MAIN UI ---
 function updateUI() {
   updateCartList();
   updateTotalsUI();
@@ -191,42 +202,54 @@ function updateUI() {
 }
 
 // --- INIT ---
-(function () {
+function init() {
   loadCart();
   updateUI();
-})();
-document.getElementById('payBtn').addEventListener('click', function () {
-  const t = getTotals();
+}
 
-  // Validation
-  if (t.totalBottles === 0) {
-    alert('Add items to cart first');
-    return;
-  }
+// --- SMART CHECKOUT ---
+function setupCheckout() {
+  const payBtn = document.getElementById('payBtn');
+  if (!payBtn) return;
 
-  if (!isCustomerValid()) {
-    alert('Fill in delivery details');
-    return;
-  }
+  payBtn.addEventListener('click', () => {
+    const t = getTotals();
 
-  // Create Order ID
-  const orderId = "PV" + Date.now();
+    if (t.totalBottles === 0) {
+      alert('Add items to cart first');
+      return;
+    }
 
-  // Build order summary
-  let orderText = `🛒 PHANTOM VI ORDER\n\nOrder ID: ${orderId}\n\n`;
+    if (!isCustomerValid()) {
+      alert('Fill in delivery details');
+      return;
+    }
 
-  cart.forEach(item => {
-    orderText += `${item.qty} x ${item.variant} (${item.type})\n`;
+    const orderId = "PV" + Date.now();
+    const name = document.getElementById('custName').value;
+
+    let orderText = `🛒 PHANTOM VI ORDER\n\nOrder ID: ${orderId}\nName: ${name}\n\n`;
+
+    cart.forEach(item => {
+      orderText += `${item.qty} x ${item.variant} (${item.type})\n`;
+    });
+
+    orderText += `\nTotal: R${t.grandTotal}`;
+
+    const whatsappURL = `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(orderText)}`;
+
+    // Open WhatsApp
+    window.open(whatsappURL, '_blank');
+
+    // Open payment after delay
+    setTimeout(() => {
+      window.open(IKHOKHA_URL, '_blank');
+    }, 800);
   });
+}
 
-  orderText += `\nTotal: R${t.grandTotal}`;
-
-  // Open WhatsApp with order
-  const whatsappURL = `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(orderText)}`;
-  window.open(whatsappURL, '_blank');
-
-  // THEN open payment page
-  setTimeout(() => {
-    window.open(IKHOKHA_URL, '_blank');
-  }, 800);
+// --- RUN AFTER DOM LOAD ---
+window.addEventListener('DOMContentLoaded', () => {
+  init();
+  setupCheckout();
 });
